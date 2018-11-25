@@ -4,7 +4,31 @@ function Piece(ctx) {
   this.x = 0;
   this.y = 0;
   this.matrix = [];
+
+  this.setListeners();
 }
+
+Piece.prototype.setListeners = function() {
+  document.onkeydown = this.onKeyDown.bind(this);
+}
+
+
+Piece.prototype.onKeyDown = function(e) {
+  switch (e.keyCode) {
+    case KEY_RIGHT:
+      this.x += 50;
+      break;
+    case KEY_LEFT:
+      this.x += -50;
+      break;
+    case KEY_DOWN:
+      this.y += 25;
+      break;
+    case KEY_SPACE:
+      this.switchColors();
+      break;
+  }
+};
 
 Piece.prototype.getPiece = function() {
 
