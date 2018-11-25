@@ -45,3 +45,10 @@ Piece.prototype.draw = function() {
     this.ctx.fillRect(this.x, this.y + i*50, 50, 50)
   }
 }
+
+Piece.prototype.switchColors = function() {
+  
+  //for (var i = 0; i < PIECE_SIZE; i++) {
+    this.matrix.unshift(this.matrix.pop());
+ // }
+}
