@@ -1,2 +1,8 @@
 var MAX_ROWS_GRID = 13;
 var MAX_COLUMNS_GRID = 6;
+
+var NUM_COLORS = 6;
+var PIECE_SIZE = 3;
+
+
+

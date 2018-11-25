@@ -21,7 +21,7 @@ Grid.prototype.draw = function() {
 
   for (var i = 0; i < MAX_COLUMNS_GRID; i++) {
     for (var j = 0; j < MAX_ROWS_GRID; j++) {
-      this.ctx.strokeRect(this.x + i*25, this.y + j*25, 25, 25);
+      this.ctx.strokeRect(this.x + i*50, this.y + j*50, 50, 50);
     }
   }
 }
