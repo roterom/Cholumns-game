@@ -1,5 +1,8 @@
-var MAX_ROWS_GRID = 13;
-var MAX_COLUMNS_GRID = 6;
+var NUM_ROWS_GRID = 13;
+var NUM_COLUMNS_GRID = 6;
+
+var GEM_WIDTH = 50;
+var GEM_HEIGTH = 50;
 
 var NUM_COLORS = 6;
 var PIECE_SIZE = 3;

@@ -18,7 +18,9 @@ Game.prototype.start = function() {
     this.drawCount++;
 
     this.clearAll();
+    this.checkCollisions();
     this.drawAll();
+    
     if ((this.drawCount % 30) === 0) {
       this.piece.y += 10;
     }
@@ -40,4 +42,19 @@ Game.prototype.drawAll = function() {
 
 Game.prototype.clearAll = function() {
   this.ctx.clearRect(0, 0, this.w, this.h);
+}
+
+Game.prototype.checkCollisions = function() {
+  
+  if (this.piece.x < this.grid.x) {
+    this.piece.x += GEM_WIDTH;
+  }
+  if (this.piece.x + GEM_WIDTH > this.grid.x + this.grid.w) {
+    this.piece.x -= GEM_WIDTH;
+  }
+  if ((this.piece.y + this.piece.h) > (this.grid.y + this.grid.h)) {
+    this.piece.y = (this.grid.y + this.grid.h) - this.piece.h;
+    this.grid.mergePiece(this.piece);
+  }
+
 }

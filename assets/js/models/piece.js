@@ -3,6 +3,9 @@ function Piece(ctx) {
   this.ctx = ctx;
   this.x = 0;
   this.y = 0;
+
+  this.w = GEM_WIDTH;
+  this.h = GEM_HEIGTH * PIECE_SIZE;
   this.matrix = [];
 
   this.setListeners();
@@ -11,7 +14,6 @@ function Piece(ctx) {
 Piece.prototype.setListeners = function() {
   document.onkeydown = this.onKeyDown.bind(this);
 }
-
 
 Piece.prototype.onKeyDown = function(e) {
   switch (e.keyCode) {
@@ -48,7 +50,10 @@ Piece.prototype.draw = function() {
 
 Piece.prototype.switchColors = function() {
   
-  //for (var i = 0; i < PIECE_SIZE; i++) {
     this.matrix.unshift(this.matrix.pop());
- // }
+}
+
+Piece.prototype.reset = function {
+  this.x = 0;
+  this.y = 0;
 }
