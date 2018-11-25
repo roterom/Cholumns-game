@@ -53,7 +53,9 @@ Piece.prototype.switchColors = function() {
     this.matrix.unshift(this.matrix.pop());
 }
 
-Piece.prototype.reset = function {
+Piece.prototype.reset = function() {
   this.x = 0;
   this.y = 0;
+  this.matrix = [];
+  this.getPiece();
 }

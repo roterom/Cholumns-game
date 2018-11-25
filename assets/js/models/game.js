@@ -55,6 +55,7 @@ Game.prototype.checkCollisions = function() {
   if ((this.piece.y + this.piece.h) > (this.grid.y + this.grid.h)) {
     this.piece.y = (this.grid.y + this.grid.h) - this.piece.h;
     this.grid.mergePiece(this.piece);
+    this.piece.reset();
   }
 
 }
