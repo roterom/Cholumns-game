@@ -9,15 +9,13 @@ function Game(canvasId) {
 
   this.drawCount = 0;
   this.setListeners();
-
-
 }
 
 Game.prototype.start = function() {
   this.grid.reset();
   this.piece.getPiece();
   drawIntervalId = setInterval(function() {
-    this.drawCount++;
+  this.drawCount++;
    
     if (this.isGameOver()) {
       alert("game over!");
@@ -71,9 +69,10 @@ Game.prototype.checkCollisionDown = function() {
     
     this.piece.y = (Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
     this.grid.mergePiece(this.piece);
+    this.grid.findMatches(this.piece);
+    //this.grid.removeMatches();
     this.piece.reset();
   }
-
 }
 
 Game.prototype.setListeners = function() {

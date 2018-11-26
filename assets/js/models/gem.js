@@ -1,5 +1,12 @@
 function Gem() {
   this.name = "";
+  this.checks = {
+    vertical: false,
+    horizontal: false,
+    diagonal1: false,
+    diagonal2: false 
+  };
+  this.hasMatched = false;
 }
 
 Gem.prototype.configColor = function() {
