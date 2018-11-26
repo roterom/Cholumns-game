@@ -45,8 +45,9 @@ Grid.prototype.findMatches = function(piece) {
 
   for (var i = 0; i < PIECE_SIZE; i++) {
     console.log("estoy en la gema " + i);
-    this.checkVertically(piece.x, piece.y + (GEM_HEIGTH * i));
-    this.checkHorizontally(piece.x, piece.y + (GEM_HEIGTH * i));
+    //this.checkVertically(piece.x, piece.y + (GEM_HEIGTH * i));
+    //this.checkHorizontally(piece.x, piece.y + (GEM_HEIGTH * i));
+    this.checkDiagonally1(piece.x, piece.y + (GEM_HEIGTH * i))
   }
 }
 
@@ -93,8 +94,7 @@ Grid.prototype.checkHorizontally = function (x, y) {
 
     this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal = true;
   
-    if (((x + GEM_WIDTH) < this.w) && ((x - GEM_WIDTH) >= this.x) &&
-        ((y + GEM_HEIGTH) > this.h) && ((y - GEM_HEIGTH) >= this.y)){
+    if (((x + GEM_WIDTH) < this.w) && ((x - GEM_WIDTH) >= this.x)) {
       if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name) &&
           (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name)) {
             this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
@@ -131,32 +131,33 @@ Grid.prototype.checkDiagonally1 = function (x, y) {
 
     this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.diagonal1 = true;
   
-    if (((x + GEM_WIDTH) < this.w) && ((x - GEM_WIDTH) >= this.x)) {
-      if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name) &&
-          (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name)) {
+    if (((x + GEM_WIDTH) < this.w) && ((x - GEM_WIDTH) >= this.x) &&
+        ((y + GEM_HEIGTH) < this.h) && ((y - GEM_HEIGTH) >= this.y)) {
+      if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name) &&
+          (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
             this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
-            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
-            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
-            console.log("la ficha de arriba y abajo son iguales a la que analizo");
+            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].hasMatched = true;
+            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].hasMatched = true;
+            console.log("la ficha diagonal izda y dcha son iguales a la que analizo");
       }
     } 
 
-    //aquí en el horizontal si lo necesitaré
-    if (((x - GEM_WIDTH) >= this.x) && (this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH] !== 0)) {
-      if ((this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal === false) && 
-      (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name)) {
+    //aquí en el diagonal si lo necesitaré
+    if (((x - GEM_WIDTH) >= this.x) && ((y + GEM_HEIGTH) < this.h)  && (this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH] !== 0)) {
+      if ((this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].checks.diagonal1 === false) && 
+      (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name)) {
         //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
-        console.log("la ficha de la izquierda es del mismo color => vuelvo a llamar a HORIZONTALLY");
-        this.checkHorizontally(x - GEM_WIDTH, y);
+        console.log("la ficha de la izquierda es del mismo color => vuelvo a llamar a VerTicALyy");
+        this.checkDiagonally1(x - GEM_WIDTH, y + GEM_HEIGTH);
       }
     }
 
-    if (((x + GEM_WIDTH) < this.w) && (this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH] !== 0)){
-      if ((this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal === false) &&
-        (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name)) {
+    if (((x + GEM_WIDTH) < this.w) && ((y - GEM_HEIGTH) >= this.y) && (this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH] !== 0)){
+      if ((this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].checks.diagonal1 === false) &&
+        (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
         //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
-        console.log("la ficha de la derecha es del mismo color => vuelvo a llamar a HORIZONTALLY")
-        this.checkHorizontally(x + GEM_WIDTH, y);
+        console.log("la ficha de la derecha es del mismo color => vuelvo a llamar a VerTICAlyy")
+        this.checkDiagonally1(x + GEM_WIDTH, y - GEM_HEIGTH);
       }
     }
   }
