@@ -71,6 +71,7 @@ Game.prototype.checkCollisionDown = function() {
     this.grid.mergePiece(this.piece);
     this.grid.findMatches(this.piece);
     this.grid.removeMatches();
+    this.grid.downGems();
     this.piece.reset();
   }
 }
