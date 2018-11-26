@@ -18,6 +18,11 @@ Game.prototype.start = function() {
   this.piece.getPiece();
   drawIntervalId = setInterval(function() {
     this.drawCount++;
+   
+    if (this.isGameOver()) {
+      alert("game over!");
+      window.location.reload();
+    }
 
     this.clearAll();
     this.checkCollisionDown();
@@ -117,4 +122,5 @@ Game.prototype.isCollisionLeft = function() {
 
 Game.prototype.isGameOver = function() {
   
+  return (this.grid.matrix[Math.floor(NUM_COLUMNS_GRID / 2)][0] !== 0);
 }

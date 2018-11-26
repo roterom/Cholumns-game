@@ -1,8 +1,8 @@
 function Piece(ctx) {
 
   this.ctx = ctx;
-  this.x = 0;
-  this.y = 0;
+  this.x = (NUM_COLUMNS_GRID * GEM_WIDTH) / 2; //para que empiece en la mitad
+  this.y = -(GEM_HEIGTH * (PIECE_SIZE - 1)); //que solo asome una gema al principio
 
   this.w = GEM_WIDTH;
   this.h = GEM_HEIGTH * PIECE_SIZE;
@@ -54,8 +54,8 @@ Piece.prototype.switchColors = function() {
 }
 
 Piece.prototype.reset = function() {
-  this.x = 0;
-  this.y = 0;
+  this.x = (NUM_COLUMNS_GRID * GEM_WIDTH) / 2; //para que empiece en la mitad
+  this.y = -(GEM_HEIGTH * (PIECE_SIZE - 1)); //que solo asome una gema al principio
   this.matrix = [];
   this.getPiece();
 }

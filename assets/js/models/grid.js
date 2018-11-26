@@ -39,5 +39,4 @@ Grid.prototype.mergePiece = function(piece) {
   for (var i = 0; i < PIECE_SIZE; i++) {
     this.matrix[piece.x/GEM_WIDTH][(piece.y + i*GEM_HEIGTH)/GEM_HEIGTH] = piece.matrix[i];
   }
-
 }
