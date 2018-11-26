@@ -8,10 +8,10 @@ function Piece(ctx) {
   this.h = GEM_HEIGTH * PIECE_SIZE;
   this.matrix = [];
 
-  this.setListeners();
+  //this.setListeners();
 }
 
-Piece.prototype.setListeners = function() {
+/* Piece.prototype.setListeners = function() {
   document.onkeydown = this.onKeyDown.bind(this);
 }
 
@@ -30,7 +30,7 @@ Piece.prototype.onKeyDown = function(e) {
       this.switchColors();
       break;
   }
-};
+}; */
 
 Piece.prototype.getPiece = function() {
 
