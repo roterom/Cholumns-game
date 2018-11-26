@@ -70,7 +70,7 @@ Game.prototype.checkCollisionDown = function() {
     this.piece.y = (Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
     this.grid.mergePiece(this.piece);
     this.grid.findMatches(this.piece);
-    //this.grid.removeMatches();
+    this.grid.removeMatches();
     this.piece.reset();
   }
 }
