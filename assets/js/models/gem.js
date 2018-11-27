@@ -6,7 +6,7 @@ function Gem() {
     diagonal1: false,
     diagonal2: false 
   };
-  this.hasMatched = false;
+  this.isMatched = false;
 }
 
 Gem.prototype.configColor = function() {

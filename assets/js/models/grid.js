@@ -8,6 +8,9 @@ function Grid(ctx) {
   this.h = GEM_HEIGTH * NUM_ROWS_GRID
 
   this.matrix = [];
+
+  this.hasMatches = false;
+  
 }
 
 Grid.prototype.reset= function() {
@@ -41,16 +44,48 @@ Grid.prototype.mergePiece = function(piece) {
   }
 }
 
-Grid.prototype.findMatches = function(piece) {
+Grid.prototype.handleMatches = function(piece) {
 
-  for (var i = 0; i < PIECE_SIZE; i++) {
-    console.log("estoy en la gema " + i);
-    this.checkVertically(piece.x, piece.y + (GEM_HEIGTH * i));
-    this.checkHorizontally(piece.x, piece.y + (GEM_HEIGTH * i));
-    this.checkDiagonally1(piece.x, piece.y + (GEM_HEIGTH * i));
-    this.checkDiagonally2(piece.x, piece.y + (GEM_HEIGTH * i));
+  if (piece) {
+    for (var i = 0; i < PIECE_SIZE; i++) {
+      console.log("estoy en la gema " + i);
+      this.checkVertically(piece.x, piece.y + (GEM_HEIGTH * i));
+      this.checkHorizontally(piece.x, piece.y + (GEM_HEIGTH * i));
+      this.checkDiagonally1(piece.x, piece.y + (GEM_HEIGTH * i));
+      this.checkDiagonally2(piece.x, piece.y + (GEM_HEIGTH * i));
+    }
+  } else {
+    for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
+      for (var j = 0; j < NUM_ROWS_GRID; j++) {
+        if (this.matrix[i][j] !== 0) {
+          this.checkVertically(i * GEM_WIDTH, j * GEM_HEIGTH);
+          this.checkHorizontally(i * GEM_WIDTH, j * GEM_HEIGTH);
+          this.checkDiagonally1(i * GEM_WIDTH, j * GEM_HEIGTH);
+          this.checkDiagonally2(i * GEM_WIDTH, j * GEM_HEIGTH);
+        }
+      }
+    }
+  }
+  this.removeChecks();
+  
+  if (this.hasMatches) {
+    this.hasMatches = false;
+    this.removeMatches();
+    this.downGems();
+    this.handleMatches();
   }
 }
+
+// Grid.prototype.areMatches = function() {
+//   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
+//     for (var j = 0; j < NUM_ROWS_GRID; j++) {
+//       if ((this.matrix[i][j] !== 0) && (this.matrix[i][j].isMatched)) {
+//         return true;
+//       }
+//     }
+//   }
+//   return false;
+// }
 
 
 Grid.prototype.checkVertically = function (x, y) {
@@ -62,9 +97,11 @@ Grid.prototype.checkVertically = function (x, y) {
     if (((y + GEM_HEIGTH) < this.h) && ((y - GEM_HEIGTH) >= this.y)) {
       if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[x/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name) &&
           (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name)) {
-            this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
-            this.matrix[x/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].hasMatched = true;
-            this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].hasMatched = true;
+            this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
+            this.matrix[x/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
+            this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
+
+            this.hasMatches = true;
             console.log("la ficha de arriba y abajo son iguales a la que analizo");
       }
     } 
@@ -98,9 +135,11 @@ Grid.prototype.checkHorizontally = function (x, y) {
     if (((x + GEM_WIDTH) < this.w) && ((x - GEM_WIDTH) >= this.x)) {
       if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name) &&
           (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name)) {
-            this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
-            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
-            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
+            this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
+            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
+            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
+
+            this.hasMatches = true;
             console.log("la ficha de arriba y abajo son iguales a la que analizo");
       }
     } 
@@ -136,9 +175,11 @@ Grid.prototype.checkDiagonally1 = function (x, y) {
         ((y + GEM_HEIGTH) < this.h) && ((y - GEM_HEIGTH) >= this.y)) {
       if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name) &&
           (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
-            this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
-            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].hasMatched = true;
-            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].hasMatched = true;
+            this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
+            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
+            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
+
+            this.hasMatches = true;
             console.log("la ficha diagonal izda y dcha son iguales a la que analizo");
       }
     } 
@@ -174,9 +215,11 @@ Grid.prototype.checkDiagonally2 = function (x, y) {
         ((y + GEM_HEIGTH) < this.h) && ((y - GEM_HEIGTH) >= this.y)) {
       if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name) &&
           (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
-            this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].hasMatched = true;
-            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].hasMatched = true;
-            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].hasMatched = true;
+            this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
+            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
+            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
+
+            this.hasMatches = true;
             console.log("la ficha diagonal izda y dcha son iguales a la que analizo");
       }
     } 
@@ -207,34 +250,36 @@ Grid.prototype.removeMatches = function() {
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
     for (var j = 0; j < NUM_ROWS_GRID; j++) {
       if (this.matrix[i][j] !== 0) {
-        if (this.matrix[i][j].hasMatched) {
+        if (this.matrix[i][j].isMatched) {
           this.matrix[i][j] = 0;
-        } else {
+        // } else {
 
-          for (var direction in this.matrix[i][j].checks) {
-            this.matrix[i][j].checks[direction] = false;
-          }
-          // this.matrix[i][j].checks.vertical = false;
-          // this.matrix[i][j].checks.horizontal = false;
-          // this.matrix[i][j].checks.diagonal1 = false;
-          // this.matrix[i][j].checks.diagonal2 = false;
+        //   for (var direction in this.matrix[i][j].checks) {
+        //     this.matrix[i][j].checks[direction] = false;
+        //   }
+        //   /* this.matrix[i][j].checks.vertical = false;
+        //   this.matrix[i][j].checks.horizontal = false;
+        //   this.matrix[i][j].checks.diagonal1 = false;
+        //   this.matrix[i][j].checks.diagonal2 = false; */
         }
       }
     }
   }
 }
 
-// Grid.prototype.removeChecks = function(direction) {
+Grid.prototype.removeChecks = function() {
 
-//   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
-//     for (var j = 0; j < NUM_ROWS_GRID; j++) {
-//       if (this.matrix[i][j] !== 0) {
-//         this.matrix[i][j].checks[direction] = false;
-//       }
-//     }
-//   }
+  for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
+    for (var j = 0; j < NUM_ROWS_GRID; j++) {
+      if (this.matrix[i][j] !== 0) {
+        for (var direction in this.matrix[i][j].checks) {
+          this.matrix[i][j].checks[direction] = false;
+        }
+      }
+    }
+  }
 
-// }
+}
 
 Grid.prototype.downGems = function() {
 
