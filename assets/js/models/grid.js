@@ -70,9 +70,13 @@ Grid.prototype.handleMatches = function(piece) {
   
   if (this.hasMatches) {
     this.hasMatches = false;
-    this.removeMatches();
-    this.downGems();
-    this.handleMatches();
+    //this.remarkMatches();
+    setTimeout(function() {
+     this.removeMatches();
+     this.downGems();
+     this.handleMatches();
+    }.bind(this),1000);
+    
   }
 }
 
@@ -243,6 +247,31 @@ Grid.prototype.checkDiagonally2 = function (x, y) {
       }
     }
   }
+}
+
+Grid.prototype.remarkMatches = function() {
+  //this.ctx.scale(1.1, 1.1)
+  for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
+    for (var j = 0; j < NUM_ROWS_GRID; j++) {
+      if (this.matrix[i][j] !== 0) {
+        if (this.matrix[i][j].isMatched) {
+          this.ctx.fillStyle = this.matrix[i][j].name;
+          this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, GEM_WIDTH*1.1, GEM_HEIGTH*1.1)
+        // } else {
+
+        //   for (var direction in this.matrix[i][j].checks) {
+        //     this.matrix[i][j].checks[direction] = false;
+        //   }
+        //   /* this.matrix[i][j].checks.vertical = false;
+        //   this.matrix[i][j].checks.horizontal = false;
+        //   this.matrix[i][j].checks.diagonal1 = false;
+        //   this.matrix[i][j].checks.diagonal2 = false; */
+        }
+      }
+    }
+  }
+
+
 }
 
 Grid.prototype.removeMatches = function() {

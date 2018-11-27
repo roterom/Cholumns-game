@@ -26,11 +26,16 @@ Game.prototype.start = function() {
     }
 
     this.clearAll();
-    this.checkCollisionDown();
+    
+    if (this.isCollisionDown()) {
+      this.checkCollisionDown();
+    }
     this.drawAll();
+    
     
     if ((this.drawCount % 30) === 0) {
       this.piece.y += 10;
+      this.drawCount = 0;
     }
 
   }.bind(this), DRAW_INTERVAL_MS);
@@ -45,6 +50,7 @@ Game.prototype.drawAll = function() {
   this.grid.draw();
   this.piece.draw();
   this.nextPiece.draw();
+  this.grid.remarkMatches();
 
 }
 
@@ -67,7 +73,9 @@ Game.prototype.checkCollisionDown = function() {
   //   this.grid.mergePiece(this.piece);
   //   this.pie  ce.reset();
   // }  //lo quito porque lo de abajo funciona tb cuando se está en el suelo
-  if (this.grid.matrix[this.piece.x/GEM_WIDTH][Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH)] !== 0) {
+
+
+  //if (this.grid.matrix[this.piece.x/GEM_WIDTH][Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH)] !== 0) {
     console.log("estoy encima de una gema!");
     
     this.piece.y = (Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
@@ -79,7 +87,7 @@ Game.prototype.checkCollisionDown = function() {
     // }
     // this.grid.downGems();
      this.piece.reset(this.nextPiece);
-  }
+  //}
 }
 
 Game.prototype.setListeners = function() {
@@ -124,6 +132,9 @@ Game.prototype.isCollisionLeft = function() {
   return ((this.piece.x === this.grid.x) ||
          (this.grid.matrix[(this.piece.x - GEM_WIDTH)/GEM_WIDTH][Math.floor((this.piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0)) 
 
+}
+Game.prototype.isCollisionDown = function() {
+  return (this.grid.matrix[this.piece.x/GEM_WIDTH][Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH)] !== 0);
 }
 
 Game.prototype.isGameOver = function() {
