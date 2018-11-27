@@ -1,8 +1,8 @@
-function Piece(ctx) {
+function Piece(ctx, x, y) {
 
   this.ctx = ctx;
-  this.x = (NUM_COLUMNS_GRID * GEM_WIDTH) / 2; //para que empiece en la mitad
-  this.y = -(GEM_HEIGTH * (PIECE_SIZE - 1)); //que solo asome una gema al principio
+  this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2); //para que empiece en la mitad
+  this.y = y || -(GEM_HEIGTH * (PIECE_SIZE - 1)); //que solo asome una gema al principio
 
   this.w = GEM_WIDTH;
   this.h = GEM_HEIGTH * PIECE_SIZE;
@@ -34,6 +34,7 @@ Piece.prototype.onKeyDown = function(e) {
 
 Piece.prototype.getPiece = function() {
 
+  this.matrix = [];
   for (var i = 0; i < PIECE_SIZE; i++) {
     this.matrix.push(new Gem());
     this.matrix[i].configColor();
@@ -53,9 +54,20 @@ Piece.prototype.switchColors = function() {
     this.matrix.unshift(this.matrix.pop());
 }
 
-Piece.prototype.reset = function() {
+Piece.prototype.reset = function(next) {
+
+  /* //esto sé que funciona. lo comento para ver si puedo generar la ficha sigueinte
   this.x = (NUM_COLUMNS_GRID * GEM_WIDTH) / 2; //para que empiece en la mitad
   this.y = -(GEM_HEIGTH * (PIECE_SIZE - 1)); //que solo asome una gema al principio
   this.matrix = [];
-  this.getPiece();
+  this.getPiece(); */
+
+  if (next) {
+    this.matrix = next.matrix;
+    next.getPiece();
+  } else {
+    this.getPiece();
+  }
+  this.x = (NUM_COLUMNS_GRID * GEM_WIDTH) / 2; //para que empiece en la mitad
+  this.y = -(GEM_HEIGTH * (PIECE_SIZE - 1)); //que solo asome una gema al principio
 }

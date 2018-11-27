@@ -6,6 +6,7 @@ function Game(canvasId) {
 
   this.grid = new Grid(this.ctx);
   this.piece = new Piece(this.ctx);
+  this.nextPiece = new Piece(this.ctx, 400, 1);
 
   this.drawCount = 0;
   this.setListeners();
@@ -13,7 +14,9 @@ function Game(canvasId) {
 
 Game.prototype.start = function() {
   this.grid.reset();
+  
   this.piece.getPiece();
+  this.nextPiece.getPiece();
   drawIntervalId = setInterval(function() {
   this.drawCount++;
    
@@ -31,7 +34,6 @@ Game.prototype.start = function() {
     }
 
   }.bind(this), DRAW_INTERVAL_MS);
-
 }
 
 Game.prototype.stop = function() {
@@ -42,6 +44,7 @@ Game.prototype.stop = function() {
 Game.prototype.drawAll = function() {
   this.grid.draw();
   this.piece.draw();
+  this.nextPiece.draw();
 
 }
 
@@ -75,7 +78,7 @@ Game.prototype.checkCollisionDown = function() {
       
     // }
     // this.grid.downGems();
-     this.piece.reset();
+     this.piece.reset(this.nextPiece);
   }
 }
 
