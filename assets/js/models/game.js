@@ -28,12 +28,26 @@ Game.prototype.start = function() {
     this.clearAll();
     
     if (this.isCollisionDown()) {
-      this.checkCollisionDown();
+      //this.checkCollisionDown();
+      
+      this.piece.y = (Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
+      this.grid.mergePiece(this.piece);
+      this.grid.handleMatches(this.piece);
+
+      this.piece.reset(this.nextPiece);
+      
+     
     }
+
+    
+      
+    
+
     this.drawAll();
+
     
     
-    if ((this.drawCount % 30) === 0) {
+    if (((this.drawCount % 30) === 0) && (!this.grid.isWorking)) {
       this.piece.y += 10;
       this.drawCount = 0;
     }
@@ -78,15 +92,31 @@ Game.prototype.checkCollisionDown = function() {
   //if (this.grid.matrix[this.piece.x/GEM_WIDTH][Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH)] !== 0) {
     console.log("estoy encima de una gema!");
     
-    this.piece.y = (Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
+    /* this.piece.y = (Math.floor((this.piece.y + this.piece.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
     this.grid.mergePiece(this.piece);
-    this.grid.handleMatches(this.piece);
+    this.grid.handleMatches(this.piece); */
+
+
     // this.grid.removeMatches();
     // if (this.grid.areMatches()) {
       
     // }
     // this.grid.downGems();
-     this.piece.reset(this.nextPiece);
+
+    /* this.grid.removeChecks();
+  
+    if (this.grid.hasMatches) {
+      this.grid.hasMatches = false;
+      //this.remarkMatches();
+      setTimeout(function() {
+       this.grid.removeMatches();
+       this.grid.downGems();
+       this.grid.handleMatches();
+       this.piece.reset(this.nextPiece);
+      }.bind(this),1000);
+      
+    } */
+     //this.piece.reset(this.nextPiece);
   //}
 }
 

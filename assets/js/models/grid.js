@@ -10,6 +10,8 @@ function Grid(ctx) {
   this.matrix = [];
 
   this.hasMatches = false;
+
+  this.isWorking = false;
   
 }
 
@@ -46,6 +48,8 @@ Grid.prototype.mergePiece = function(piece) {
 
 Grid.prototype.handleMatches = function(piece) {
 
+  this.isWorking = true;
+
   if (piece) {
     for (var i = 0; i < PIECE_SIZE; i++) {
       console.log("estoy en la gema " + i);
@@ -77,6 +81,8 @@ Grid.prototype.handleMatches = function(piece) {
      this.handleMatches();
     }.bind(this),1000);
     
+  } else {
+    this.isWorking = false;
   }
 }
 
