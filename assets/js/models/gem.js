@@ -36,3 +36,9 @@ Gem.prototype.configColor = function() {
     break;
   }
 }
+
+Gem.prototype.RemoveChecks = function(direction) {
+
+  this.checks[direction] = false;
+
+}

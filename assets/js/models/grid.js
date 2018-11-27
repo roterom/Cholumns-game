@@ -45,9 +45,9 @@ Grid.prototype.findMatches = function(piece) {
 
   for (var i = 0; i < PIECE_SIZE; i++) {
     console.log("estoy en la gema " + i);
-    //this.checkVertically(piece.x, piece.y + (GEM_HEIGTH * i));
-    //this.checkHorizontally(piece.x, piece.y + (GEM_HEIGTH * i));
-    //this.checkDiagonally1(piece.x, piece.y + (GEM_HEIGTH * i));
+    this.checkVertically(piece.x, piece.y + (GEM_HEIGTH * i));
+    this.checkHorizontally(piece.x, piece.y + (GEM_HEIGTH * i));
+    this.checkDiagonally1(piece.x, piece.y + (GEM_HEIGTH * i));
     this.checkDiagonally2(piece.x, piece.y + (GEM_HEIGTH * i));
   }
 }
@@ -210,15 +210,31 @@ Grid.prototype.removeMatches = function() {
         if (this.matrix[i][j].hasMatched) {
           this.matrix[i][j] = 0;
         } else {
-          this.matrix[i][j].checks.vertical = false;
-          this.matrix[i][j].checks.horizontal = false;
-          this.matrix[i][j].checks.diagonal1 = false;
-          this.matrix[i][j].checks.diagonal2 = false;
+
+          for (var direction in this.matrix[i][j].checks) {
+            this.matrix[i][j].checks[direction] = false;
+          }
+          // this.matrix[i][j].checks.vertical = false;
+          // this.matrix[i][j].checks.horizontal = false;
+          // this.matrix[i][j].checks.diagonal1 = false;
+          // this.matrix[i][j].checks.diagonal2 = false;
         }
       }
     }
   }
 }
+
+// Grid.prototype.removeChecks = function(direction) {
+
+//   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
+//     for (var j = 0; j < NUM_ROWS_GRID; j++) {
+//       if (this.matrix[i][j] !== 0) {
+//         this.matrix[i][j].checks[direction] = false;
+//       }
+//     }
+//   }
+
+// }
 
 Grid.prototype.downGems = function() {
 
@@ -228,12 +244,17 @@ Grid.prototype.downGems = function() {
     //     this.matrix[i][j] = this.matrix[i][j-1];
     //   }
     // }
-    var auxArr = [];
-    auxArr = this.matrix[i].filter(function(gem) {
-      return gem !== 0; 
-    });
+    // var auxArr = [];
+    // auxArr = this.matrix[i].filter(function(gem) {
+    //   return gem !== 0; 
+    // });
 
-    // for (var i = 0; i < (NUM_ROWS_GRID - auxArr.length); i++) {
+     for (var j = 0; j < NUM_ROWS_GRID; j++) {
+        if (this.matrix[i][j] == 0) {
+          this.matrix[i].splice(j,1);
+          this.matrix[i].unshift(0);
+        }
+    }
     //   auxArr.unshift(0);
     // }
     // this.matrix[i] = [];
