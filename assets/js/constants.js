@@ -14,5 +14,9 @@ var KEY_DOWN = 40;
 var KEY_LEFT = 37;
 var KEY_SPACE = 32;
 
+var points = 0;
+var totalPoints = 0;
+var numLoop = 1;
+
 
 

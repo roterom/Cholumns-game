@@ -9,6 +9,11 @@ function Game(canvasId) {
   this.nextPiece = new Piece(this.ctx, 400, 1);
 
   this.drawCount = 0;
+
+  // this.points = 0;
+  // this.totalPoints = 0;
+
+
   this.setListeners();
 }
 
@@ -18,8 +23,13 @@ Game.prototype.start = function() {
   this.piece.getPiece();
   this.nextPiece.getPiece();
   drawIntervalId = setInterval(function() {
-  this.drawCount++;
-   
+    this.drawCount++;
+
+    if ((this.piece.y >= this.grid.y) && (this.nextPiece.isEnabled)){
+      this.nextPiece.getPiece();
+      this.nextPiece.isEnabled = false;
+    }
+  
     if (this.isGameOver()) {
       alert("game over!");
       window.location.reload();
@@ -36,17 +46,13 @@ Game.prototype.start = function() {
 
       this.piece.reset(this.nextPiece);
       
-     
+    
     }
-
-    
-      
-    
+ 
 
     this.drawAll();
 
-    
-    
+ 
     if (((this.drawCount % 30) === 0) && (!this.grid.isWorking)) {
       this.piece.y += 10;
       this.drawCount = 0;
@@ -65,7 +71,7 @@ Game.prototype.drawAll = function() {
   this.piece.draw();
   this.nextPiece.draw();
   this.grid.remarkMatches();
-
+  this.drawScore();
 }
 
 Game.prototype.clearAll = function() {
@@ -138,6 +144,7 @@ Game.prototype.onKeyDown = function(e) {
       break;
     case KEY_DOWN:
       this.piece.y += 25;
+      this.totalPoints++;
       break;
     case KEY_SPACE:
       this.piece.switchColors();
@@ -170,4 +177,18 @@ Game.prototype.isCollisionDown = function() {
 Game.prototype.isGameOver = function() {
   
   return (this.grid.matrix[Math.floor(NUM_COLUMNS_GRID / 2)][0] !== 0);
+}
+
+Game.prototype.drawScore = function() {
+  //totalPoints += points;
+
+  this.ctx.font = 'italic 60px Calibri';
+  this.ctx.strokeStyle = "red";
+  this.ctx.strokeText(points, 400, 250);
+
+  this.ctx.font = '60px Calibri';
+  this.ctx.fillStyle = "blue";
+  this.ctx.fillText("Total points", 400, 350);
+  this.ctx.font = '100px Calibri';
+  this.ctx.fillText(totalPoints, 400, 450);
 }

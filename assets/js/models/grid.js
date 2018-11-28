@@ -5,13 +5,15 @@ function Grid(ctx) {
   this.y = 0;
   
   this.w = GEM_WIDTH * NUM_COLUMNS_GRID;
-  this.h = GEM_HEIGTH * NUM_ROWS_GRID
+  this.h = GEM_HEIGTH * NUM_ROWS_GRID;
 
   this.matrix = [];
 
   this.hasMatches = false;
 
   this.isWorking = false;
+
+  this.numLoops = 0;
   
 }
 
@@ -33,7 +35,7 @@ Grid.prototype.draw = function() {
         this.ctx.fillStyle = this.matrix[i][j].name;
         this.ctx.fillRect(this.x + i*50, this.y + j*50, 50, 50);
       }
-      this.ctx.fillStyle = "#000";
+      this.ctx.strokeStyle = "#000";
       this.ctx.strokeRect(this.x + i*50, this.y + j*50, 50, 50);
     }
   }
@@ -53,19 +55,21 @@ Grid.prototype.handleMatches = function(piece) {
   if (piece) {
     for (var i = 0; i < PIECE_SIZE; i++) {
       console.log("estoy en la gema " + i);
-      this.checkVertically(piece.x, piece.y + (GEM_HEIGTH * i));
+      this.checkAllDirections(piece.x, piece.y + (GEM_HEIGTH * i));
+      /* this.checkVertically(piece.x, piece.y + (GEM_HEIGTH * i));
       this.checkHorizontally(piece.x, piece.y + (GEM_HEIGTH * i));
       this.checkDiagonally1(piece.x, piece.y + (GEM_HEIGTH * i));
-      this.checkDiagonally2(piece.x, piece.y + (GEM_HEIGTH * i));
+      this.checkDiagonally2(piece.x, piece.y + (GEM_HEIGTH * i)); */
     }
   } else {
     for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
       for (var j = 0; j < NUM_ROWS_GRID; j++) {
         if (this.matrix[i][j] !== 0) {
-          this.checkVertically(i * GEM_WIDTH, j * GEM_HEIGTH);
+          this.checkAllDirections(i * GEM_WIDTH, j * GEM_HEIGTH);
+          /* this.checkVertically(i * GEM_WIDTH, j * GEM_HEIGTH);
           this.checkHorizontally(i * GEM_WIDTH, j * GEM_HEIGTH);
           this.checkDiagonally1(i * GEM_WIDTH, j * GEM_HEIGTH);
-          this.checkDiagonally2(i * GEM_WIDTH, j * GEM_HEIGTH);
+          this.checkDiagonally2(i * GEM_WIDTH, j * GEM_HEIGTH); */
         }
       }
     }
@@ -74,15 +78,44 @@ Grid.prototype.handleMatches = function(piece) {
   
   if (this.hasMatches) {
     this.hasMatches = false;
+    //totalPoints += points;
+    //points = 0;
     //this.remarkMatches();
     setTimeout(function() {
-     this.removeMatches();
+      totalPoints += points;
+      points = 0;
+     
+      this.removeMatches();
      this.downGems();
      this.handleMatches();
     }.bind(this),1000);
     
   } else {
     this.isWorking = false;
+  }
+}
+
+Grid.prototype.checkAllDirections = function(x, y) {
+  
+  this.checkVertically(x, y);
+  if (this.numLoops) {
+    points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.numLoops = 0;
+  }
+  this.checkHorizontally(x, y);
+  if (this.numLoops) {
+    points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.numLoops = 0;
+  }
+  this.checkDiagonally1(x, y);
+  if (this.numLoops) {
+    points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.numLoops = 0;
+  }
+  this.checkDiagonally2(x, y);
+  if (this.numLoops) {
+    points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.numLoops = 0;
   }
 }
 
@@ -100,6 +133,8 @@ Grid.prototype.handleMatches = function(piece) {
 
 Grid.prototype.checkVertically = function (x, y) {
 
+  //this.numLoops = 0; //para luego los puntos..
+
   if (!this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical) {
 
     this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
@@ -113,8 +148,11 @@ Grid.prototype.checkVertically = function (x, y) {
 
             this.hasMatches = true;
             console.log("la ficha de arriba y abajo son iguales a la que analizo");
+            //para los puntos...
+            this.numLoops++;
+
       }
-    } 
+    }  
 
     // //creo que esto no me va a hacer falta => sobra
     // if (((y - GEM_HEIGTH) >= this.y) && (this.matrix[x/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH] !== 0)) {
@@ -134,9 +172,12 @@ Grid.prototype.checkVertically = function (x, y) {
       }
     }
   }
+  
 }
 
 Grid.prototype.checkHorizontally = function (x, y) {
+
+  //his.numLoops = 0; //para luego los puntos..
 
   if (!this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal) {
 
@@ -151,6 +192,8 @@ Grid.prototype.checkHorizontally = function (x, y) {
 
             this.hasMatches = true;
             console.log("la ficha de arriba y abajo son iguales a la que analizo");
+            //para los puntos...
+            this.numLoops++;
       }
     } 
 
@@ -173,9 +216,13 @@ Grid.prototype.checkHorizontally = function (x, y) {
       }
     }
   }
+  // points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+  // this.numLoops = 0;
 }
 
 Grid.prototype.checkDiagonally1 = function (x, y) {
+
+  //this.numLoops = 0; //para luego los puntos..
 
   if (!this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.diagonal1) {
 
@@ -191,6 +238,8 @@ Grid.prototype.checkDiagonally1 = function (x, y) {
 
             this.hasMatches = true;
             console.log("la ficha diagonal izda y dcha son iguales a la que analizo");
+            //para los puntos...
+            this.numLoops++;
       }
     } 
 
@@ -213,9 +262,13 @@ Grid.prototype.checkDiagonally1 = function (x, y) {
       }
     }
   }
+  // points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+  // this.numLoops = 0;
 }
 
 Grid.prototype.checkDiagonally2 = function (x, y) {
+
+  //this.numLoops = 0; //para luego los puntos..
 
   if (!this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.diagonal2) {
 
@@ -231,6 +284,8 @@ Grid.prototype.checkDiagonally2 = function (x, y) {
 
             this.hasMatches = true;
             console.log("la ficha diagonal izda y dcha son iguales a la que analizo");
+            //para los puntos...
+            this.numLoops++;
       }
     } 
 
@@ -253,6 +308,8 @@ Grid.prototype.checkDiagonally2 = function (x, y) {
       }
     }
   }
+  // points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+  // this.numLoops = 0;
 }
 
 Grid.prototype.remarkMatches = function() {
@@ -262,7 +319,9 @@ Grid.prototype.remarkMatches = function() {
       if (this.matrix[i][j] !== 0) {
         if (this.matrix[i][j].isMatched) {
           this.ctx.fillStyle = this.matrix[i][j].name;
-          this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, GEM_WIDTH*1.1, GEM_HEIGTH*1.1)
+          this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, GEM_WIDTH*1.1, GEM_HEIGTH*1.1);
+
+
         // } else {
 
         //   for (var direction in this.matrix[i][j].checks) {
@@ -276,7 +335,19 @@ Grid.prototype.remarkMatches = function() {
       }
     }
   }
+  //totalPoints += points;
 
+  // this.ctx.font = 'italic 60px Calibri';
+  // this.ctx.strokeStyle = "red";
+  
+  // this.ctx.strokeText(points, 400, 250);
+
+
+  // this.ctx.font = '60px Calibri';
+  // this.ctx.fillStyle = "blue";
+  // this.ctx.fillText("Total points", 400, 350);
+  // this.ctx.font = '100px Calibri';
+  // this.ctx.fillText(points, 400, 450);
 
 }
 

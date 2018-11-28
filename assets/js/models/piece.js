@@ -8,6 +8,7 @@ function Piece(ctx, x, y) {
   this.h = GEM_HEIGTH * PIECE_SIZE;
   this.matrix = [];
 
+  this.isEnabled = false;
   //this.setListeners();
 }
 
@@ -64,10 +65,12 @@ Piece.prototype.reset = function(next) {
 
   if (next) {
     this.matrix = next.matrix;
-    next.getPiece();
+    next.isEnabled = true;
+    //next.getPiece();
   } else {
     this.getPiece();
   }
   this.x = (NUM_COLUMNS_GRID * GEM_WIDTH) / 2; //para que empiece en la mitad
   this.y = -(GEM_HEIGTH * (PIECE_SIZE - 1)); //que solo asome una gema al principio
+  
 }
