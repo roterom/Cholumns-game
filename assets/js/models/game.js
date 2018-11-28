@@ -144,7 +144,9 @@ Game.prototype.onKeyDown = function(e) {
       break;
     case KEY_DOWN:
       this.piece.y += 25;
-      this.totalPoints++;
+      
+        totalPoints += 0.25;
+      
       break;
     case KEY_SPACE:
       this.piece.switchColors();
@@ -190,5 +192,5 @@ Game.prototype.drawScore = function() {
   this.ctx.fillStyle = "blue";
   this.ctx.fillText("Total points", 400, 350);
   this.ctx.font = '100px Calibri';
-  this.ctx.fillText(totalPoints, 400, 450);
+  this.ctx.fillText(Math.floor(totalPoints), 400, 450);
 }
