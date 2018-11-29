@@ -33,8 +33,11 @@ Grid.prototype.draw = function() {
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
     for (var j = 0; j < NUM_ROWS_GRID; j++) {
       if (this.matrix[i][j] !== 0) {
-        this.ctx.fillStyle = this.matrix[i][j].name;
-        this.ctx.fillRect(this.x + i*50, this.y + j*50, 50, 50);
+        
+        this.matrix[i][j].draw(this.x + i*50, this.y + j*50);
+        
+        //this.ctx.fillStyle = this.matrix[i][j].name;
+        //this.ctx.fillRect(this.x + i*50, this.y + j*50, 50, 50);
       }
       this.ctx.strokeStyle = "#000";
       this.ctx.strokeRect(this.x + i*50, this.y + j*50, 50, 50);
