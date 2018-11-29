@@ -61,7 +61,7 @@ Game.prototype.start = function() {
       this.drawCount = 0;
     }
 
-    if (((this.time % 1000) === 0) && (this.speed > 2)) {
+    if (((this.time % 1000) === 0) && (this.speed > 4)) {
       this.time = 0;
       this.speed -= 2;
       console.log("cambio la velocidad a " + this.speed)

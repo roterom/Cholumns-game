@@ -15,7 +15,7 @@ function Gem(ctx) {
   this.img = new Image();
   this.img.src = "./assets/images/atleti-sprite.png"
 
-  this.img.frames = 8 //el numero de "Marios" que tiene nuestro sprite
+  this.img.frames = 8 
   this.img.frameIndex = 0;
   
   this.drawCount = 0;

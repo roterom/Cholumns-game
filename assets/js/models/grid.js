@@ -323,7 +323,8 @@ Grid.prototype.remarkMatches = function() {
       if (this.matrix[i][j] !== 0) {
         if (this.matrix[i][j].isMatched) {
           this.ctx.fillStyle = this.matrix[i][j].name;
-          this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, GEM_WIDTH*1.1, GEM_HEIGTH*1.1);
+          //this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, GEM_WIDTH*1.1, GEM_HEIGTH*1.1);
+          this.ctx.fillRect(i*GEM_WIDTH - ((GEM_WIDTH*1.1)-GEM_WIDTH)/2, j*GEM_HEIGTH - ((GEM_HEIGTH*1.1)-GEM_HEIGTH)/2, GEM_WIDTH*1.1, GEM_HEIGTH*1.1);
           //this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, 1, 1);
 
         // } else {
