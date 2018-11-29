@@ -1,5 +1,6 @@
-function Grid(ctx) {
+function Grid(ctx,score) {
   this.ctx = ctx;
+  this.score = score;
 
   this.x = 0;
   this.y = 0;
@@ -82,8 +83,8 @@ Grid.prototype.handleMatches = function(piece) {
     //points = 0;
     //this.remarkMatches();
     setTimeout(function() {
-      totalPoints += points;
-      points = 0;
+      this.score.totalPoints += this.score.parcialPoints;
+      this.score.parcialPoints = 0;
      
       this.removeMatches();
      this.downGems();
@@ -99,22 +100,22 @@ Grid.prototype.checkAllDirections = function(x, y) {
   
   this.checkVertically(x, y);
   if (this.numLoops) {
-    points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
   this.checkHorizontally(x, y);
   if (this.numLoops) {
-    points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
   this.checkDiagonally1(x, y);
   if (this.numLoops) {
-    points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
   this.checkDiagonally2(x, y);
   if (this.numLoops) {
-    points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
 }
@@ -320,7 +321,7 @@ Grid.prototype.remarkMatches = function() {
         if (this.matrix[i][j].isMatched) {
           this.ctx.fillStyle = this.matrix[i][j].name;
           this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, GEM_WIDTH*1.1, GEM_HEIGTH*1.1);
-
+          //this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, 1, 1);
 
         // } else {
 

@@ -37,7 +37,7 @@ Piece.prototype.getPiece = function() {
 
   this.matrix = [];
   for (var i = 0; i < PIECE_SIZE; i++) {
-    this.matrix.push(new Gem());
+    this.matrix.push(new Gem(this.ctx, this.x, (this.y + i*GEM_WIDTH)));
     this.matrix[i].configColor();
   }
 }
@@ -45,8 +45,16 @@ Piece.prototype.getPiece = function() {
 Piece.prototype.draw = function() {
   
   for (var i = 0; i < this.matrix.length; i++) {
-    this.ctx.fillStyle = this.matrix[i].name;
-    this.ctx.fillRect(this.x, this.y + i*50, 50, 50)
+
+    this.matrix[i].draw(this.x, this.y + i*GEM_HEIGTH);
+    
+    // if (this.matrix[i].img.src !== "") {
+    //   this.ctx.drawImage(this.matrix[i].img, this.x, this.y + i*50, 50, 50);
+    // } else {
+      
+    //   this.ctx.fillStyle = this.matrix[i].name;
+    //   this.ctx.fillRect(this.x, this.y + i*50, 50, 50);
+    // }
   }
 }
 

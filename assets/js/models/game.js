@@ -4,15 +4,19 @@ function Game(canvasId) {
   this.w = this.ctx.canvas.width;
   this.h = this.ctx.canvas.height;
 
-  this.grid = new Grid(this.ctx);
+  this.score = new Score(this.ctx)
+  this.grid = new Grid(this.ctx, this.score);
   this.piece = new Piece(this.ctx);
   this.nextPiece = new Piece(this.ctx, 400, 1);
+  
 
   this.drawCount = 0;
 
+  this.time = 0;
+  this.speed = 30;
+
   // this.points = 0;
   // this.totalPoints = 0;
-
 
   this.setListeners();
 }
@@ -22,8 +26,11 @@ Game.prototype.start = function() {
   
   this.piece.getPiece();
   this.nextPiece.getPiece();
+  
   drawIntervalId = setInterval(function() {
+    
     this.drawCount++;
+    this.time++;
 
     if ((this.piece.y >= this.grid.y) && (this.nextPiece.isEnabled)){
       this.nextPiece.getPiece();
@@ -45,17 +52,19 @@ Game.prototype.start = function() {
       this.grid.handleMatches(this.piece);
 
       this.piece.reset(this.nextPiece);
-      
-    
     }
  
-
     this.drawAll();
-
  
-    if (((this.drawCount % 30) === 0) && (!this.grid.isWorking)) {
+    if (((this.drawCount % this.speed) === 0) && (!this.grid.isWorking)) {
       this.piece.y += 10;
       this.drawCount = 0;
+    }
+
+    if (((this.time % 1000) === 0) && (this.speed > 2)) {
+      this.time = 0;
+      this.speed -= 2;
+      console.log("cambio la velocidad a " + this.speed)
     }
 
   }.bind(this), DRAW_INTERVAL_MS);
@@ -71,7 +80,7 @@ Game.prototype.drawAll = function() {
   this.piece.draw();
   this.nextPiece.draw();
   this.grid.remarkMatches();
-  this.drawScore();
+  this.score.draw();
 }
 
 Game.prototype.clearAll = function() {
@@ -145,7 +154,7 @@ Game.prototype.onKeyDown = function(e) {
     case KEY_DOWN:
       this.piece.y += 25;
       
-        totalPoints += 0.25;
+        this.score.totalPoints += 0.25;
       
       break;
     case KEY_SPACE:
@@ -184,13 +193,13 @@ Game.prototype.isGameOver = function() {
 Game.prototype.drawScore = function() {
   //totalPoints += points;
 
-  this.ctx.font = 'italic 60px Calibri';
-  this.ctx.strokeStyle = "red";
-  this.ctx.strokeText(points, 400, 250);
+  // this.ctx.font = 'italic 60px Calibri';
+  // this.ctx.strokeStyle = "red";
+  // this.ctx.strokeText(points, 400, 250);
 
-  this.ctx.font = '60px Calibri';
-  this.ctx.fillStyle = "blue";
-  this.ctx.fillText("Total points", 400, 350);
-  this.ctx.font = '100px Calibri';
-  this.ctx.fillText(Math.floor(totalPoints), 400, 450);
+  // this.ctx.font = '60px Calibri';
+  // this.ctx.fillStyle = "blue";
+  // this.ctx.fillText("Total points", 400, 350);
+  // this.ctx.font = '100px Calibri';
+  // this.ctx.fillText(Math.floor(totalPoints), 400, 450);
 }
