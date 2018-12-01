@@ -1,0 +1,19 @@
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* esto es lo de la barra de scroll, y así lo ocultamos */
+  --height: 100%;
+  --width: 100%;
+  --background-image: url("../images/fondo-atleti2.png");
+  --background-size: 100%;
+  --background-position: center;
+}
+
+/* #main-canvas {
+  opacity:0.2;
+} */

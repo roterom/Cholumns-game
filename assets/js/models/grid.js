@@ -2,16 +2,15 @@ function Grid(ctx,score) {
   this.ctx = ctx;
   this.score = score;
 
-  this.x = 0;
-  this.y = 0;
-  
   this.w = GEM_WIDTH * NUM_COLUMNS_GRID;
   this.h = GEM_HEIGTH * NUM_ROWS_GRID;
 
+  this.x = 0;
+  this.y = 0;//(this.ctx.canvas.height / 2) - (this.h / 2);
+  
   this.matrix = [];
 
   this.hasMatches = false;
-
   this.isWorking = false;
 
   this.numLoops = 0;
@@ -30,19 +29,42 @@ Grid.prototype.reset= function() {
 
 Grid.prototype.draw = function() {
 
+  this.ctx.fillStyle = "rgba(255, 58, 0, 0.3)";
+  this.ctx.fillRect(this.x, this.y, NUM_COLUMNS_GRID*GEM_WIDTH, NUM_ROWS_GRID*GEM_HEIGTH);
+  
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
     for (var j = 0; j < NUM_ROWS_GRID; j++) {
-      if (this.matrix[i][j] !== 0) {
-        
-        this.matrix[i][j].draw(this.x + i*50, this.y + j*50);
-        
-        //this.ctx.fillStyle = this.matrix[i][j].name;
-        //this.ctx.fillRect(this.x + i*50, this.y + j*50, 50, 50);
+      if (this.matrix[i][j] !== 0) {     
+        this.matrix[i][j].drawFilling(this.x + i*GEM_WIDTH, this.y + j*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
       }
-      this.ctx.strokeStyle = "#000";
-      this.ctx.strokeRect(this.x + i*50, this.y + j*50, 50, 50);
+      //this.ctx.context.globalAlpha = 0.5;
+      this.ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+      this.ctx.lineWidth = 1;
+      this.ctx.strokeRect(this.x + i*GEM_WIDTH, this.y + j*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
     }
   }
+  //this.ctx.context.globalAlpha = 1.0
+  this.ctx.lineWidth = 10;
+  this.ctx.strokeStyle = "rgba(255, 255, 255, 1.0)";
+  this.ctx.strokeRect(this.x, this.y, NUM_COLUMNS_GRID*GEM_WIDTH, NUM_ROWS_GRID*GEM_HEIGTH);
+}
+
+Grid.prototype.isCollisionRight = function(piece) {
+  
+  return ((piece.x + GEM_WIDTH === this.x + this.w) ||
+         (this.matrix[(piece.x + GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0))
+}
+
+Grid.prototype.isCollisionLeft = function(piece) {
+
+return ((piece.x === this.x) ||
+       (this.matrix[(piece.x - GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0)) 
+
+}
+
+Grid.prototype.isCollisionDown = function(piece) {
+
+  return (this.matrix[piece.x/GEM_WIDTH][Math.floor((piece.y + piece.h)/GEM_HEIGTH)] !== 0);
 }
 
 Grid.prototype.mergePiece = function(piece) {
@@ -57,23 +79,22 @@ Grid.prototype.handleMatches = function(piece) {
   this.isWorking = true;
 
   if (piece) {
-    for (var i = 0; i < PIECE_SIZE; i++) {
-      console.log("estoy en la gema " + i);
-      this.checkAllDirections(piece.x, piece.y + (GEM_HEIGTH * i));
-      /* this.checkVertically(piece.x, piece.y + (GEM_HEIGTH * i));
-      this.checkHorizontally(piece.x, piece.y + (GEM_HEIGTH * i));
-      this.checkDiagonally1(piece.x, piece.y + (GEM_HEIGTH * i));
-      this.checkDiagonally2(piece.x, piece.y + (GEM_HEIGTH * i)); */
+    if (piece.isSpecial) {
+      piece.isSpecial = false;  //////////////////////////
+      this.hasMatches = true;
+      console.log("estoy en peiza especial: posicion de la de abajo: "+ piece.x/GEM_WIDTH, (piece.y + piece.h)/GEM_HEIGTH);
+      this.removeColor(this.matrix[piece.x/GEM_WIDTH][(piece.y + piece.h)/GEM_HEIGTH].name);
+    } else {
+      for (var i = 0; i < PIECE_SIZE; i++) {
+        console.log("estoy en la gema " + i);
+        this.checkAllDirections(piece.x, piece.y + (GEM_HEIGTH * i));
+      }
     }
   } else {
     for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
       for (var j = 0; j < NUM_ROWS_GRID; j++) {
         if (this.matrix[i][j] !== 0) {
           this.checkAllDirections(i * GEM_WIDTH, j * GEM_HEIGTH);
-          /* this.checkVertically(i * GEM_WIDTH, j * GEM_HEIGTH);
-          this.checkHorizontally(i * GEM_WIDTH, j * GEM_HEIGTH);
-          this.checkDiagonally1(i * GEM_WIDTH, j * GEM_HEIGTH);
-          this.checkDiagonally2(i * GEM_WIDTH, j * GEM_HEIGTH); */
         }
       }
     }
@@ -82,16 +103,13 @@ Grid.prototype.handleMatches = function(piece) {
   
   if (this.hasMatches) {
     this.hasMatches = false;
-    //totalPoints += points;
-    //points = 0;
-    //this.remarkMatches();
+    
     setTimeout(function() {
       this.score.totalPoints += this.score.parcialPoints;
       this.score.parcialPoints = 0;
-     
       this.removeMatches();
-     this.downGems();
-     this.handleMatches();
+      this.downGems();
+      this.handleMatches();
     }.bind(this),1000);
     
   } else {
@@ -111,41 +129,34 @@ Grid.prototype.checkAllDirections = function(x, y) {
     this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
-  this.checkDiagonally1(x, y);
+  this.checkDiagonally(x, y, 1);
   if (this.numLoops) {
     this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
-  this.checkDiagonally2(x, y);
+  this.checkDiagonally(x, y, -1);
   if (this.numLoops) {
     this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
 }
 
-// Grid.prototype.areMatches = function() {
-//   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
-//     for (var j = 0; j < NUM_ROWS_GRID; j++) {
-//       if ((this.matrix[i][j] !== 0) && (this.matrix[i][j].isMatched)) {
-//         return true;
-//       }
-//     }
-//   }
-//   return false;
-// }
-
+Grid.prototype.isInGrid = function(x, y) {
+  return ((x < this.w) && (x >= this.x) &&
+          (y < this.h) && (y >= this.y));
+}
 
 Grid.prototype.checkVertically = function (x, y) {
 
-  //this.numLoops = 0; //para luego los puntos..
 
   if (!this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical) {
 
     this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
-  
-    if (((y + GEM_HEIGTH) < this.h) && ((y - GEM_HEIGTH) >= this.y)) {
+    
+      if (this.isInGrid(x, y + GEM_HEIGTH) && this.isInGrid(x, y - GEM_HEIGTH)) {
       if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[x/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name) &&
           (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name)) {
+            
             this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
             this.matrix[x/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
             this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
@@ -157,37 +168,24 @@ Grid.prototype.checkVertically = function (x, y) {
 
       }
     }  
-
-    // //creo que esto no me va a hacer falta => sobra
-    // if (((y - GEM_HEIGTH) >= this.y) && (this.matrix[x/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH] !== 0)) {
-    //   if ((this.matrix[x/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].checks.vertical === false) && 
-    //   (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[x/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
-    //     //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
-    //     console.log("aquí realmente creo que no debería entrar nunca");
-    //     this.checkVertically(x, y - GEM_HEIGTH);
-    //   }
-
-    if (((y + GEM_HEIGTH) < this.h) && (this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH] !== 0)){
-      if ((this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].checks.vertical === false) &&
+    if ((this.isInGrid(x, y + GEM_HEIGTH)) && (this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH] !== 0)){
+      if (!this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].checks.vertical &&
         (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[x/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name)) {
-        //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
+  
         console.log("la ficha de abajo es del mismo color => vuelvo a llamar a checkVertically")
         this.checkVertically(x, y + GEM_HEIGTH);
       }
     }
   }
-  
 }
 
 Grid.prototype.checkHorizontally = function (x, y) {
-
-  //his.numLoops = 0; //para luego los puntos..
 
   if (!this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal) {
 
     this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal = true;
   
-    if (((x + GEM_WIDTH) < this.w) && ((x - GEM_WIDTH) >= this.x)) {
+    if ( this.isInGrid(x + GEM_WIDTH, y) && this.isInGrid(x - GEM_WIDTH, y)) {
       if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name) &&
           (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name)) {
             this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
@@ -202,43 +200,38 @@ Grid.prototype.checkHorizontally = function (x, y) {
     } 
 
     //aquí en el horizontal si lo necesitaré
-    if (((x - GEM_WIDTH) >= this.x) && (this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH] !== 0)) {
-      if ((this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal === false) && 
+    if (this.isInGrid(x - GEM_WIDTH, y) && (this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH] !== 0)) {
+      if (!this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal && 
       (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name)) {
-        //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
         console.log("la ficha de la izquierda es del mismo color => vuelvo a llamar a HORIZONTALLY");
         this.checkHorizontally(x - GEM_WIDTH, y);
       }
     }
-
-    if (((x + GEM_WIDTH) < this.w) && (this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH] !== 0)){
-      if ((this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal === false) &&
+    if (this.isInGrid(x + GEM_WIDTH, y) && (this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH] !== 0)){
+      if (!this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].checks.horizontal &&
         (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][y/GEM_HEIGTH].name)) {
-        //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
         console.log("la ficha de la derecha es del mismo color => vuelvo a llamar a HORIZONTALLY")
         this.checkHorizontally(x + GEM_WIDTH, y);
       }
     }
   }
-  // points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
-  // this.numLoops = 0;
 }
 
-Grid.prototype.checkDiagonally1 = function (x, y) {
+Grid.prototype.checkDiagonally = function (x, y, direction) {
 
-  //this.numLoops = 0; //para luego los puntos..
 
-  if (!this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.diagonal1) {
+  if (!this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks["diagonal"+direction+1]) {
 
-    this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.diagonal1 = true;
+    
+      this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks["diagonal"+direction+1] = true;
   
-    if (((x + GEM_WIDTH) < this.w) && ((x - GEM_WIDTH) >= this.x) &&
-        ((y + GEM_HEIGTH) < this.h) && ((y - GEM_HEIGTH) >= this.y)) {
-      if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name) &&
-          (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
+    if(this.isInGrid(x + (GEM_WIDTH*direction), y - GEM_HEIGTH) && this.isInGrid(x - (GEM_WIDTH*direction), y + GEM_HEIGTH)) {
+      if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH*direction)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name) &&
+          (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH*direction)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
+           
             this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
-            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
-            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
+            this.matrix[(x - GEM_WIDTH*direction)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
+            this.matrix[(x + GEM_WIDTH*direction)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
 
             this.hasMatches = true;
             console.log("la ficha diagonal izda y dcha son iguales a la que analizo");
@@ -248,131 +241,42 @@ Grid.prototype.checkDiagonally1 = function (x, y) {
     } 
 
     //aquí en el diagonal si lo necesitaré
-    if (((x - GEM_WIDTH) >= this.x) && ((y + GEM_HEIGTH) < this.h)  && (this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH] !== 0)) {
-      if ((this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].checks.diagonal1 === false) && 
-      (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name)) {
-        //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
+    if (this.isInGrid(x - GEM_WIDTH*direction, y + GEM_HEIGTH) && (this.matrix[(x - GEM_WIDTH*direction)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH] !== 0)) {
+      if (!this.matrix[(x - GEM_WIDTH*direction)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].checks["diagonal"+direction+1] && 
+      (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH*direction)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name)) {
         console.log("la ficha de la izquierda es del mismo color => vuelvo a llamar a DIAgonallYY");
-        this.checkDiagonally1(x - GEM_WIDTH, y + GEM_HEIGTH);
+        this.checkDiagonally(x - GEM_WIDTH*direction, y + GEM_HEIGTH, direction);
       }
     }
-
-    if (((x + GEM_WIDTH) < this.w) && ((y - GEM_HEIGTH) >= this.y) && (this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH] !== 0)){
-      if ((this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].checks.diagonal1 === false) &&
-        (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
-        //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
+    if (this.isInGrid(x + GEM_WIDTH*direction, y - GEM_HEIGTH) && (this.matrix[(x + GEM_WIDTH*direction)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH] !== 0)){
+      if (!this.matrix[(x + GEM_WIDTH*direction)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].checks["diagonal"+direction+1] &&
+        (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH*direction)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
         console.log("la ficha de la derecha es del mismo color => vuelvo a llamar a diagONALYY")
-        this.checkDiagonally1(x + GEM_WIDTH, y - GEM_HEIGTH);
+        this.checkDiagonally(x + GEM_WIDTH*direction, y - GEM_HEIGTH, direction);
       }
     }
   }
-  // points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
-  // this.numLoops = 0;
-}
-
-Grid.prototype.checkDiagonally2 = function (x, y) {
-
-  //this.numLoops = 0; //para luego los puntos..
-
-  if (!this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.diagonal2) {
-
-    this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.diagonal2 = true;
-  
-    if (((x + GEM_WIDTH) < this.w) && ((x - GEM_WIDTH) >= this.x) &&
-        ((y + GEM_HEIGTH) < this.h) && ((y - GEM_HEIGTH) >= this.y)) {
-      if ((this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name) &&
-          (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
-            this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].isMatched = true;
-            this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
-            this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].isMatched = true;
-
-            this.hasMatches = true;
-            console.log("la ficha diagonal izda y dcha son iguales a la que analizo");
-            //para los puntos...
-            this.numLoops++;
-      }
-    } 
-
-    //aquí en el diagonal si lo necesitaré
-    if (((x - GEM_WIDTH) >= this.x) && ((y - GEM_HEIGTH) >= this.y)  && (this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH] !== 0)) {
-      if ((this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].checks.diagonal2 === false) && 
-      (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x - GEM_WIDTH)/GEM_WIDTH][(y - GEM_HEIGTH)/GEM_HEIGTH].name)) {
-        //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
-        console.log("la ficha de la izquierda es del mismo color => vuelvo a llamar a diaGONALLYY");
-        this.checkDiagonally2(x - GEM_WIDTH, y - GEM_HEIGTH);
-      }
-    }
-
-    if (((x + GEM_WIDTH) < this.w) && ((y + GEM_HEIGTH) < this.h) && (this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH] !== 0)){
-      if ((this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].checks.diagonal2 === false) &&
-        (this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].name === this.matrix[(x + GEM_WIDTH)/GEM_WIDTH][(y + GEM_HEIGTH)/GEM_HEIGTH].name)) {
-        //this.matrix[x/GEM_WIDTH][y/GEM_HEIGTH].checks.vertical = true;
-        console.log("la ficha de la derecha es del mismo color => vuelvo a llamar a DIAGOOOnaLLYY")
-        this.checkDiagonally2(x + GEM_WIDTH, y + GEM_HEIGTH);
-      }
-    }
-  }
-  // points += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
-  // this.numLoops = 0;
 }
 
 Grid.prototype.remarkMatches = function() {
-  //this.ctx.scale(1.1, 1.1)
+  
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
     for (var j = 0; j < NUM_ROWS_GRID; j++) {
       if (this.matrix[i][j] !== 0) {
         if (this.matrix[i][j].isMatched) {
-          this.ctx.fillStyle = this.matrix[i][j].name;
-          //this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, GEM_WIDTH*1.1, GEM_HEIGTH*1.1);
-          this.ctx.fillRect(i*GEM_WIDTH - ((GEM_WIDTH*1.1)-GEM_WIDTH)/2, j*GEM_HEIGTH - ((GEM_HEIGTH*1.1)-GEM_HEIGTH)/2, GEM_WIDTH*1.1, GEM_HEIGTH*1.1);
-          //this.ctx.fillRect(i*GEM_WIDTH, j*GEM_HEIGTH, 1, 1);
-
-        // } else {
-
-        //   for (var direction in this.matrix[i][j].checks) {
-        //     this.matrix[i][j].checks[direction] = false;
-        //   }
-        //   /* this.matrix[i][j].checks.vertical = false;
-        //   this.matrix[i][j].checks.horizontal = false;
-        //   this.matrix[i][j].checks.diagonal1 = false;
-        //   this.matrix[i][j].checks.diagonal2 = false; */
+            this.matrix[i][j].drawMatched(i*GEM_WIDTH - ((GEM_WIDTH*1.2)-GEM_WIDTH)/2, j*GEM_HEIGTH - ((GEM_HEIGTH*1.2)-GEM_HEIGTH)/2, GEM_WIDTH*1.2, GEM_HEIGTH*1.2);
         }
       }
     }
   }
-  //totalPoints += points;
-
-  // this.ctx.font = 'italic 60px Calibri';
-  // this.ctx.strokeStyle = "red";
-  
-  // this.ctx.strokeText(points, 400, 250);
-
-
-  // this.ctx.font = '60px Calibri';
-  // this.ctx.fillStyle = "blue";
-  // this.ctx.fillText("Total points", 400, 350);
-  // this.ctx.font = '100px Calibri';
-  // this.ctx.fillText(points, 400, 450);
-
 }
 
 Grid.prototype.removeMatches = function() {
   
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
     for (var j = 0; j < NUM_ROWS_GRID; j++) {
-      if (this.matrix[i][j] !== 0) {
-        if (this.matrix[i][j].isMatched) {
+      if ((this.matrix[i][j] !== 0) && (this.matrix[i][j].isMatched)) {
           this.matrix[i][j] = 0;
-        // } else {
-
-        //   for (var direction in this.matrix[i][j].checks) {
-        //     this.matrix[i][j].checks[direction] = false;
-        //   }
-        //   /* this.matrix[i][j].checks.vertical = false;
-        //   this.matrix[i][j].checks.horizontal = false;
-        //   this.matrix[i][j].checks.diagonal1 = false;
-        //   this.matrix[i][j].checks.diagonal2 = false; */
-        }
       }
     }
   }
@@ -389,31 +293,27 @@ Grid.prototype.removeChecks = function() {
       }
     }
   }
-
 }
 
 Grid.prototype.downGems = function() {
 
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
-    // for (var j = 0; j < NUM_ROWS_GRID; j++) {  // recorremos de abajo a arriba!!
-    //   if (this.matrix[i][j] === 0) {
-    //     this.matrix[i][j] = this.matrix[i][j-1];
-    //   }
-    // }
-    // var auxArr = [];
-    // auxArr = this.matrix[i].filter(function(gem) {
-    //   return gem !== 0; 
-    // });
-
-     for (var j = 0; j < NUM_ROWS_GRID; j++) {
-        if (this.matrix[i][j] == 0) {
-          this.matrix[i].splice(j,1);
-          this.matrix[i].unshift(0);
-        }
+    for (var j = 0; j < NUM_ROWS_GRID; j++) {
+      if (this.matrix[i][j] == 0) {
+        this.matrix[i].splice(j,1);
+        this.matrix[i].unshift(0);
+      }
     }
-    //   auxArr.unshift(0);
-    // }
-    // this.matrix[i] = [];
-    // this.matrix.push(auxArr);
+  }
+}
+
+Grid.prototype.removeColor = function(color) {
+  
+  for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
+    for (var j = 0; j < NUM_ROWS_GRID; j++) {
+      if (this.matrix[i][j].name === color) {
+        this.matrix[i][j].isMatched = true;
+      }
+    }
   }
 }

@@ -3,8 +3,8 @@ function Gem(ctx) {
   this.checks = {
     vertical: false,
     horizontal: false,
-    diagonal1: false,
-    diagonal2: false 
+    diagonal2: false,
+    diagonal0: false 
   };
 
   this.ctx = ctx;
@@ -13,12 +13,17 @@ function Gem(ctx) {
 
   this.isMatched = false;
   this.img = new Image();
-  this.img.src = "./assets/images/atleti-sprite.png"
-
+  this.img.src = "./assets/images/atleti-sprite.png";
   this.img.frames = 8 
   this.img.frameIndex = 0;
   
   this.drawCount = 0;
+
+  this.imgMatched = new Image();
+  this.imgMatched.src = "./assets/images/matched2-sprite.png";
+  this.imgMatched.frames = 10 
+  this.imgMatched.frameIndex = 0;
+  this.drawMatchedCount = 0;
 
   this.row;
 }
@@ -28,18 +33,15 @@ Gem.prototype.configColor = function() {
   switch (keyColor) {
     case 0:
       this.name = "#c84444";
-      //this.img.src = "./assets/images/atletico-sprite.png"
       this.row = 0;
       break;
     case 1:
     this.name = "#ad6cce";
-    //this.img.src = "./assets/images/diegoCosta sprite.png"
     this.row = 1;
     break;
 
     case 2:
     this.name = "#3e3eae";
-    //this.img.src = "./assets/images/griezmann sprite.png"
     this.row = 2;
     break;
 
@@ -50,7 +52,6 @@ Gem.prototype.configColor = function() {
 
     case 4:
     this.name = "#57be53";
-   // this.img.src = "./assets/images/barcelona-sprite.png"
     this.row = 4;
     break;
 
@@ -61,22 +62,13 @@ Gem.prototype.configColor = function() {
   }
 }
 
-Gem.prototype.draw = function(x, y) {
+Gem.prototype.drawFilling = function(x, y, w, h) {
   this.drawCount++;
   if (this.img.src !== "") {
     
      this.ctx.fillStyle = this.name;
-     this.ctx.fillRect(x, y, 50, 50);
-
-    // this.ctx.drawImage(
-    //   this.img,
-    //   x,
-    //   y,
-    //   50,
-    //   50
-    // )
+     this.ctx.fillRect(x, y, w, h);
     
-    //this.ctx.scale(0.8, 0.8);
     this.ctx.drawImage(
       this.img,
       this.img.frameIndex * Math.floor(this.img.width / this.img.frames),
@@ -85,14 +77,13 @@ Gem.prototype.draw = function(x, y) {
       this.img.height/7, 
       x,
       y,
-      50,
-      50);
+      w,
+      h);
 
-      //this.ctx.scale(1, 1);
   } else {
     
     this.ctx.fillStyle = this.name;
-    this.ctx.fillRect(x, y, 50, 50);
+    this.ctx.fillRect(x, y, GEM_WIDTH, GEM_HEIGTH);
   }
 
   if (this.drawCount % 15 === 0) {
@@ -101,15 +92,50 @@ Gem.prototype.draw = function(x, y) {
   }
 }
 
-Gem.prototype.animate = function(x, y) {
+Gem.prototype.drawBorder = function(x, y, w, h) {
+ // this.ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+  //this.ctx.lineWidth = 1;
+  this.ctx.strokeRect(x, y, w, h);
+}
+
+Gem.prototype.animate = function() {
 
   if (++this.img.frameIndex > (this.img.frames- 1)) {
     this.img.frameIndex = 0;
   } 
 }
 
+Gem.prototype.drawMatched = function(x, y, w, h) {
+
+  
+  this.drawMatchedCount++;
+
+  this.ctx.drawImage(
+    this.imgMatched,
+    this.imgMatched.frameIndex * Math.floor(this.imgMatched.width / this.imgMatched.frames),
+    0,
+    this.imgMatched.width/this.imgMatched.frames,
+    this.imgMatched.height, 
+    x,
+    y,
+    w,
+    h);
+
+
+    if (this.drawMatchedCount % 7 === 0) {
+      if (this.imgMatched.frameIndex < (this.imgMatched.frames- 1)) {
+        this.imgMatched.frameIndex++;
+      } 
+      this.drawMatchedCount = 0;
+    }
+}
+
 Gem.prototype.RemoveChecks = function(direction) {
 
   this.checks[direction] = false;
 
+}
+
+Gem.prototype.isChecked = function(direction) {
+  return this.checks[direction]; 
 }

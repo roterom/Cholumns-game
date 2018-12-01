@@ -1,4 +1,4 @@
-function Piece(ctx, x, y) {
+function Piece(ctx, x, y, special) {
 
   this.ctx = ctx;
   this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2); //para que empiece en la mitad
@@ -9,44 +9,36 @@ function Piece(ctx, x, y) {
   this.matrix = [];
 
   this.isEnabled = false;
+
+  this.isSpecial = special || false;
   //this.setListeners();
 }
-
-/* Piece.prototype.setListeners = function() {
-  document.onkeydown = this.onKeyDown.bind(this);
-}
-
-Piece.prototype.onKeyDown = function(e) {
-  switch (e.keyCode) {
-    case KEY_RIGHT:
-      this.x += 50;
-      break;
-    case KEY_LEFT:
-      this.x += -50;
-      break;
-    case KEY_DOWN:
-      this.y += 25;
-      break;
-    case KEY_SPACE:
-      this.switchColors();
-      break;
-  }
-}; */
 
 Piece.prototype.getPiece = function() {
 
   this.matrix = [];
   for (var i = 0; i < PIECE_SIZE; i++) {
     this.matrix.push(new Gem(this.ctx, this.x, (this.y + i*GEM_WIDTH)));
-    this.matrix[i].configColor();
+    if (this.isSpecial) {
+      this.matrix[i].name = "#fff";
+      this.matrix[i].row = 6;
+    } else {
+      this.matrix[i].configColor();
+    }
   }
 }
+
 
 Piece.prototype.draw = function() {
   
   for (var i = 0; i < this.matrix.length; i++) {
 
-    this.matrix[i].draw(this.x, this.y + i*GEM_HEIGTH);
+    this.matrix[i].drawFilling(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
+
+    this.ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
+    this.ctx.lineWidth = 1;
+    this.matrix[i].drawBorder(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
+   // this.ctx.strokeRect(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
     
     // if (this.matrix[i].img.src !== "") {
     //   this.ctx.drawImage(this.matrix[i].img, this.x, this.y + i*50, 50, 50);
@@ -56,6 +48,15 @@ Piece.prototype.draw = function() {
     //   this.ctx.fillRect(this.x, this.y + i*50, 50, 50);
     // }
   }
+
+  this.ctx.lineWidth = 3;
+  this.ctx.strokeStyle = "rgba(0, 0, 0, 1.0)";
+  this.ctx.strokeRect(this.x, this.y, this.w, this.h);
+}
+
+Piece.prototype.place = function() {
+  
+  this.y = (Math.floor((this.y + this.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
 }
 
 Piece.prototype.switchColors = function() {
@@ -74,11 +75,17 @@ Piece.prototype.reset = function(next) {
   if (next) {
     this.matrix = next.matrix;
     next.isEnabled = true;
+    this.isSpecial = next.isSpecial;
     //next.getPiece();
   } else {
     this.getPiece();
   }
   this.x = (NUM_COLUMNS_GRID * GEM_WIDTH) / 2; //para que empiece en la mitad
   this.y = -(GEM_HEIGTH * (PIECE_SIZE - 1)); //que solo asome una gema al principio
-  
 }
+
+Piece.prototype.takeOutCholo = function(special) {
+  this.matrix = special.matrix;
+  this.isSpecial = true;
+}
+  
