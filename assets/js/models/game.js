@@ -12,7 +12,8 @@ function Game(canvasId) {
   this.piece = new Piece(this.ctx);
   this.nextPiece = new Piece(this.ctx, 500, 1);
 
-  this.cholos = new Piece(this.ctx, 500, this.ctx.canvas.height-250, true);
+  this.choloPiece = new Piece(this.ctx, 500, this.ctx.canvas.height-250, true);
+  this.holdedPiece = new Piece(this.ctx, 600, this.ctx.canvas.height-250, false, true);
   
   this.drawCount = 0;
   this.drawIntervalId = undefined;
@@ -28,7 +29,7 @@ Game.prototype.start = function() {
   
   this.piece.getPiece();
   this.nextPiece.getPiece();
-  this.cholos.getPiece();
+  this.choloPiece.getPiece();
   
   this.drawIntervalId = setInterval(function() {
     
@@ -36,9 +37,10 @@ Game.prototype.start = function() {
     this.time++;
 
     if ((this.piece.y >= this.grid.y) && (this.nextPiece.isEnabled)){
+     
       this.nextPiece.getPiece();
       this.nextPiece.isEnabled = false;
-      this.nextPiece.isSpecial = false; //////////////////
+      //this.nextPiece.isSpecial = false; //////////////////
     }
   
     if (this.isGameOver()) {
@@ -47,7 +49,7 @@ Game.prototype.start = function() {
 
       this.clearAll();
       
-      if (this.grid.isCollisionDown(this.piece)) {
+       if (this.grid.isCollisionDown(this.piece)) {
 
         this.piece.place();
         this.grid.mergePiece(this.piece);
@@ -83,7 +85,8 @@ Game.prototype.drawAll = function() {
   this.grid.draw();
   this.piece.draw();
   this.nextPiece.draw();
-  this.cholos.draw();
+  this.holdedPiece.draw();
+  this.choloPiece.draw();
   this.grid.remarkMatches();
   this.score.draw();
 }
@@ -118,7 +121,22 @@ Game.prototype.onKeyDown = function(e) {
       this.piece.switchColors();
       break;
     case KEY_ALT_GRAPH:
-      this.nextPiece.takeOutCholo(this.cholos);
+      this.nextPiece.takeOutCholo(this.choloPiece);
+      break;
+    case KEY_CONTROL:
+      if (!this.holdedPiece.matrix.length) {
+        this.holdedPiece.matrix = this.piece.matrix;
+        this.piece.matrix = this.nextPiece.matrix;
+        this.nextPiece.getPiece();
+       // this.piece.reset(this.nextPiece);
+      } else {
+        var auxMatrix = this.piece.matrix;
+        this.piece.takeOutHolded(this.holdedPiece);
+        this.holdedPiece.matrix = auxMatrix;
+        if (this.piece.y < this.grid.y) {
+          this.nextPiece.matrix = this.auxMatrix;
+        }
+      }
       break;
   }
 }

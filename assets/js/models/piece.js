@@ -1,4 +1,4 @@
-function Piece(ctx, x, y, special) {
+function Piece(ctx, x, y, special, holded) {
 
   this.ctx = ctx;
   this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2); //para que empiece en la mitad
@@ -11,6 +11,7 @@ function Piece(ctx, x, y, special) {
   this.isEnabled = false;
 
   this.isSpecial = special || false;
+  this.isHolded = holded || false;
   //this.setListeners();
 }
 
@@ -22,8 +23,10 @@ Piece.prototype.getPiece = function() {
     if (this.isSpecial) {
       this.matrix[i].name = "#fff";
       this.matrix[i].row = 6;
+      this.matrix[i].isMatched = true;
     } else {
       this.matrix[i].configColor();
+      this.isSpecial = false;
     }
   }
 }
@@ -87,5 +90,13 @@ Piece.prototype.reset = function(next) {
 Piece.prototype.takeOutCholo = function(special) {
   this.matrix = special.matrix;
   this.isSpecial = true;
+}
+
+Piece.prototype.takeOutHolded = function(holded) {
+  
+  var auxMatrix = this.matrix;
+  this.matrix = holded.matrix;
+
+  //this.isSpecial = true;
 }
   

@@ -80,15 +80,16 @@ Grid.prototype.handleMatches = function(piece) {
 
   if (piece) {
     if (piece.isSpecial) {
-      piece.isSpecial = false;  //////////////////////////
       this.hasMatches = true;
       console.log("estoy en peiza especial: posicion de la de abajo: "+ piece.x/GEM_WIDTH, (piece.y + piece.h)/GEM_HEIGTH);
-      this.removeColor(this.matrix[piece.x/GEM_WIDTH][(piece.y + piece.h)/GEM_HEIGTH].name);
+      if (this.isInGrid(piece.x,piece.y + piece.h)) {
+        this.removeColor(this.matrix[piece.x/GEM_WIDTH][(piece.y + piece.h)/GEM_HEIGTH].name);
+      }
     } else {
       for (var i = 0; i < PIECE_SIZE; i++) {
         console.log("estoy en la gema " + i);
         this.checkAllDirections(piece.x, piece.y + (GEM_HEIGTH * i));
-      }
+      } 
     }
   } else {
     for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
@@ -99,7 +100,7 @@ Grid.prototype.handleMatches = function(piece) {
       }
     }
   }
-  this.removeChecks();
+  this .removeChecks();
   
   if (this.hasMatches) {
     this.hasMatches = false;

@@ -13,7 +13,8 @@ var KEY_RIGHT = 39;
 var KEY_DOWN = 40;
 var KEY_LEFT = 37;
 var KEY_SPACE = 32;
-var KEY_ALT_GRAPH = 225
+var KEY_ALT_GRAPH = 225;
+var KEY_CONTROL = 17;
 
 var points = 0;
 var totalPoints = 0;
