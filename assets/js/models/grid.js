@@ -6,7 +6,7 @@ function Grid(ctx,score) {
   this.h = GEM_HEIGTH * NUM_ROWS_GRID;
 
   this.x = 0;
-  this.y = 0;//(this.ctx.canvas.height / 2) - (this.h / 2);
+  this.y = 0;
   
   this.matrix = [];
 
@@ -52,13 +52,14 @@ Grid.prototype.draw = function() {
 Grid.prototype.isCollisionRight = function(piece) {
   
   return ((piece.x + GEM_WIDTH === this.x + this.w) ||
-         (this.matrix[(piece.x + GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0))
+         (this.matrix[(piece.x + GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0))  
 }
 
 Grid.prototype.isCollisionLeft = function(piece) {
 
 return ((piece.x === this.x) ||
        (this.matrix[(piece.x - GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0)) 
+      
 
 }
 
@@ -72,6 +73,7 @@ Grid.prototype.mergePiece = function(piece) {
   for (var i = 0; i < PIECE_SIZE; i++) {
     this.matrix[piece.x/GEM_WIDTH][(piece.y + i*GEM_HEIGTH)/GEM_HEIGTH] = piece.matrix[i];
   }
+  
 }
 
 
@@ -130,13 +132,11 @@ Grid.prototype.removeColor = function(color) {
     for (var j = 0; j < NUM_ROWS_GRID; j++) {
       if (this.matrix[i][j].name === color) {
         this.matrix[i][j].isMatched = true;
+        this.score.parcialPoints +=10;
       }
     }
   }
 }
-
-
-
 
 
 Grid.prototype.checkAllDirections = function(i, j) {
@@ -287,7 +287,7 @@ Grid.prototype.handleMatches = function(piece) {
   if (piece) {
     if (piece.isSpecial) {
       this.hasMatches = true;
-      console.log("estoy en peiza especial: posicion de la de abajo: "+ piece.x/GEM_WIDTH, (piece.y + piece.h)/GEM_HEIGTH);
+      //console.log("estoy en peiza especial: posicion de la de abajo: "+ piece.x/GEM_WIDTH, (piece.y + piece.h)/GEM_HEIGTH);
       if (this.isInGrid(piece.x/GEM_WIDTH,(piece.y + piece.h)/GEM_HEIGTH)) {
         this.removeColor(this.matrix[piece.x/GEM_WIDTH][(piece.y + piece.h)/GEM_HEIGTH].name);
       }

@@ -20,5 +20,7 @@ var points = 0;
 var totalPoints = 0;
 var numLoop = 1;
 
+var NUM_INIT_SPECIAL_PIECES = 2;
+
 
 

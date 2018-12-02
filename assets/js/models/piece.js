@@ -12,6 +12,9 @@ function Piece(ctx, x, y, special, holded) {
 
   this.isSpecial = special || false;
   this.isHolded = holded || false;
+
+  this.img = new Image();
+  this.img.src = "./assets/images/simeone-special.png";
 }
 
 Piece.prototype.getPiece = function() {
@@ -31,17 +34,37 @@ Piece.prototype.getPiece = function() {
 }
 
 Piece.prototype.draw = function() {
-  
+   
   for (var i = 0; i < this.matrix.length; i++) {
 
     this.matrix[i].drawFilling(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
     this.ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
     this.ctx.lineWidth = 1;
-    this.matrix[i].drawBorder(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
+    this.matrix[i].drawBorder(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH); //
   }
   this.ctx.lineWidth = 3;
   this.ctx.strokeStyle = "rgba(0, 0, 0, 1.0)";
   this.ctx.strokeRect(this.x, this.y, this.w, this.h);
+}
+
+Piece.prototype.drawSpecial = function(numSpecials) {
+  
+  this.ctx.drawImage(
+    this.img,
+    this.x,
+    this.y,
+    GEM_WIDTH,
+    GEM_HEIGTH
+  );
+
+  // this.matrix[0].drawFilling(this.x, this.y, GEM_WIDTH, GEM_HEIGTH);
+  this.ctx.lineWidth = 3;
+  this.ctx.strokeStyle = "rgba(0, 0, 0, 1.0)";
+  this.ctx.strokeRect(this.x, this.y, GEM_WIDTH, GEM_HEIGTH);
+
+  this.ctx.font = 'italic 40px Calibri';
+  this.ctx.strokeStyle = "white";
+  this.ctx.strokeText( "X " + numSpecials,500, 850);
 }
 
 Piece.prototype.place = function() {
@@ -67,7 +90,8 @@ Piece.prototype.reset = function(next) {
   this.y = -(GEM_HEIGTH * (PIECE_SIZE)); 
 }
 
-Piece.prototype.takeOutCholo = function(special) {
-  this.matrix = special.matrix;
-  this.isSpecial = true;
+Piece.prototype.takeOutSpecial = function(special) {
+  
+    this.matrix = special.matrix.slice();
+    this.isSpecial = true;
 }

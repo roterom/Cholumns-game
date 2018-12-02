@@ -12,7 +12,7 @@ function Game(canvasId) {
   this.piece = new Piece(this.ctx);
   this.nextPiece = new Piece(this.ctx, 500, 1);
 
-  this.choloPiece = new Piece(this.ctx, 500, this.ctx.canvas.height-250, true);
+  this.specialPieces = [];
   this.holdedPiece = new Piece(this.ctx, 600, this.ctx.canvas.height-250, false, true);
   
   this.drawCount = 0;
@@ -29,7 +29,10 @@ Game.prototype.start = function() {
   
   this.piece.getPiece();
   this.nextPiece.getPiece();
-  this.choloPiece.getPiece();
+  for (var i = 0; i < NUM_INIT_SPECIAL_PIECES; i++) {
+    this.specialPieces.push(new Piece(this.ctx, 500, this.ctx.canvas.height-250, true));
+  }
+  this.specialPieces[0].getPiece();
   
   this.drawIntervalId = setInterval(function() {
     
@@ -68,8 +71,11 @@ Game.prototype.start = function() {
       if (((this.time % 1000) === 0) && (this.speed > 4)) {
         this.time = 0;
         this.speed -= 2;
-        console.log("cambio la velocidad a " + this.speed)
+        console.log("cambio la velocidad a " + this.speed);
       }
+      // if ((this.time % 15000) === 0) {
+      //   this.specialPieces.push(new Piece(this.ctx, 500, this.ctx.canvas.height-250, true));
+      // }
     }
   }.bind(this), DRAW_INTERVAL_MS);
 }
@@ -81,15 +87,15 @@ Game.prototype.stop = function() {
 }
 
 Game.prototype.drawAll = function() {
-  
   this.bg.draw();
   this.grid.draw();
   this.piece.draw();
   this.nextPiece.draw();
   this.holdedPiece.draw();
-  this.choloPiece.draw();
+  this.specialPieces[0].drawSpecial(this.specialPieces.length - 1);
   this.grid.remarkMatches();
   this.score.draw();
+
 }
 
 Game.prototype.clearAll = function() {
@@ -107,7 +113,7 @@ Game.prototype.onKeyDown = function(e) {
   switch (e.keyCode) {
     case KEY_RIGHT:
       if (!this.grid.isCollisionRight(this.piece)) {
-        this.piece.x += GEM_WIDTH;
+        this.piece.x += GEM_WIDTH
       }
       break;
     case KEY_LEFT:
@@ -125,7 +131,10 @@ Game.prototype.onKeyDown = function(e) {
       this.piece.switchColors();
       break;
     case KEY_ALT_GRAPH:
-      this.nextPiece.takeOutCholo(this.choloPiece);
+      if (this.specialPieces.length > 1) {
+        this.nextPiece.takeOutSpecial(this.specialPieces[0]);
+        this.specialPieces.pop();
+      }
       break;
     case KEY_CONTROL:
       this.handleHoldedPiece();

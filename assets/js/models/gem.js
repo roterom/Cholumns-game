@@ -11,7 +11,7 @@ function Gem(ctx) {
 
   this.isMatched = false;
   this.img = new Image();
-  this.img.src = "./assets/images/atleti-sprite.png";
+  this.img.src = "./assets/images/atleti-sprite-nuevo.png";
   this.img.frames = 8 
   this.img.frameIndex = 0;
   
