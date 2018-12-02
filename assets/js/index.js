@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
   canvas = document.getElementById("main-canvas");
-  var game = new Game(canvas);
-  game.start();
+  var player1 = new Player(canvas);
+  player1.start();
 })

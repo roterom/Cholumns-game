@@ -1,8 +1,8 @@
-function Game(canvasId) {
+function Player(canvasId) {
 
   this.ctx = canvasId.getContext("2d");
 
-  this.ctx.canvas.width = window.innerWidth;
+  this.ctx.canvas.width = window.innerWidth / 2;
   this.ctx.canvas.height = window.innerHeight;
 
   this.bg = new Background(this.ctx);
@@ -24,7 +24,7 @@ function Game(canvasId) {
   this.setListeners();
 }
 
-Game.prototype.start = function() {
+Player.prototype.start = function() {
   this.grid.reset();
   
   this.piece.getPiece();
@@ -80,13 +80,13 @@ Game.prototype.start = function() {
   }.bind(this), DRAW_INTERVAL_MS);
 }
 
-Game.prototype.stop = function() {
+Player.prototype.stop = function() {
   
   clearInterval(this.drawIntervalId);
   alert("game over!");
 }
 
-Game.prototype.drawAll = function() {
+Player.prototype.drawAll = function() {
   this.bg.draw();
   this.grid.draw();
   this.piece.draw();
@@ -98,17 +98,17 @@ Game.prototype.drawAll = function() {
 
 }
 
-Game.prototype.clearAll = function() {
+Player.prototype.clearAll = function() {
  
   this.ctx.clearRect(0, 0, this.w, this.h);
 }
 
-Game.prototype.setListeners = function() {
+Player.prototype.setListeners = function() {
  
   document.onkeydown = this.onKeyDown.bind(this);
 }
 
-Game.prototype.onKeyDown = function(e) {
+Player.prototype.onKeyDown = function(e) {
   
   switch (e.keyCode) {
     case KEY_RIGHT:
@@ -142,12 +142,12 @@ Game.prototype.onKeyDown = function(e) {
   }
 }
 
-Game.prototype.isGameOver = function() {
+Player.prototype.isGameOver = function() {
   
   return (this.grid.matrix[Math.floor(NUM_COLUMNS_GRID / 2)][0] !== 0);
 }
 
-Game.prototype.handleHoldedPiece = function() {
+Player.prototype.handleHoldedPiece = function() {
   
   if (!this.piece.isSpecial) {
     
