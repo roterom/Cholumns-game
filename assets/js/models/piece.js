@@ -12,7 +12,6 @@ function Piece(ctx, x, y, special, holded) {
 
   this.isSpecial = special || false;
   this.isHolded = holded || false;
-  //this.setListeners();
 }
 
 Piece.prototype.getPiece = function() {
@@ -31,7 +30,6 @@ Piece.prototype.getPiece = function() {
   }
 }
 
-
 Piece.prototype.draw = function() {
   
   for (var i = 0; i < this.matrix.length; i++) {
@@ -41,15 +39,6 @@ Piece.prototype.draw = function() {
     this.ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
     this.ctx.lineWidth = 1;
     this.matrix[i].drawBorder(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
-   // this.ctx.strokeRect(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
-    
-    // if (this.matrix[i].img.src !== "") {
-    //   this.ctx.drawImage(this.matrix[i].img, this.x, this.y + i*50, 50, 50);
-    // } else {
-      
-    //   this.ctx.fillStyle = this.matrix[i].name;
-    //   this.ctx.fillRect(this.x, this.y + i*50, 50, 50);
-    // }
   }
 
   this.ctx.lineWidth = 3;

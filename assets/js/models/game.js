@@ -124,19 +124,7 @@ Game.prototype.onKeyDown = function(e) {
       this.nextPiece.takeOutCholo(this.choloPiece);
       break;
     case KEY_CONTROL:
-      if (!this.holdedPiece.matrix.length) {
-        this.holdedPiece.matrix = this.piece.matrix;
-        this.piece.matrix = this.nextPiece.matrix;
-        this.nextPiece.getPiece();
-       // this.piece.reset(this.nextPiece);
-      } else {
-        var auxMatrix = this.piece.matrix;
-        this.piece.takeOutHolded(this.holdedPiece);
-        this.holdedPiece.matrix = auxMatrix;
-        if (this.piece.y < this.grid.y) {
-          this.nextPiece.matrix = this.auxMatrix;
-        }
-      }
+      this.handleHoldedPiece();
       break;
   }
 }
@@ -144,4 +132,20 @@ Game.prototype.onKeyDown = function(e) {
 Game.prototype.isGameOver = function() {
   
   return (this.grid.matrix[Math.floor(NUM_COLUMNS_GRID / 2)][0] !== 0);
+}
+
+Game.prototype.handleHoldedPiece = function() {
+  
+  if (!this.piece.isSpecial) {
+    
+    if (!this.holdedPiece.matrix.length) {
+      this.holdedPiece.matrix = this.piece.matrix.slice();
+      this.piece.matrix = this.nextPiece.matrix.slice();
+      this.nextPiece.getPiece();
+    } else {
+      var auxMatrix = this.piece.matrix.slice();
+      this.piece.takeOutHolded(this.holdedPiece);
+      this.holdedPiece.matrix = auxMatrix.slice();
+    }
+  }
 }
