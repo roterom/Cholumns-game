@@ -70,17 +70,18 @@ Game.prototype.start = function() {
         this.speed -= 2;
         console.log("cambio la velocidad a " + this.speed)
       }
-  }
-
+    }
   }.bind(this), DRAW_INTERVAL_MS);
 }
 
 Game.prototype.stop = function() {
+  
   clearInterval(this.drawIntervalId);
   alert("game over!");
 }
 
 Game.prototype.drawAll = function() {
+  
   this.bg.draw();
   this.grid.draw();
   this.piece.draw();
@@ -92,14 +93,17 @@ Game.prototype.drawAll = function() {
 }
 
 Game.prototype.clearAll = function() {
+ 
   this.ctx.clearRect(0, 0, this.w, this.h);
 }
 
 Game.prototype.setListeners = function() {
+ 
   document.onkeydown = this.onKeyDown.bind(this);
 }
 
 Game.prototype.onKeyDown = function(e) {
+  
   switch (e.keyCode) {
     case KEY_RIGHT:
       if (!this.grid.isCollisionRight(this.piece)) {
@@ -138,13 +142,13 @@ Game.prototype.handleHoldedPiece = function() {
   
   if (!this.piece.isSpecial) {
     
-    if (!this.holdedPiece.matrix.length) {
+    if (!this.holdedPiece.matrix.length) { //si es la rimera ver que nos metemos...
       this.holdedPiece.matrix = this.piece.matrix.slice();
       this.piece.matrix = this.nextPiece.matrix.slice();
       this.nextPiece.getPiece();
-    } else {
+    } else { // si ya había una pieza "holded"
       var auxMatrix = this.piece.matrix.slice();
-      this.piece.takeOutHolded(this.holdedPiece);
+      this.piece.matrix = this.holdedPiece.matrix.slice();
       this.holdedPiece.matrix = auxMatrix.slice();
     }
   }

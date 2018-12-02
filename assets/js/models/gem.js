@@ -8,8 +8,6 @@ function Gem(ctx) {
   };
 
   this.ctx = ctx;
-  //this.x = x;
-  //this.y = y;
 
   this.isMatched = false;
   this.img = new Image();
@@ -25,7 +23,7 @@ function Gem(ctx) {
   this.imgMatched.frameIndex = 0;
   this.drawMatchedCount = 0;
 
-  this.row;
+  this.img.row;
 }
 
 Gem.prototype.configColor = function() {
@@ -33,31 +31,31 @@ Gem.prototype.configColor = function() {
   switch (keyColor) {
     case 0:
       this.name = "#c84444";
-      this.row = 0;
+      this.img.row = 0;
       break;
     case 1:
     this.name = "#ad6cce";
-    this.row = 1;
+    this.img.row = 1;
     break;
 
     case 2:
     this.name = "#3e3eae";
-    this.row = 2;
+    this.img.row = 2;
     break;
 
     case 3:
     this.name = "#5bc3ce";
-    this.row = 3;
+    this.img.row = 3;
     break;
 
     case 4:
     this.name = "#57be53";
-    this.row = 4;
+    this.img.row = 4;
     break;
 
     case 5:
     this.name = "#d7d788";
-    this.row = 5;
+    this.img.row = 5;
     break;
   }
 }
@@ -72,7 +70,7 @@ Gem.prototype.drawFilling = function(x, y, w, h) {
     this.ctx.drawImage(
       this.img,
       this.img.frameIndex * Math.floor(this.img.width / this.img.frames),
-      0 + this.row * (this.img.height/7),
+      0 + this.img.row * (this.img.height/7),
       this.img.width/this.img.frames,
       this.img.height/7, 
       x,
