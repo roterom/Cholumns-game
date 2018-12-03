@@ -2,13 +2,15 @@ function Piece(ctx, x, y, special, holded) {
 
   this.ctx = ctx;
   this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2); //para que empiece en la mitad
-  this.y = y || -(GEM_HEIGTH * (PIECE_SIZE));
+   this.y = y || -(GEM_HEIGTH * (PIECE_SIZE));
+
+ 
 
   this.w = GEM_WIDTH;
   this.h = GEM_HEIGTH * PIECE_SIZE;
   this.matrix = [];
 
-  this.isEnabled = false;
+  this.isEnabled = true;
 
   this.isSpecial = special || false;
   this.isHolded = holded || false;
@@ -47,12 +49,12 @@ Piece.prototype.draw = function() {
   this.ctx.strokeRect(this.x, this.y, this.w, this.h);
 }
 
-Piece.prototype.drawSpecial = function(numSpecials) {
+Piece.prototype.drawSpecial = function(numSpecials, canvasX, canvasY) {
   
   this.ctx.drawImage(
     this.img,
-    this.x,
-    this.y,
+    this.x + canvasX,
+    this.y + canvasY,
     GEM_WIDTH,
     GEM_HEIGTH
   );
@@ -60,24 +62,32 @@ Piece.prototype.drawSpecial = function(numSpecials) {
   // this.matrix[0].drawFilling(this.x, this.y, GEM_WIDTH, GEM_HEIGTH);
   this.ctx.lineWidth = 3;
   this.ctx.strokeStyle = "rgba(0, 0, 0, 1.0)";
-  this.ctx.strokeRect(this.x, this.y, GEM_WIDTH, GEM_HEIGTH);
+  this.ctx.strokeRect(this.x + canvasX, this.y + canvasY, GEM_WIDTH, GEM_HEIGTH);
 
   this.ctx.font = 'italic 40px Calibri';
   this.ctx.strokeStyle = "white";
-  this.ctx.strokeText( "X " + numSpecials,500, 850);
+  this.ctx.strokeText( "X " + numSpecials,600 + canvasX, 880 + canvasY);
 }
+
+//PROBANDO LOS 2 PLAYEERRSSS
+/* Piece.prototype.place = function() {
+  
+  this.y = (Math.floor((this.y + this.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
+} */
 
 Piece.prototype.place = function() {
   
-  this.y = (Math.floor((this.y + this.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
+  this.y = ((Math.floor((this.y + this.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH) + POS_Y_GRID;
 }
+
 
 Piece.prototype.switchColors = function() {
   
     this.matrix.unshift(this.matrix.pop());
 }
 
-Piece.prototype.reset = function(next) {
+//PARA INTENTAR HACER LOS 2 PLAYERRSSSS
+/* Piece.prototype.reset = function(next) {
 
   if (next) {
     this.matrix = next.matrix;
@@ -88,6 +98,19 @@ Piece.prototype.reset = function(next) {
   }
   this.x = (NUM_COLUMNS_GRID * GEM_WIDTH) / 2; //para que empiece en la mitad
   this.y = -(GEM_HEIGTH * (PIECE_SIZE)); 
+} */
+
+Piece.prototype.reset = function(next, canvasX, canvasY) {
+
+  if (next) {
+    this.matrix = next.matrix;
+    next.isEnabled = true;
+    this.isSpecial = next.isSpecial;
+  } else {
+    this.getPiece();
+  }
+  this.x = ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID + canvasX; //para que empiece en la mitad
+  this.y = (-(GEM_HEIGTH * (PIECE_SIZE))) + POS_Y_GRID + canvasY; 
 }
 
 Piece.prototype.takeOutSpecial = function(special) {

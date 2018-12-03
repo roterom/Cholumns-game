@@ -1,12 +1,12 @@
-function Grid(ctx,score) {
+function Grid(ctx,score, x, y) {
   this.ctx = ctx;
   this.score = score;
 
   this.w = GEM_WIDTH * NUM_COLUMNS_GRID;
   this.h = GEM_HEIGTH * NUM_ROWS_GRID;
 
-  this.x = 0;
-  this.y = 0;
+  this.x = x || 0;
+  this.y = y || 0;
   
   this.matrix = [];
 
@@ -51,33 +51,52 @@ Grid.prototype.draw = function() {
 
 Grid.prototype.isCollisionRight = function(piece) {
   
+  //COMENTADO PARA INTENTAR LOS DOS PLAYERSS
+  /* return ((piece.x + GEM_WIDTH === this.x + this.w) ||
+         (this.matrix[(piece.x + GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0))   */
+
+
   return ((piece.x + GEM_WIDTH === this.x + this.w) ||
-         (this.matrix[(piece.x + GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0))  
+         (this.matrix[((piece.x + GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + (PIECE_SIZE*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0))  
 }
 
 Grid.prototype.isCollisionLeft = function(piece) {
 
+  ///COMENTADO PARA INTENTANR  DOS PLAYERRSS....
+/* return ((piece.x === this.x) ||
+       (this.matrix[(piece.x - GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0))  */
+
+
 return ((piece.x === this.x) ||
-       (this.matrix[(piece.x - GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0)) 
-      
+      (this.matrix[((piece.x - GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + (PIECE_SIZE*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0)) 
+
 
 }
 
 Grid.prototype.isCollisionDown = function(piece) {
 
-  return (this.matrix[piece.x/GEM_WIDTH][Math.floor((piece.y + piece.h)/GEM_HEIGTH)] !== 0);
+  //INTENTANDO LOS 2 PLAYEEERRSSS
+  /* return (this.matrix[Math.floor(piece.x/GEM_WIDTH)][Math.floor((piece.y + piece.h)/GEM_HEIGTH)] !== 0); */
+
+  return (this.matrix[Math.floor((piece.x - this.x)/GEM_WIDTH)][Math.floor(((piece.y + piece.h) - this.y)/GEM_HEIGTH)] !== 0);
 }
 
 Grid.prototype.mergePiece = function(piece) {
 
-  for (var i = 0; i < PIECE_SIZE; i++) {
+
+  //INTENTANDOO HACER 2 PLAYEEERRRSSS
+ /*  for (var i = 0; i < PIECE_SIZE; i++) {
     this.matrix[piece.x/GEM_WIDTH][(piece.y + i*GEM_HEIGTH)/GEM_HEIGTH] = piece.matrix[i];
+  } */
+
+  for (var i = 0; i < PIECE_SIZE; i++) {
+    this.matrix[(piece.x - this.x)/GEM_WIDTH][((piece.y + i*GEM_HEIGTH)-this.y)/GEM_HEIGTH] = piece.matrix[i];
   }
   
 }
 
-
-Grid.prototype.remarkMatches = function() {
+//PARA PROBAR LOS 2 PLAYEERRSSSS
+/* Grid.prototype.remarkMatches = function() {
   
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
     for (var j = 0; j < NUM_ROWS_GRID; j++) {
@@ -88,7 +107,21 @@ Grid.prototype.remarkMatches = function() {
       }
     }
   }
+} */
+
+Grid.prototype.remarkMatches = function() {
+  
+  for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
+    for (var j = 0; j < NUM_ROWS_GRID; j++) {
+      if (this.matrix[i][j] !== 0) {
+        if (this.matrix[i][j].isMatched) {
+            this.matrix[i][j].drawMatched((i*GEM_WIDTH + this.x) - ((GEM_WIDTH*1.2)-GEM_WIDTH)/2, (j*GEM_HEIGTH + this.y) - ((GEM_HEIGTH*1.2)-GEM_HEIGTH)/2, GEM_WIDTH*1.2, GEM_HEIGTH*1.2);
+        }
+      }
+    }
+  }
 }
+
 
 Grid.prototype.removeMatches = function() {
   
@@ -132,7 +165,7 @@ Grid.prototype.removeColor = function(color) {
     for (var j = 0; j < NUM_ROWS_GRID; j++) {
       if (this.matrix[i][j].name === color) {
         this.matrix[i][j].isMatched = true;
-        this.score.parcialPoints +=10;
+        this.score.parcialPoints += POINTS_EXTRA;
       }
     }
   }
@@ -143,22 +176,22 @@ Grid.prototype.checkAllDirections = function(i, j) {
   
   this.checkVertically(i, j);
   if (this.numLoops) {
-    this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
   this.checkHorizontally(i, j);
   if (this.numLoops) {
-    this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
   this.checkDiagonally(i, j, 1);
   if (this.numLoops) {
-    this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
   this.checkDiagonally(i, j, -1);
   if (this.numLoops) {
-    this.score.parcialPoints += 30 + (this.numLoops-1)*10; //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
     this.numLoops = 0;
   }
 }
@@ -280,7 +313,8 @@ Grid.prototype.checkDiagonally = function (i,j, direction) {
   }
 }
 
-Grid.prototype.handleMatches = function(piece) {
+//COMENTADO PARA INTENTAR LOS 2 PLAYERRSSS
+/* Grid.prototype.handleMatches = function(piece) {
 
   this.isWorking = true;
 
@@ -295,6 +329,50 @@ Grid.prototype.handleMatches = function(piece) {
       for (var i = 0; i < PIECE_SIZE; i++) {
         console.log("estoy en la gema " + i);
         this.checkAllDirections(piece.x/GEM_WIDTH, (piece.y + (GEM_HEIGTH * i))/GEM_HEIGTH);
+      } 
+    }
+  } else {
+    for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
+      for (var j = 0; j < NUM_ROWS_GRID; j++) {
+        if (this.matrix[i][j] !== 0) {
+          this.checkAllDirections((i * GEM_WIDTH)/GEM_WIDTH, (j * GEM_HEIGTH)/GEM_HEIGTH);
+        }
+      }
+    }
+  }
+  this.removeChecks();
+  
+  if (this.hasMatches) {
+    this.hasMatches = false;
+    
+    setTimeout(function() {
+      this.score.totalPoints += this.score.parcialPoints;
+      this.score.parcialPoints = 0;
+      this.removeMatches();
+      this.downGems();
+      this.handleMatches();
+    }.bind(this),1000);
+    
+  } else {
+    this.isWorking = false;
+  }
+} */
+
+Grid.prototype.handleMatches = function(piece) {
+
+  this.isWorking = true;
+
+  if (piece) {
+    if (piece.isSpecial) {
+      this.hasMatches = true;
+      //console.log("estoy en peiza especial: posicion de la de abajo: "+ piece.x/GEM_WIDTH, (piece.y + piece.h)/GEM_HEIGTH);
+      if (this.isInGrid((piece.x - this.x)/GEM_WIDTH,(piece.y + piece.h)/GEM_HEIGTH)) {
+        this.removeColor(this.matrix[(piece.x - this.x)/GEM_WIDTH][((piece.y + piece.h) - this.y)/GEM_HEIGTH].name);
+      }
+    } else {
+      for (var i = 0; i < PIECE_SIZE; i++) {
+        console.log("estoy en la gema " + i);
+        this.checkAllDirections((piece.x - this.x)/GEM_WIDTH, Math.floor((piece.y + (GEM_HEIGTH * i))/GEM_HEIGTH));
       } 
     }
   } else {

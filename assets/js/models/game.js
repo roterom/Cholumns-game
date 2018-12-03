@@ -1,19 +1,34 @@
-function Player(canvasId) {
+function Player(canvasId, controls, x, y) {
 
   this.ctx = canvasId.getContext("2d");
+  this.ctx.scale(-1,1)
 
-  this.ctx.canvas.width = window.innerWidth / 2;
+  this.x = x || 0;
+  this.y = y || 0;
+
+  this.ctx.canvas.width = window.innerWidth;
   this.ctx.canvas.height = window.innerHeight;
 
-  this.bg = new Background(this.ctx);
+  this.controls = controls || {};
 
-  this.score = new Score(this.ctx)
-  this.grid = new Grid(this.ctx, this.score);
-  this.piece = new Piece(this.ctx);
-  this.nextPiece = new Piece(this.ctx, 500, 1);
+/*   this.controls = {
+    right: right || KEY_RIGHT,
+    left: left || KEY_LEFT,
+    down: down || KEY_DOWN,
+    switchC: switchC || KEY_SPACE,
+    specialKey: specialKey || KEY_ALT_GRAPH,
+    holdedKey: holdedKey|| KEY_CONTROL,
+  }
+ */
+  this.bg = new Background(this.ctx, this.x, this.y);
+
+  this.score = new Score(this.ctx, this.x + POS_X_SCORE, this.y + POS_Y_SCORE)
+  this.grid = new Grid(this.ctx, this.score, this.x + POS_X_GRID, this.y + POS_Y_GRID);
+  this.piece = new Piece(this.ctx, this.x+ ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID, this.y-(GEM_HEIGTH * (PIECE_SIZE)) + POS_Y_GRID);
+  this.nextPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, this.y+1+POS_Y_GRID);
 
   this.specialPieces = [];
-  this.holdedPiece = new Piece(this.ctx, 600, this.ctx.canvas.height-250, false, true);
+  this.holdedPiece = new Piece(this.ctx, this.x+600+POS_X_GRID, this.ctx.canvas.height-250 + POS_Y_GRID, false, true);
   
   this.drawCount = 0;
   this.drawIntervalId = undefined;
@@ -28,9 +43,9 @@ Player.prototype.start = function() {
   this.grid.reset();
   
   this.piece.getPiece();
-  this.nextPiece.getPiece();
+  this.nextPiece.matrix = this.piece.matrix.slice();
   for (var i = 0; i < NUM_INIT_SPECIAL_PIECES; i++) {
-    this.specialPieces.push(new Piece(this.ctx, 500, this.ctx.canvas.height-250, true));
+    this.specialPieces.push(new Piece(this.ctx, 500+POS_X_GRID, this.ctx.canvas.height-250+POS_Y_GRID, true));
   }
   this.specialPieces[0].getPiece();
   
@@ -57,7 +72,7 @@ Player.prototype.start = function() {
         this.piece.place();
         this.grid.mergePiece(this.piece);
         this.grid.handleMatches(this.piece);
-        this.piece.reset(this.nextPiece);
+        this.piece.reset(this.nextPiece, this.x, this.y);
         this.nextPiece.isSpecial = false;
       }
   
@@ -92,7 +107,7 @@ Player.prototype.drawAll = function() {
   this.piece.draw();
   this.nextPiece.draw();
   this.holdedPiece.draw();
-  this.specialPieces[0].drawSpecial(this.specialPieces.length - 1);
+  this.specialPieces[0].drawSpecial(this.specialPieces.length - 1, this.x, this.y);
   this.grid.remarkMatches();
   this.score.draw();
 
@@ -100,17 +115,25 @@ Player.prototype.drawAll = function() {
 
 Player.prototype.clearAll = function() {
  
-  this.ctx.clearRect(0, 0, this.w, this.h);
+  this.ctx.clearRect(this.x, this.y, this.w, this.h);
 }
+
+//PARA INTENTAR LO DE LOS 2 PLAYERSSS (MODO DESESPERACION)
+/* Player.prototype.setListeners = function() {
+ 
+  document.onkeydown = this.onKeyDown.bind(this);
+} */
 
 Player.prototype.setListeners = function() {
  
-  document.onkeydown = this.onKeyDown.bind(this);
+  document.addEventListener("keydown", this.onKeyDown.bind(this));
 }
 
 Player.prototype.onKeyDown = function(e) {
   
-  switch (e.keyCode) {
+
+  ///PORBANDO PARA PONER 2 PLAYERSS
+  /* switch (e.keyCode) {
     case KEY_RIGHT:
       if (!this.grid.isCollisionRight(this.piece)) {
         this.piece.x += GEM_WIDTH
@@ -139,7 +162,39 @@ Player.prototype.onKeyDown = function(e) {
     case KEY_CONTROL:
       this.handleHoldedPiece();
       break;
+  } */
+
+  switch (e.keyCode) {
+    case this.controls.right:
+      if (!this.grid.isCollisionRight(this.piece)) {
+        this.piece.x += GEM_WIDTH
+      }
+      break;
+    case this.controls.left:
+      if (!this.grid.isCollisionLeft(this.piece)) {
+        this.piece.x += -GEM_WIDTH;
+      }
+      break;
+    case this.controls.down:
+      if (!this.grid.isWorking) {
+        this.piece.y += GEM_HEIGTH / 2;
+        this.score.totalPoints += 0.25;
+      }
+      break;
+    case this.controls.switchC:
+      this.piece.switchColors();
+      break;
+    case this.controls.specialKey:
+      if (this.specialPieces.length > 1) {
+        this.nextPiece.takeOutSpecial(this.specialPieces[0]);
+        this.specialPieces.pop();
+      }
+      break;
+    case this.controls.holdedKey:
+      this.handleHoldedPiece();
+      break;
   }
+
 }
 
 Player.prototype.isGameOver = function() {

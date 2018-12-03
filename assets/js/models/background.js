@@ -1,8 +1,11 @@
-function Background(ctx) {
+function Background(ctx, x, y) {
   
   this.ctx = ctx;
   this.w =  this.ctx.canvas.width;
   this.h = this.ctx.canvas.height;
+
+  this.x = x || 0;
+  this.y = y || 0;
   
 
   this.img = new Image();
@@ -13,8 +16,8 @@ Background.prototype.draw = function() {
   
   this.ctx.drawImage(
     this.img,
-    0,
-    0,
+    this.x,
+    this.y,
     this.w,
     this.h
   );
