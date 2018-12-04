@@ -16,10 +16,10 @@ html, body {
 
  #canvas-player1 {
   position: absolute;
-  left: 0;
+  --left: 0;
 
 } 
 #canvas-player2 {
   position: absolute;
-  right: 0;
+  --right: 0;
 } 

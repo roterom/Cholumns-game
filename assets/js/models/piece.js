@@ -2,7 +2,7 @@ function Piece(ctx, x, y, special, holded) {
 
   this.ctx = ctx;
   this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2); //para que empiece en la mitad
-   this.y = y || -(GEM_HEIGTH * (PIECE_SIZE));
+  this.y = y || -(GEM_HEIGTH * (PIECE_SIZE));
 
  
 
@@ -49,12 +49,12 @@ Piece.prototype.draw = function() {
   this.ctx.strokeRect(this.x, this.y, this.w, this.h);
 }
 
-Piece.prototype.drawSpecial = function(numSpecials, canvasX, canvasY) {
+Piece.prototype.drawSpecial = function(numSpecials) {
   
   this.ctx.drawImage(
     this.img,
-    this.x + canvasX,
-    this.y + canvasY,
+    this.x,
+    this.y,
     GEM_WIDTH,
     GEM_HEIGTH
   );
@@ -62,11 +62,11 @@ Piece.prototype.drawSpecial = function(numSpecials, canvasX, canvasY) {
   // this.matrix[0].drawFilling(this.x, this.y, GEM_WIDTH, GEM_HEIGTH);
   this.ctx.lineWidth = 3;
   this.ctx.strokeStyle = "rgba(0, 0, 0, 1.0)";
-  this.ctx.strokeRect(this.x + canvasX, this.y + canvasY, GEM_WIDTH, GEM_HEIGTH);
+  this.ctx.strokeRect(this.x, this.y, GEM_WIDTH, GEM_HEIGTH);
 
   this.ctx.font = 'italic 40px Calibri';
   this.ctx.strokeStyle = "white";
-  this.ctx.strokeText( "X " + numSpecials,600 + canvasX, 880 + canvasY);
+  this.ctx.strokeText( "X " + numSpecials,600, 880);
 }
 
 //PROBANDO LOS 2 PLAYEERRSSS
