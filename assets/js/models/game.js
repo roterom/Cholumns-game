@@ -7,5 +7,5 @@ function Game(canvas1 , canvas2) {
 Game.prototype.start = function() {
   
   this.player1.start();
-  this.player2.start();
+  //this.player2.start();
 }

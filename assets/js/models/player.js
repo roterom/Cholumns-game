@@ -15,7 +15,7 @@ function Player(canvasId, controls, x, y) {
   this.drawIntervalId = undefined;
 
   this.time = 0;
-  this.speed = 30;
+  this.speed = SPEED_INIT;
 
   this.animateCount = 0;
 
@@ -29,6 +29,8 @@ function Player(canvasId, controls, x, y) {
     holded: false
   }
 
+  //this.isGameOver = false;
+
   this.createInstances();
   this.setListeners();
 }
@@ -40,7 +42,7 @@ Player.prototype.createInstances = function() {
   this.score = new Score(this.ctx, this.x + POS_X_SCORE, this.y + POS_Y_SCORE)
   this.grid = new Grid(this.ctx, this.score, this.x + POS_X_GRID, this.y + POS_Y_GRID);
   this.piece = new Piece(this.ctx, this.x+ ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID, this.y-(GEM_HEIGTH * (PIECE_SIZE)) + POS_Y_GRID);
-  this.nextPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, this.y+1+POS_Y_GRID);
+  this.nextPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, this.y+POS_Y_GRID);
   this.holdedPiece = new Piece(this.ctx, this.x+600+POS_X_GRID, this.ctx.canvas.height-250 + POS_Y_GRID, false, true);
   this.specialPieces = [];
 }
@@ -73,18 +75,29 @@ Player.prototype.start = function() {
       this.nextPiece.getPiece();
       this.nextPiece.isEnabled = false;
     }
-  
+
+    /* if ((this.isGameOver()) && (!this.grid.isWorking)) {
+      this.stop();
+      return;
+    }  */
+
     if (this.isGameOver()) {
       this.stop();
+    }// else {
+  
+    /* if (this.grid.isGameOver) {
+      this.stop();
     } else { //puse este else por si solucionaba el error del "game over", pero no vale para nada (hay que darle una vuelta a esto)
-
+ */
       this.clearAll();
       
-       if (this.grid.isCollisionDown(this.piece)) {
-
+      if ((this.grid.isCollisionDown(this.piece)) && (!this.grid.isWorking)) {
+        //if (this.grid.isCollisionDown(this.piece)) { //*/  //COMENTO PARA VER SI PUEDO HACER BIEN EL GAME OVER
+       
         this.piece.place();
         this.grid.mergePiece(this.piece);
         this.grid.handleMatches(this.piece);
+        
         this.piece.reset(this.nextPiece, this.x, this.y);
         this.nextPiece.isSpecial = false;
       }
@@ -96,15 +109,15 @@ Player.prototype.start = function() {
         this.drawCount = 0;
       }
 
-      if (((this.time % 1000) === 0) && (this.speed > 4)) {
+      if (((this.time % LEVEL_INTERVAL) === 0) && (this.speed > SPEED_MIN)) {
         this.time = 0;
-        this.speed -= 2;
+        this.speed -= SPEED_GAP;
         console.log("cambio la velocidad a " + this.speed);
       }
       // if ((this.time % 15000) === 0) {
       //   this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-250+this.y+POS_Y_GRID, true));
       // }
-    }
+    //}
   }.bind(this), DRAW_INTERVAL_MS);
 }
 
@@ -226,9 +239,12 @@ Player.prototype.onKeyUp = function(e) {
 
 Player.prototype.isGameOver = function() {
   
-  //return (this.grid.matrix[Math.floor(NUM_COLUMNS_GRID / 2)][0] !== 0); ESTE GAME OVER ESTA MAL FIJO
+  return this.grid.matrix[Math.floor(NUM_COLUMNS_GRID / 2)][-1] instanceof Gem;
+  //return (this.grid.matrix[Math.floor(NUM_COLUMNS_GRID / 2)][0] !== 0); //ESTE GAME OVER ESTA MAL FIJO
 
-  return (this.grid.isCollisionDown(this.piece) && (this.piece.y + this.piece.h < this.grid.y)); //TAMPOCO ES BUENO; HAY QE DARLE UNA VUELT
+  //return this.piece.y < this.grid.y;
+
+  //return (this.grid.isCollisionDown(this.piece) && (this.piece.y + this.piece.h <= this.grid.y)); //TAMPOCO ES BUENO; HAY QE DARLE UNA VUELT
 }
 
 Player.prototype.handleHoldedPiece = function() {

@@ -15,7 +15,9 @@ function Background(ctx, x, y) {
 Background.prototype.draw = function() {
   
   //this.ctx.save();
-  //this.ctx.scale(-1,1)
+ // this.ctx.scale(-1,1)
+ //this.ctx.translate(0, 2*this.h);
+//this.ctx.scale(1,-1);
   this.ctx.drawImage(
     this.img,
     this.x,
@@ -23,5 +25,6 @@ Background.prototype.draw = function() {
     this.w,
     this.h
   );
-  //this.ctx.restore();
+ 
+ //this.ctx.restore();
 }

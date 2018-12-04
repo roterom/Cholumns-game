@@ -51,5 +51,12 @@ var CONTROLS2 = {
 
 var MAX_ANIMATE_COUNT = 10000;
 
+var SPEED_INIT = 30;
+var SPEED_MIN = 4;
+var SPEED_GAP = 2;
+
+var LEVEL_INTERVAL = 1000;
+
+
 
 
