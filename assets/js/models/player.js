@@ -1,10 +1,13 @@
-function Player(canvasId, controls, x, y) {
+function Player(canvasId, controls, x, y, rival) {
 
   this.ctx = canvasId.getContext("2d");
-  //this.ctx.scale(-1,1)
 
   this.x = x || 0;
   this.y = y || 0;
+
+  this.rival = rival || 0;
+
+  // this.mirror = mirror || undefined;    intento fallido
 
   this.ctx.canvas.width = window.innerWidth;
   this.ctx.canvas.height = window.innerHeight;
@@ -38,7 +41,7 @@ function Player(canvasId, controls, x, y) {
 
 Player.prototype.createInstances = function() {
   
-  this.bg = new Background(this.ctx, this.x, this.y);
+  this.bg = new Background(this.ctx, this.x, this.y, this.rival);
   this.score = new Score(this.ctx, this.x + POS_X_SCORE, this.y + POS_Y_SCORE)
   this.grid = new Grid(this.ctx, this.score, this.x + POS_X_GRID, this.y + POS_Y_GRID);
   this.piece = new Piece(this.ctx, this.x+ ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID, this.y-(GEM_HEIGTH * (PIECE_SIZE)) + POS_Y_GRID);
@@ -124,7 +127,10 @@ Player.prototype.start = function() {
 Player.prototype.stop = function() {
   
   clearInterval(this.drawIntervalId);
-  alert("game over!");
+  $("#points").text(Math.floor(this.score.totalPoints));
+  $("#team").text(this.rival);
+  $("#game-over").toggle();
+  //alert("game over!");
 }
 
 Player.prototype.drawAll = function() {

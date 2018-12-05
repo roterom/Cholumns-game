@@ -32,21 +32,21 @@ var POINTS_STANDAR = 30;
 var POINTS_EXTRA = 10;
 
 var CONTROLS1 = {
-  right: 70,
-  left: 83,
-  down: 68,
-  switchC: 69,
-  specialKey: 16,
-  holdedKey: 220
+  right: 65,
+  left: 68,
+  down: 83,
+  switchC: 32,
+  specialKey: 18,
+  holdedKey: 225
 }
 
 var CONTROLS2 = {
-  right: 102,
-  left: 100,
-  down: 101,
-  switchC: 104,
-  specialKey: 16,
-  holdedKey: 189,
+  right: 37,
+  left: 39,
+  down: 40,
+  switchC: 96,
+  specialKey: 110,
+  holdedKey: 13
 }
 
 var MAX_ANIMATE_COUNT = 10000;
@@ -56,6 +56,8 @@ var SPEED_MIN = 4;
 var SPEED_GAP = 2;
 
 var LEVEL_INTERVAL = 1000;
+
+//var cont = 0; //pequeña trampa para el registro de puntuaciones...
 
 
 
