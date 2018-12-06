@@ -32,8 +32,8 @@ var POINTS_STANDAR = 30;
 var POINTS_EXTRA = 10;
 
 var CONTROLS1 = {
-  right: 65,
-  left: 68,
+  right: 68,
+  left: 65,
   down: 83,
   switchC: 32,
   specialKey: 18,
@@ -41,8 +41,8 @@ var CONTROLS1 = {
 }
 
 var CONTROLS2 = {
-  right: 37,
-  left: 39,
+  right: 39,
+  left: 37,
   down: 40,
   switchC: 96,
   specialKey: 110,

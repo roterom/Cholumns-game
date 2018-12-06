@@ -17,7 +17,7 @@ Score.prototype.draw =  function() {
 
   this.ctx.font = '35px Calibri';
   this.ctx.fillStyle = "blue";
-  this.ctx.fillText("Total points", this.x, this.y+50);
+  this.ctx.fillText("Total points", this.x, this.y+80);
   this.ctx.font = '70px Calibri';
-  this.ctx.fillText(Math.floor(this.totalPoints), this.x, this.y+120);
+  this.ctx.fillText(Math.floor(this.totalPoints), this.x, this.y+150);
 }

@@ -20,7 +20,7 @@ Background.prototype.setImages = function(rival){
 
     switch (rival) {
       case 0:
-        this.img.src = "./assets/images/fondo-atleti2.png";
+        this.img.src = "./assets/images/fondo-atleti.png";
         break;
       case 1:
         this.img.src = "./assets/images/fondo-barsa.jpg";

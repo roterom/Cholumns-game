@@ -1,25 +1,23 @@
  document.addEventListener("DOMContentLoaded", function() {
- /*  var canvas1 = document.getElementById("canvas-player1");
-  var canvas2 = document.getElementById("canvas-player2"); */
 
-  var scores = getScores();
-  //var cont = 0;
+  var game = new Game();
+ });
+
+
+
+
+
+ // var btest = document.getElementById("btn-start");
+ // var scores = getScores();
  
-  // var btnStart = document.getElementById("btn-start");
    //btnStart.addEventListener("click", play);
-   $("#btn-start")[0].addEventListener("click", play);
- // var mainDiv = document.getElementById("main"); */
+
+
+   /********************** */
+   //$("#btn-start").click(play)
+   /**************************** */
+ // var mainDiv = document.getElementById("main"); */ // var btnStart = document.getElementById("btn-start");
   
-
-// btnStart.addEventListener("click", function() {
-//     var game = new Game(canvas1, canvas2);
-//     game.start();
-//     mainDiv.style.display = "none";
-//   });
-
- 
-
-
 //$("#btn-start")[0].addEventListener("click", play);
 
 
@@ -27,33 +25,14 @@
 
 
 
-/* $("#input-group-teams")[0].addEventListener("change", function() {
 
-  var rival = document.getElementById("rival");
-  rival.innerHTML = "";
-  rival.appendChild(document.createTextNode(this.options[this.selectedIndex].label.toUpperCase()));
-}); */
 
-$("#input-group-teams")[0].addEventListener("change", setRival);
-
+/********************** */
+/* $("#input-group-teams")[0].addEventListener("change", setRival);
 $("#btn-save")[0].addEventListener("click", saveScore);
-
 $("#btn-highscore")[0].addEventListener("click", showHighscore);
 
-
- /*  var game = new Game(canvas1, canvas2);
-  game.start(); */
-
  });
-
- function sortJSON(scores) {
-  return scores.sort(function (a, b) {
-      var x = scores.a, 
-      y = scores.b;
-           return ((x > y) ? -1 : ((x < y) ? 1 : 0));
-          //return b-a;
-  });
-}
 
  function showHighscore() {
     
@@ -89,25 +68,7 @@ function getScores() {
 
 function addScore(name, team, value) {
   var scores = getScores();
-
-  
-
-  // scores["S"+cont] = {
-  //   name: name,
-  //   team: team,
-  //   score:value
-  // }
-
   scores[name] = value;
-  /* scores["name"] = name;
-  scores["team"] = team;
-  scores["score"] = value */
-  // var newScore = {
-  // name: name,
-  // team: team,
-  // score:value
-  // }
-
   localStorage.setItem('scores', JSON.stringify(scores));
 }
 
@@ -120,8 +81,8 @@ function addScore(name, team, value) {
   addScore(name, team, value, cont);
 
   window.location.reload()
-  /* $("#game-over").toggle();
-  $("#main").toggle(); */ 
+  // $("#game-over").toggle();
+  // $("#main").toggle(); 
  }
 
 
@@ -145,3 +106,6 @@ function play() {
   //$("#main")[0].style.display = "none";
   $("#main").hide();
 }
+ */
+
+/*************************************** */

@@ -36,17 +36,21 @@ function Player(canvasId, controls, x, y, rival) {
 
   this.createInstances();
   this.setListeners();
+  
+ 
 }
+
+
 
 
 Player.prototype.createInstances = function() {
   
   this.bg = new Background(this.ctx, this.x, this.y, this.rival);
-  this.score = new Score(this.ctx, this.x + POS_X_SCORE, this.y + POS_Y_SCORE)
+  this.score = new Score(this.ctx, this.x +500+POS_X_GRID, this.y + POS_Y_GRID+300)
   this.grid = new Grid(this.ctx, this.score, this.x + POS_X_GRID, this.y + POS_Y_GRID);
   this.piece = new Piece(this.ctx, this.x+ ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID, this.y-(GEM_HEIGTH * (PIECE_SIZE)) + POS_Y_GRID);
   this.nextPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, this.y+POS_Y_GRID);
-  this.holdedPiece = new Piece(this.ctx, this.x+600+POS_X_GRID, this.ctx.canvas.height-250 + POS_Y_GRID, false, true);
+  this.holdedPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-400 + POS_Y_GRID, false, true);
   this.specialPieces = [];
 }
 
@@ -59,12 +63,14 @@ Player.prototype.setListeners = function() {
 
 
 Player.prototype.start = function() {
+
+  console.log("comienza el juego!");
   this.grid.reset();
   
   this.piece.getPiece();
   this.nextPiece.matrix = this.piece.matrix.slice();
   for (var i = 0; i < NUM_INIT_SPECIAL_PIECES; i++) {
-    this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-250+this.y+POS_Y_GRID, true));
+    this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-130+this.y+POS_Y_GRID, true));
   }
   this.specialPieces[0].getPiece();
   
@@ -128,7 +134,7 @@ Player.prototype.stop = function() {
   
   clearInterval(this.drawIntervalId);
   $("#points").text(Math.floor(this.score.totalPoints));
-  $("#team").text(this.rival);
+  //$("#team").text(this.rival);
   $("#game-over").toggle();
   //alert("game over!");
 }
@@ -245,7 +251,17 @@ Player.prototype.onKeyUp = function(e) {
 
 Player.prototype.isGameOver = function() {
   
-  return this.grid.matrix[Math.floor(NUM_COLUMNS_GRID / 2)][-1] instanceof Gem;
+  // return this.grid.matrix[0].some(function(e) {
+  //         return !(e instanceof Gem);        
+  // })
+  for(var i=0; i < NUM_COLUMNS_GRID; i++) {
+    if (this.grid.matrix[i][-1] instanceof Gem) {
+      return true;
+    }
+  }
+  return false;
+
+  
   //return (this.grid.matrix[Math.floor(NUM_COLUMNS_GRID / 2)][0] !== 0); //ESTE GAME OVER ESTA MAL FIJO
 
   //return this.piece.y < this.grid.y;

@@ -48,6 +48,8 @@ html, body {
 #highscore {
   position: absolute;
   z-index: +1;
+  width: 100%;
+    padding: 0px 50px;
 }
 
 #instruccions {
@@ -61,6 +63,9 @@ html, body {
   justify-content: space-between;
   border-bottom: 1px dashed;
 }
-.name-saved {
 
+.header-score {
+  background-color: coral;
+  font-size: 1.1rem;
+  font-weight: bold;
 }

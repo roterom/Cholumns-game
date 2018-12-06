@@ -36,6 +36,8 @@ Piece.prototype.getPiece = function() {
 }
 
 Piece.prototype.draw = function() {
+
+  this.ctx.fill
    
   for (var i = 0; i < this.matrix.length; i++) {
 
@@ -66,7 +68,7 @@ Piece.prototype.drawSpecial = function(numSpecials) {
 
   this.ctx.font = 'italic 40px Calibri';
   this.ctx.strokeStyle = "white";
-  this.ctx.strokeText( "X " + numSpecials,this.x, 880);
+  this.ctx.strokeText( "X " + numSpecials,this.x+100, 915);
 }
 
 //PROBANDO LOS 2 PLAYEERRSSS
