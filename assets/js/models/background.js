@@ -22,9 +22,13 @@ Background.prototype.setImages = function(rival){
       case 0:
         this.img.src = "./assets/images/fondo-atleti.png";
         break;
-      case 1:
+        case 1:
+        this.img.src = "./assets/images/fondo-atleti.png";
+        break;
+      case 2:
         this.img.src = "./assets/images/fondo-barsa.jpg";
         break;
+        
     }
 }
 

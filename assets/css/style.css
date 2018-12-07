@@ -8,12 +8,19 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden; /* esto es lo de la barra de scroll, y así lo ocultamos */
+  font-family: 'Kalam', cursive;
+}
+
+
+.wrap {
+  /* background-image: url("../images/fondo-principal3.png");
+  background-repeat: no-repeat;
+  --background-size: cover;
   --height: 100%;
   --width: 100%;
-  --background-image: url("../images/fondo-atleti2.png");
-  --background-size: 100%;
-  --background-position: center;
+  background-size: 100% 100%; */
 }
+
 
  #canvas-player1 {
   position: absolute;
@@ -28,35 +35,79 @@ html, body {
 #main {
   position: absolute;
   z-index: 1;
-  background-color: aqua;
+  background-image: url("../images/fondo-principal2.png");
+ --background-repeat: no-repeat;
+  --background-size: cover;
   height: 100%;
+  --width: 100%;
+  background-size: 100% 100%;
 }
 
-#game-over {
+#game-over, #game-over1, #game-over2 {
   display: none;
   width: 750px;
   height: 400px;
   position:absolute;
   top: 50%;
-  left: 50%;
   margin-top: -200px;
-  margin-left: -375px;
+  --margin-left: -375px;
   z-index: 1;
   background-color: coral;
+}
+
+
+#game-over {
+  left: 50%;
+  margin-left: -375px;
+}
+#game-over1 {
+  left: 0%;
+  margin-left: 80px;
+}
+
+#game-over2 {
+  right: 0%;
+  margin-right: 80px;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: red;
+  font-size: 1.1rem;
+}
+
+#instruccions,#controls, #highscore {
+  position: absolute;
+  z-index: +1;  
+  width: 100%;
+  padding: 0 5px;
+}
+
+#controls h3 {
+  text-decoration: underline;
+}
+
+/* #controls {
+  position: absolute;
+  z-index: +1;
+  width: 100%;
+  padding: 0 5px;
+  
 }
 
 #highscore {
   position: absolute;
   z-index: +1;
   width: 100%;
-    padding: 0px 50px;
+  padding: 0 5px;
+ 
+} */
+
+#score {
+  margin-right: 30px;
 }
 
-#instruccions {
-  position: absolute;
-  z-index: +1;
-  
-}
+
 
 .score-saved {
   display: flex;
@@ -65,7 +116,53 @@ html, body {
 }
 
 .header-score {
-  background-color: coral;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: bold;
+  color: #000;
+}
+
+
+#player1, #player2 {
+  color: red;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+#name-team1, #name-team2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: rgba(255, 0, 0, 0.6);
+  margin: 0 15px;
+}
+
+#input-players {
+  margin-top: 65px;
+}
+
+
+#input-players, #name-player1, #name-player2, #input-group-teams{
+
+  font-size: 1.2rem;
+}
+
+#name-player2, #name-player1, #player2, #input-group-teams, #name-team2 {
+  display: none;
+}
+
+#player1{
+  display: block;
+}
+
+.my-btn {
+  font-weight: bold;
+}
+
+#btn-start {
+  font-size: 2rem;
+}
+
+.game-over span {
+  color: red;
+  font-size: 2rem;
 }

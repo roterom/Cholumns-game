@@ -1,4 +1,4 @@
-function Player(canvasId, controls, x, y, rival) {
+function Player(canvasId, controls, x, y, rival, conexionDOM, isModeTwoPlayers, name) {
 
   this.ctx = canvasId.getContext("2d");
 
@@ -6,6 +6,10 @@ function Player(canvasId, controls, x, y, rival) {
   this.y = y || 0;
 
   this.rival = rival || 0;
+
+  this.conexionDOM = conexionDOM;
+  this.isModeTwoPlayers = isModeTwoPlayers;
+  this.name = name || "";
 
   // this.mirror = mirror || undefined;    intento fallido
 
@@ -36,6 +40,8 @@ function Player(canvasId, controls, x, y, rival) {
 
   this.createInstances();
   this.setListeners();
+
+  this.isFinished = false;
   
  
 }
@@ -132,11 +138,32 @@ Player.prototype.start = function() {
 
 Player.prototype.stop = function() {
   
-  clearInterval(this.drawIntervalId);
+ /*  clearInterval(this.drawIntervalId);
   $("#points").text(Math.floor(this.score.totalPoints));
   //$("#team").text(this.rival);
   $("#game-over").toggle();
-  //alert("game over!");
+  //alert("game over!"); */
+
+  clearInterval(this.drawIntervalId);
+  this.isFinished = true;
+  // this.conexionDOM.$name.val(this.name)
+  // this.conexionDOM.$points.text(Math.floor(this.score.totalPoints));
+  //$("#team").text(this.rival);
+
+  if (this.isModeTwoPlayers) {
+    if (this.rival === 0) {
+      this.conexionDOM.$points1.text(Math.floor(this.score.totalPoints));
+      this.conexionDOM.$gameOver1.show();
+    } else {
+      this.conexionDOM.$points2.text(Math.floor(this.score.totalPoints));
+      this.conexionDOM.$gameOver2.show();
+    }
+  } else {
+    this.conexionDOM.$name.val(this.name)
+    this.conexionDOM.$points.text(Math.floor(this.score.totalPoints));
+    this.conexionDOM.$gameOver.show();
+  }
+  //alert("game over!"); 
 }
 
 Player.prototype.drawAll = function() {
