@@ -52,9 +52,15 @@ html, body {
   margin-top: -200px;
   --margin-left: -375px;
   z-index: 1;
-  background-color: coral;
+  background-color: rgba(255, 255, 255, 0.9);
+  font-weight: bold;
+  font-size: 2.5rem;
+  color:blue;
 }
 
+#game-over h1, #game-over1 h1, #game-over2 h1 {
+  text-decoration: underline;
+}
 
 #game-over {
   left: 50%;
@@ -164,5 +170,5 @@ html, body {
 
 .game-over span {
   color: red;
-  font-size: 2rem;
+  font-size: 2.5rem;
 }

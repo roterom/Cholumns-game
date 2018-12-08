@@ -20,13 +20,13 @@ Background.prototype.setImages = function(rival){
 
     switch (rival) {
       case 0:
-        this.img.src = "./assets/images/fondo-atleti.png";
+        this.img.src = "./assets/images/fondo-atleti-escalado.png";
         break;
         case 1:
-        this.img.src = "./assets/images/fondo-atleti.png";
+        this.img.src = "./assets/images/fondo-atleti-escalado.png";
         break;
       case 2:
-        this.img.src = "./assets/images/fondo-barsa.jpg";
+        this.img.src = "./assets/images/fondo-barsa-escalado.png";
         break;
         
     }

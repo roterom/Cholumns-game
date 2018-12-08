@@ -52,11 +52,11 @@ function Player(canvasId, controls, x, y, rival, conexionDOM, isModeTwoPlayers, 
 Player.prototype.createInstances = function() {
   
   this.bg = new Background(this.ctx, this.x, this.y, this.rival);
-  this.score = new Score(this.ctx, this.x +500+POS_X_GRID, this.y + POS_Y_GRID+300)
+  this.score = new Score(this.ctx, this.x +500+POS_X_GRID, this.y + POS_Y_GRID+350)
   this.grid = new Grid(this.ctx, this.score, this.x + POS_X_GRID, this.y + POS_Y_GRID);
   this.piece = new Piece(this.ctx, this.x+ ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID, this.y-(GEM_HEIGTH * (PIECE_SIZE)) + POS_Y_GRID);
   this.nextPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, this.y+POS_Y_GRID);
-  this.holdedPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-400 + POS_Y_GRID, false, true);
+  this.holdedPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, 575 + POS_Y_GRID, false, true);
   this.specialPieces = [];
 }
 
@@ -76,7 +76,7 @@ Player.prototype.start = function() {
   this.piece.getPiece();
   this.nextPiece.matrix = this.piece.matrix.slice();
   for (var i = 0; i < NUM_INIT_SPECIAL_PIECES; i++) {
-    this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-130+this.y+POS_Y_GRID, true));
+    this.specialPieces.push(new Piece(this.ctx, this.x+545+POS_X_GRID, 840+POS_Y_GRID, true));
   }
   this.specialPieces[0].getPiece();
   
@@ -127,11 +127,14 @@ Player.prototype.start = function() {
       if (((this.time % LEVEL_INTERVAL) === 0) && (this.speed > SPEED_MIN)) {
         this.time = 0;
         this.speed -= SPEED_GAP;
+        this.score.level++;
         console.log("cambio la velocidad a " + this.speed);
       }
-      // if ((this.time % 15000) === 0) {
-      //   this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-250+this.y+POS_Y_GRID, true));
-      // }
+      if ((this.time % 150000) === 0) {
+        //this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-250+this.y+POS_Y_GRID, true));
+          this.specialPieces.push(new Piece(this.ctx, this.x+545+POS_X_GRID, 840+POS_Y_GRID, true));
+          this.time = 0;
+      }
     //}
   }.bind(this), DRAW_INTERVAL_MS);
 }

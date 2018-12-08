@@ -17,6 +17,9 @@ function Piece(ctx, x, y, special, holded) {
 
   this.img = new Image();
   this.img.src = "./assets/images/simeone-special.png";
+
+  this.imgBg = new Image();
+  this.imgBg.src = "./assets/images/recuadro-60.png"
 }
 
 Piece.prototype.getPiece = function() {
@@ -36,6 +39,16 @@ Piece.prototype.getPiece = function() {
 }
 
 Piece.prototype.draw = function() {
+
+  this.ctx.drawImage(
+    this.imgBg,
+    this.x,
+    this.y,
+    this.w + 5,
+    this.h + 5
+  );
+
+
 
   this.ctx.fill
    
@@ -68,7 +81,7 @@ Piece.prototype.drawSpecial = function(numSpecials) {
 
   this.ctx.font = 'italic 40px Calibri';
   this.ctx.strokeStyle = "white";
-  this.ctx.strokeText( "X " + numSpecials,this.x+100, 915);
+  this.ctx.strokeText( "X " + numSpecials,this.x+105, 920);
 }
 
 //PROBANDO LOS 2 PLAYEERRSSS

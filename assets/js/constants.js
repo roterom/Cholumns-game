@@ -23,7 +23,7 @@ var numLoop = 1;
 var NUM_INIT_SPECIAL_PIECES = 2;
 
 var POS_X_GRID = 100;
-var POS_Y_GRID = 22;
+var POS_Y_GRID = 35;
 
 var POS_X_SCORE = 550;
 var POS_Y_SCORE = 300;
