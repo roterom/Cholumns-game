@@ -21,7 +21,9 @@ function Player(canvasId, controls, x, y, rival, conexionDOM, isModeTwoPlayers, 
   this.drawCount = 0;
   this.drawIntervalId = undefined;
 
-  this.time = 0;
+  this.timeLevel = 0;
+  this.timeSpecialPiece = 0;
+
   this.speed = SPEED_INIT;
 
   this.animateCount = 0;
@@ -83,7 +85,8 @@ Player.prototype.start = function() {
   this.drawIntervalId = setInterval(function() {
     
     this.drawCount++;
-    this.time++;
+    this.timeLevel++;
+    this.timeSpecialPiece++;
 
     if ((this.piece.y >= this.grid.y) && (this.nextPiece.isEnabled)){
      
@@ -124,16 +127,20 @@ Player.prototype.start = function() {
         this.drawCount = 0;
       }
 
-      if (((this.time % LEVEL_INTERVAL) === 0) && (this.speed > SPEED_MIN)) {
-        this.time = 0;
-        this.speed -= SPEED_GAP;
+      if (((this.timeLevel % LEVEL_INTERVAL) === 0) && (this.speed > SPEED_MIN)) {
+        this.timeLevel = 0;
+        if (this.speed < SPEED_FAST_MODE) {
+          this.speed--;
+        } else {
+          this.speed -= SPEED_GAP;
+        }
         this.score.level++;
         console.log("cambio la velocidad a " + this.speed);
       }
-      if ((this.time % 150000) === 0) {
+      if ((this.timeSpecialPiece % 4000) === 0) {
         //this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-250+this.y+POS_Y_GRID, true));
           this.specialPieces.push(new Piece(this.ctx, this.x+545+POS_X_GRID, 840+POS_Y_GRID, true));
-          this.time = 0;
+          this.timeSpecialPiece = 0;
       }
     //}
   }.bind(this), DRAW_INTERVAL_MS);
@@ -176,6 +183,7 @@ Player.prototype.drawAll = function() {
   this.nextPiece.draw();
   this.holdedPiece.draw();
   this.specialPieces[0].drawSpecial(this.specialPieces.length - 1);
+
   this.grid.remarkMatches();
   this.score.draw();
 
@@ -243,8 +251,8 @@ Player.prototype.animate = function() {
   } 
 
   if (this.movements.special) {
-    if (this.specialPieces.length > 1) {
-        this.nextPiece.takeOutSpecial(this.specialPieces[0]);
+    if (this.specialPieces.length > 1) {  
+        this.nextPiece.takeOutSpecial(this.specialPieces[0]);  //voy a intentar combinar estas dos lineas en una sola...NO ME HA VALIDO DE MOMENTO
         this.specialPieces.pop();
         this.movements.special = false;
     }

@@ -13,7 +13,8 @@ function Grid(ctx,score, x, y) {
   this.hasMatches = false;
   this.isWorking = false;
 
-  this.numLoops = 0;
+  this.numExtraMatches = 0;
+  this.numIterationMatches = 0;
   
 }
 
@@ -175,24 +176,28 @@ Grid.prototype.removeColor = function(color) {
 Grid.prototype.checkAllDirections = function(i, j) {
   
   this.checkVertically(i, j);
-  if (this.numLoops) {
-    this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
-    this.numLoops = 0;
+  if (this.numExtraMatches) {
+    //this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += POINTS_STANDAR * this.numExtraMatches * this.numIterationMatches; //si encuentro 4 piezas es el doble de puntos, 5 el triple...
+    this.numExtraMatches = 0;
   }
   this.checkHorizontally(i, j);
-  if (this.numLoops) {
-    this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
-    this.numLoops = 0;
+  if (this.numExtraMatches) {
+    //this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += POINTS_STANDAR * this.numExtraMatches * this.numIterationMatches;
+    this.numExtraMatches = 0;
   }
   this.checkDiagonally(i, j, 1);
-  if (this.numLoops) {
-    this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
-    this.numLoops = 0;
+  if (this.numExtraMatches) {
+    //this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += POINTS_STANDAR * this.numExtraMatches * this.numIterationMatches;
+    this.numExtraMatches = 0;
   }
   this.checkDiagonally(i, j, -1);
-  if (this.numLoops) {
-    this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
-    this.numLoops = 0;
+  if (this.numExtraMatches) {
+    //this.score.parcialPoints += POINTS_STANDAR + ((this.numLoops-1) * POINTS_EXTRA); //quiero sumar 30 puntos si encadeno 3 gemas, 40 con 4, 50 con 5...
+    this.score.parcialPoints += POINTS_STANDAR * this.numExtraMatches * this.numIterationMatches;
+    this.numExtraMatches = 0;
   }
 }
 
@@ -219,7 +224,7 @@ Grid.prototype.checkVertically = function (i, j) {
             this.hasMatches = true;
             console.log("la ficha de arriba y abajo son iguales a la que analizo");
             //para los puntos...
-            this.numLoops++;
+            this.numExtraMatches++;
 
       }
     }  
@@ -250,7 +255,7 @@ Grid.prototype.checkHorizontally = function (i, j) {
             this.hasMatches = true;
             console.log("la ficha de arriba y abajo son iguales a la que analizo");
             //para llos puntos....
-            this.numLoops++;
+            this.numExtraMatches++;
       }
     } 
 
@@ -291,7 +296,7 @@ Grid.prototype.checkDiagonally = function (i,j, direction) {
             this.hasMatches = true;
             console.log("la ficha diagonal izda y dcha son iguales a la que analizo");
             //para los puntos...
-            this.numLoops++;
+            this.numExtraMatches++;
       }
     } 
 
@@ -361,6 +366,7 @@ Grid.prototype.checkDiagonally = function (i,j, direction) {
 Grid.prototype.handleMatches = function(piece) {
 
   this.isWorking = true;
+  this.numIterationMatches++;
 
   if (piece) {
     if (piece.isSpecial) {
@@ -399,5 +405,6 @@ Grid.prototype.handleMatches = function(piece) {
     
   } else {
     this.isWorking = false;
+    this.numIterationMatches = 0;
   }
 }

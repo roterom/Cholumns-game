@@ -47,9 +47,6 @@ Piece.prototype.draw = function() {
     this.w + 5,
     this.h + 5
   );
-
-
-
   this.ctx.fill
    
   for (var i = 0; i < this.matrix.length; i++) {
@@ -79,7 +76,7 @@ Piece.prototype.drawSpecial = function(numSpecials) {
   this.ctx.strokeStyle = "rgba(0, 0, 0, 1.0)";
   this.ctx.strokeRect(this.x, this.y, GEM_WIDTH, GEM_HEIGTH);
 
-  this.ctx.font = 'italic 40px Calibri';
+  this.ctx.font = 'bold 40px Kalam';
   this.ctx.strokeStyle = "white";
   this.ctx.strokeText( "X " + numSpecials,this.x+105, 920);
 }
@@ -98,7 +95,9 @@ Piece.prototype.place = function() {
 
 Piece.prototype.switchColors = function() {
   
-    this.matrix.unshift(this.matrix.pop());
+   // this.matrix.unshift(this.matrix.pop());
+
+   this.matrix.push(this.matrix.shift());
 }
 
 //PARA INTENTAR HACER LOS 2 PLAYERRSSSS
