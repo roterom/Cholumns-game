@@ -1,4 +1,4 @@
-function Player(canvasId, controls, x, y, rival, conexionDOM, isModeTwoPlayers, name) {
+function Player(canvasId, controls, x, y, rival, conexionDOM, isModeTwoPlayers, name, competitionMode) {
 
   this.ctx = canvasId.getContext("2d");
 
@@ -10,6 +10,7 @@ function Player(canvasId, controls, x, y, rival, conexionDOM, isModeTwoPlayers, 
   this.conexionDOM = conexionDOM;
   this.isModeTwoPlayers = isModeTwoPlayers;
   this.name = name || "";
+  this.competitionMode = competitionMode || "";
 
   // this.mirror = mirror || undefined;    intento fallido
 
@@ -44,8 +45,8 @@ function Player(canvasId, controls, x, y, rival, conexionDOM, isModeTwoPlayers, 
   this.setListeners();
 
   this.isFinished = false;
-  
- 
+
+  this.multAux = 1; 
 }
 
 
@@ -128,14 +129,12 @@ Player.prototype.start = function() {
       }
 
       if (((this.timeLevel % LEVEL_INTERVAL) === 0) && (this.speed > SPEED_MIN)) {
-        this.timeLevel = 0;
-        if (this.speed < SPEED_FAST_MODE) {
-          this.speed--;
-        } else {
-          this.speed -= SPEED_GAP;
+        
+        this.handleChangeLevel();
+
+        if (!this.competitionMode.isCompetitionFinished) {
+          this.handleCompetitionMode();
         }
-        this.score.level++;
-        console.log("cambio la velocidad a " + this.speed);
       }
       if ((this.timeSpecialPiece % 4000) === 0) {
         //this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-250+this.y+POS_Y_GRID, true));
@@ -145,6 +144,66 @@ Player.prototype.start = function() {
     //}
   }.bind(this), DRAW_INTERVAL_MS);
 }
+
+Player.prototype.handleChangeLevel = function() {
+
+  this.timeLevel = 0;
+  if (this.speed < SPEED_FAST_MODE) {
+    this.speed--;
+  } else {
+    this.speed -= SPEED_GAP;
+  }
+  this.score.level++;
+  console.log("cambio la velocidad a " + this.speed);
+}
+
+
+Player.prototype.handleCompetitionMode = function() {
+   
+  if (this.rival === 0) {
+    this.competitionMode.setPoints1(this.score.totalPoints);
+  } else {
+    this.competitionMode.setPoints2(this.score.totalPoints);
+  }
+  this.checkPenalties();
+  this.grid.handleMatches();
+
+  /* if (this.score.totalPoints > (50 * this.multAux)) {
+     
+    this.checkPenalties();
+    this.multAux++;        
+    //if (this.conexionDOM.$points1
+  } */
+}
+
+
+Player.prototype.checkPenalties = function() {
+
+  if ((this.rival === 0) && (this.competitionMode.pointsPlayer1 < this.competitionMode.pointsPlayer2)) {
+    console.log("es penalty contra player 1");
+    this.penalty();
+  } 
+  
+  if ((this.rival != 0) && (this.competitionMode.pointsPlayer2 < this.competitionMode.pointsPlayer1)) {
+    console.log("es penalty contra player 2");
+    this.penalty();
+  }
+}
+
+
+Player.prototype.penalty = function() {
+
+  for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
+    
+    var gem = new Gem(this.ctx, this.x + POS_X_GRID + (i * GEM_WIDTH), this.y + POS_Y_GRID + (NUM_ROWS_GRID * GEM_HEIGTH))
+    gem.configColor();
+    gem.isSpecial = false;
+
+    this.grid.matrix[i].push(gem);
+    this.grid.matrix[i].shift();
+  }
+}
+
 
 Player.prototype.stop = function() {
   
@@ -156,6 +215,7 @@ Player.prototype.stop = function() {
 
   clearInterval(this.drawIntervalId);
   this.isFinished = true;
+  this.competitionMode.isCompetitionFinished = true;
   // this.conexionDOM.$name.val(this.name)
   // this.conexionDOM.$points.text(Math.floor(this.score.totalPoints));
   //$("#team").text(this.rival);
