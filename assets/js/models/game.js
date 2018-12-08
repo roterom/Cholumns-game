@@ -45,6 +45,25 @@ this.scores = this.getScores();
 this.conexionDOM = new ConexionDOM();
 this.competitionMode = new CompetitionMode();
 
+
+// var audio = this.conexionDOM.$audio;
+// audio.src = './assets/sound/boo.m4a'
+// //var audio = new Audio('../sound/intro.m4a');
+// audio.play();
+
+
+
+
+//this.sounds = new Sounds();
+
+//this.sounds.play();
+//this.sounds.play(this.sounds.sounds[0]);
+
+this.conexionDOM.$soundBg[0].src = "./assets/sound/intro.m4a";
+//this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-clotho.m4a";
+
+
+
 this.setButtons();
 
 // this.conexionDOM.$inputTeam.change(function() {
@@ -272,7 +291,7 @@ Game.prototype.gameOverTwoPlayersMode = function() {
    /*  this.conexionDOM.$gameOver1.hide();
     this.conexionDOM.$gameOver2.hide();
     this.conexionDOM.$main.show(); */
-
+    this.conexionDOM.$soundBg[0].src = "./assets/sound/intro.m4a";
     this.reset();
   }
 }
@@ -359,6 +378,8 @@ Game.prototype.addScore = function(name, points) {
   // var team = $("#team").text();
   // var value = $("#points").text();
 
+  this.conexionDOM.$soundBg[0].src = "./assets/sound/intro.m4a";
+
   if (this.conexionDOM.$name.val()) {
     this.addScore(this.conexionDOM.$name.val(), this.conexionDOM.$points.text());
     this.conexionDOM.$name.val("");
@@ -397,8 +418,9 @@ Game.prototype.play = function() {
     this.player2.start();
   }
   this.conexionDOM.$main.hide(); */
+  //this.conexionDOM.$soundBg[0].src = "";
 
-
+  this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-clotho.m4a";
 
   var numPlayers = this.conexionDOM.$inputPlayers.val();
   

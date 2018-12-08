@@ -1,11 +1,11 @@
-function Player(canvasId, controls, x, y, rival, conexionDOM, isModeTwoPlayers, name, competitionMode) {
+function Player(canvasId, controls, x, y, team, conexionDOM, isModeTwoPlayers, name, competitionMode) {
 
   this.ctx = canvasId.getContext("2d");
 
   this.x = x || 0;
   this.y = y || 0;
 
-  this.rival = rival || 0;
+  this.team = team || 0;
 
   this.conexionDOM = conexionDOM;
   this.isModeTwoPlayers = isModeTwoPlayers;
@@ -54,12 +54,20 @@ function Player(canvasId, controls, x, y, rival, conexionDOM, isModeTwoPlayers, 
 
 Player.prototype.createInstances = function() {
   
-  this.bg = new Background(this.ctx, this.x, this.y, this.rival);
+  this.bg = new Background(this.ctx, this.x, this.y, this.team);
   this.score = new Score(this.ctx, this.x +500+POS_X_GRID, this.y + POS_Y_GRID+350)
-  this.grid = new Grid(this.ctx, this.score, this.x + POS_X_GRID, this.y + POS_Y_GRID);
-  this.piece = new Piece(this.ctx, this.x+ ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID, this.y-(GEM_HEIGTH * (PIECE_SIZE)) + POS_Y_GRID);
+  this.grid = new Grid(this.ctx, this.score, this.x + POS_X_GRID, this.y + POS_Y_GRID, this.conexionDOM);
+/*   this.piece = new Piece(this.ctx, this.x+ ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID, this.y-(GEM_HEIGTH * (PIECE_SIZE)) + POS_Y_GRID);
   this.nextPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, this.y+POS_Y_GRID);
   this.holdedPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, 575 + POS_Y_GRID, false, true);
+ */ 
+
+ /******pruebo a poder elegir las gemas... */
+this.piece = new Piece(this.ctx, this.x+ ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID, this.y-(GEM_HEIGTH * (PIECE_SIZE)) + POS_Y_GRID, this.team);
+this.nextPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, this.y+POS_Y_GRID, this.team);
+this.holdedPiece = new Piece(this.ctx, this.x+500+POS_X_GRID, 575 + POS_Y_GRID, this.team, false, true);
+/************* */
+  
   this.specialPieces = [];
 }
 
@@ -79,7 +87,8 @@ Player.prototype.start = function() {
   this.piece.getPiece();
   this.nextPiece.matrix = this.piece.matrix.slice();
   for (var i = 0; i < NUM_INIT_SPECIAL_PIECES; i++) {
-    this.specialPieces.push(new Piece(this.ctx, this.x+545+POS_X_GRID, 840+POS_Y_GRID, true));
+    //this.specialPieces.push(new Piece(this.ctx, this.x+545+POS_X_GRID, 840+POS_Y_GRID, true));
+    this.specialPieces.push(new Piece(this.ctx, this.x+545+POS_X_GRID, 840+POS_Y_GRID, this.team, true));
   }
   this.specialPieces[0].getPiece();
   
@@ -101,8 +110,12 @@ Player.prototype.start = function() {
     }  */
 
     if (this.isGameOver()) {
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/game-over.m4a"; //ESTO AQUÏ NO ESTA FUNCIONANDO DEL TODO...(el sonido digo)
       this.stop();
-    }// else {
+      //if ((this.isModeTwoPlayers) && (this.competitionMode.isCompetitionFinished)) {
+        
+      //}
+    }// else {)
   
     /* if (this.grid.isGameOver) {
       this.stop();
@@ -112,7 +125,7 @@ Player.prototype.start = function() {
       
       if ((this.grid.isCollisionDown(this.piece)) && (!this.grid.isWorking)) {
         //if (this.grid.isCollisionDown(this.piece)) { //*/  //COMENTO PARA VER SI PUEDO HACER BIEN EL GAME OVER
-       
+        this.conexionDOM.$soundEvents[0].src = "./assets/sound/collision-down.m4a";
         this.piece.place();
         this.grid.mergePiece(this.piece);
         this.grid.handleMatches(this.piece);
@@ -141,6 +154,8 @@ Player.prototype.start = function() {
           this.specialPieces.push(new Piece(this.ctx, this.x+545+POS_X_GRID, 840+POS_Y_GRID, true));
           this.timeSpecialPiece = 0;
       }
+
+      
     //}
   }.bind(this), DRAW_INTERVAL_MS);
 }
@@ -160,7 +175,7 @@ Player.prototype.handleChangeLevel = function() {
 
 Player.prototype.handleCompetitionMode = function() {
    
-  if (this.rival === 0) {
+  if (this.team === 0) {
     this.competitionMode.setPoints1(this.score.totalPoints);
   } else {
     this.competitionMode.setPoints2(this.score.totalPoints);
@@ -179,12 +194,12 @@ Player.prototype.handleCompetitionMode = function() {
 
 Player.prototype.checkPenalties = function() {
 
-  if ((this.rival === 0) && (this.competitionMode.pointsPlayer1 < this.competitionMode.pointsPlayer2)) {
+  if ((this.team === 0) && (this.competitionMode.pointsPlayer1 < this.competitionMode.pointsPlayer2)) {
     console.log("es penalty contra player 1");
     this.penalty();
   } 
   
-  if ((this.rival != 0) && (this.competitionMode.pointsPlayer2 < this.competitionMode.pointsPlayer1)) {
+  if ((this.team != 0) && (this.competitionMode.pointsPlayer2 < this.competitionMode.pointsPlayer1)) {
     console.log("es penalty contra player 2");
     this.penalty();
   }
@@ -213,26 +228,35 @@ Player.prototype.stop = function() {
   $("#game-over").toggle();
   //alert("game over!"); */
 
-  clearInterval(this.drawIntervalId);
-  this.isFinished = true;
-  this.competitionMode.isCompetitionFinished = true;
+  
+
+ 
   // this.conexionDOM.$name.val(this.name)
   // this.conexionDOM.$points.text(Math.floor(this.score.totalPoints));
   //$("#team").text(this.rival);
 
   if (this.isModeTwoPlayers) {
-    if (this.rival === 0) {
+    if (this.team === 0) {
       this.conexionDOM.$points1.text(Math.floor(this.score.totalPoints));
       this.conexionDOM.$gameOver1.show();
     } else {
       this.conexionDOM.$points2.text(Math.floor(this.score.totalPoints));
       this.conexionDOM.$gameOver2.show();
     }
+    if (this.competitionMode.isCompetitionFinished) {
+      this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-atropos.m4a";
+    }
+
   } else {
+    this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-atropos.m4a";
     this.conexionDOM.$name.val(this.name)
     this.conexionDOM.$points.text(Math.floor(this.score.totalPoints));
     this.conexionDOM.$gameOver.show();
   }
+
+  clearInterval(this.drawIntervalId);
+  this.isFinished = true;
+  this.competitionMode.isCompetitionFinished = true;
   //alert("game over!"); 
 }
 
@@ -272,6 +296,8 @@ Player.prototype.onKeyDown = function(e) {
     case this.controls.switchC:
       this.movements.switchC = true;
       this.piece.switchColors();
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/switch.m4a";
+
       break;
 
     case this.controls.specialKey:

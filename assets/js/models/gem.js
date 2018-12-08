@@ -1,4 +1,4 @@
-function Gem(ctx) {
+function Gem(ctx, team) { 
   this.name = "";
   this.checks = {
     vertical: false,
@@ -11,7 +11,7 @@ function Gem(ctx) {
 
   this.isMatched = false;
   this.img = new Image();
-  this.img.src = "./assets/images/atleti-sprite-nuevo.png";
+  //this.img.src = "./assets/images/atleti-sprite-ladrillo.png";
   this.img.frames = 8 
   this.img.frameIndex = 0;
   
@@ -24,6 +24,24 @@ function Gem(ctx) {
   this.drawMatchedCount = 0;
 
   this.img.row;
+
+  this.setImages(team);
+}
+
+Gem.prototype.setImages = function(team){
+
+  switch (team) {
+    case 0:
+      this.img.src = "./assets/images/atleti-sprite-ladrillo.png";
+      break;
+      case 1:
+      this.img.src = "./assets/images/atleti-sprite-ladrillo.png";
+      break;
+    case 2:
+      this.img.src = "./assets/images/barsa-sprite-ladrillo.png";
+      break;
+      
+  }
 }
 
 Gem.prototype.configColor = function() {
@@ -64,8 +82,8 @@ Gem.prototype.drawFilling = function(x, y, w, h) {
   this.drawCount++;
   if (this.img.src !== "") {
     
-     this.ctx.fillStyle = this.name;
-     this.ctx.fillRect(x, y, w, h);
+     //this.ctx.fillStyle = this.name;
+     //this.ctx.fillRect(x, y, w, h);
     
     this.ctx.drawImage(
       this.img,

@@ -1,4 +1,4 @@
-function Grid(ctx,score, x, y) {
+function Grid(ctx,score, x, y, conexionDOM) {
   this.ctx = ctx;
   this.score = score;
 
@@ -7,6 +7,8 @@ function Grid(ctx,score, x, y) {
 
   this.x = x || 0;
   this.y = y || 0;
+
+  this.conexionDOM = conexionDOM;
   
   this.matrix = [];
 
@@ -393,6 +395,7 @@ Grid.prototype.handleMatches = function(piece) {
   this.removeChecks();
   
   if (this.hasMatches) {
+    this.conexionDOM.$soundEvents[0].src = "./assets/sound/success.m4a";
     this.hasMatches = false;
     
     setTimeout(function() {

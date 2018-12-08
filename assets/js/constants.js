@@ -56,7 +56,7 @@ var SPEED_MIN = 1;
 var SPEED_GAP = 3;
 var SPEED_FAST_MODE = 5;
 
-var LEVEL_INTERVAL = 1000;
+var LEVEL_INTERVAL = 2500;
 
 //var cont = 0; //pequeña trampa para el registro de puntuaciones...
 

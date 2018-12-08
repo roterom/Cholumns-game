@@ -41,6 +41,9 @@ this.$inputPlayers = $("#input-players");
 this.$btnOk = $(".my-btn-ok");
 
  /************** */
+
+ this.$soundBg = $("#sound-bg");
+ this.$soundEvents = $("#sound-events");
  
 //  this.$start = $("#btn-start").click(function() {
 //    this.play();

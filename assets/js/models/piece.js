@@ -1,8 +1,9 @@
-function Piece(ctx, x, y, special, holded) {
+function Piece(ctx, x, y, team, special, holded) {
 
   this.ctx = ctx;
   this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2); //para que empiece en la mitad
   this.y = y || -(GEM_HEIGTH * (PIECE_SIZE));
+  this.team = team;
 
  
 
@@ -16,17 +17,37 @@ function Piece(ctx, x, y, special, holded) {
   this.isHolded = holded || false;
 
   this.img = new Image();
-  this.img.src = "./assets/images/simeone-special.png";
+  //this.img.src = "./assets/images/simeone-special.png";
+  this.img.src = "";
 
   this.imgBg = new Image();
   this.imgBg.src = "./assets/images/recuadro-60.png"
+
+  this.setImages(this.team);
+}
+
+Piece.prototype.setImages = function(team){
+
+  switch (team) {
+    case 0:
+      this.img.src = "./assets/images/atleti-special.png";
+      break;
+      case 1:
+      this.img.src = "./assets/images/atleti-special.png";
+      break;
+    case 2:
+      this.img.src = "./assets/images/barsa-special.png";
+      break;
+      
+  }
 }
 
 Piece.prototype.getPiece = function() {
 
   this.matrix = [];
   for (var i = 0; i < PIECE_SIZE; i++) {
-    this.matrix.push(new Gem(this.ctx, this.x, (this.y + i*GEM_WIDTH)));
+    //this.matrix.push(new Gem(this.ctx, this.x, (this.y + i*GEM_WIDTH))); comento para probar la eleccion de equipos
+    this.matrix.push(new Gem(this.ctx, this.team, this.x, (this.y + i*GEM_WIDTH)));
     if (this.isSpecial) {
       this.matrix[i].name = "#fff";
       this.matrix[i].img.row = 6;

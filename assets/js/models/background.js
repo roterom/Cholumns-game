@@ -1,4 +1,4 @@
-function Background(ctx, x, y, rival) {
+function Background(ctx, x, y, team) {
   
   this.ctx = ctx;
   this.w =  this.ctx.canvas.width;
@@ -13,12 +13,12 @@ function Background(ctx, x, y, rival) {
   this.img = new Image();
   //this.img.src = "./assets/images/fondo-atleti2.png";
 
-  this.setImages(rival);
+  this.setImages(team);
 }
 
-Background.prototype.setImages = function(rival){
+Background.prototype.setImages = function(team){
 
-    switch (rival) {
+    switch (team) {
       case 0:
         this.img.src = "./assets/images/fondo-atleti-escalado.png";
         break;
