@@ -115,7 +115,7 @@ Player.prototype.start = function() {
       //if ((this.isModeTwoPlayers) && (this.competitionMode.isCompetitionFinished)) {
         
       //}
-    }// else {)
+    } else {  //(hoy 9-12 voy a habilirar el else de nuevo a ver que pasa...
   
     /* if (this.grid.isGameOver) {
       this.stop();
@@ -125,7 +125,7 @@ Player.prototype.start = function() {
       
       if ((this.grid.isCollisionDown(this.piece)) && (!this.grid.isWorking)) {
         //if (this.grid.isCollisionDown(this.piece)) { //*/  //COMENTO PARA VER SI PUEDO HACER BIEN EL GAME OVER
-        this.conexionDOM.$soundEvents[0].src = "./assets/sound/collision-down.m4a";
+        this.conexionDOM.$soundEvents[0].src = "./assets/sound/collision.m4a";
         this.piece.place();
         this.grid.mergePiece(this.piece);
         this.grid.handleMatches(this.piece);
@@ -144,25 +144,35 @@ Player.prototype.start = function() {
       if (((this.timeLevel % LEVEL_INTERVAL) === 0) && (this.speed > SPEED_MIN)) {
         
         this.handleChangeLevel();
+        
 
         if (!this.competitionMode.isCompetitionFinished) {
-          this.handleCompetitionMode();
+          this.checkPenalties();
+          this.conexionDOM.$soundEvents[0].src = "./assets/sound/penalty.m4a";
+          this.grid.handleMatches();
+          //this.handleCompetitionMode();
         }
       }
+
       if ((this.timeSpecialPiece % 4000) === 0) {
         //this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-250+this.y+POS_Y_GRID, true));
           this.specialPieces.push(new Piece(this.ctx, this.x+545+POS_X_GRID, 840+POS_Y_GRID, true));
+          this.conexionDOM.$soundEvents[0].src = "./assets/sound/xtra-special.m4a";
           this.timeSpecialPiece = 0;
       }
 
+      if(this.isModeTwoPlayers) {
+        this.setCompetitionMode();
+      }
       
-    //}
+    }  //vuelvo a hablitar la parte else
   }.bind(this), DRAW_INTERVAL_MS);
 }
 
 Player.prototype.handleChangeLevel = function() {
 
   this.timeLevel = 0;
+  
   if (this.speed < SPEED_FAST_MODE) {
     this.speed--;
   } else {
@@ -173,15 +183,15 @@ Player.prototype.handleChangeLevel = function() {
 }
 
 
-Player.prototype.handleCompetitionMode = function() {
+Player.prototype.setCompetitionMode = function() {
    
   if (this.team === 0) {
     this.competitionMode.setPoints1(this.score.totalPoints);
   } else {
     this.competitionMode.setPoints2(this.score.totalPoints);
   }
-  this.checkPenalties();
-  this.grid.handleMatches();
+  /* this.checkPenalties();
+  this.grid.handleMatches(); */
 
   /* if (this.score.totalPoints > (50 * this.multAux)) {
      
@@ -210,7 +220,8 @@ Player.prototype.penalty = function() {
 
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
     
-    var gem = new Gem(this.ctx, this.x + POS_X_GRID + (i * GEM_WIDTH), this.y + POS_Y_GRID + (NUM_ROWS_GRID * GEM_HEIGTH))
+    //var gem = new Gem(this.ctx, this.x + POS_X_GRID + (i * GEM_WIDTH), this.y + POS_Y_GRID + (NUM_ROWS_GRID * GEM_HEIGTH)); lo comento para ver si funciona con la elección de equipos...
+    var gem = new Gem(this.ctx, this.team);
     gem.configColor();
     gem.isSpecial = false;
 
@@ -228,8 +239,8 @@ Player.prototype.stop = function() {
   $("#game-over").toggle();
   //alert("game over!"); */
 
+  console.log("ENTRO EN EL STOP")
   
-
  
   // this.conexionDOM.$name.val(this.name)
   // this.conexionDOM.$points.text(Math.floor(this.score.totalPoints));
@@ -243,12 +254,26 @@ Player.prototype.stop = function() {
       this.conexionDOM.$points2.text(Math.floor(this.score.totalPoints));
       this.conexionDOM.$gameOver2.show();
     }
+   
+      
     if (this.competitionMode.isCompetitionFinished) {
-      this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-atropos.m4a";
+      console.log(" gaaaame oveeeerrrr");
+     
+      this.conexionDOM.$soundBg[0].src = "";
+      setTimeout(function() {
+        this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-atropos.m4a";
+      }.bind(this),1000);
     }
 
   } else {
-    this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-atropos.m4a";
+    
+      
+      this.conexionDOM.$soundBg[0].src = "";
+      setTimeout(function() {
+        this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-atropos.m4a";
+      }.bind(this),1000);
+
+
     this.conexionDOM.$name.val(this.name)
     this.conexionDOM.$points.text(Math.floor(this.score.totalPoints));
     this.conexionDOM.$gameOver.show();
@@ -302,10 +327,12 @@ Player.prototype.onKeyDown = function(e) {
 
     case this.controls.specialKey:
       this.movements.special = true;
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/special-piece.m4a";
       break;
 
     case this.controls.holdedKey:
       this.movements.holded = true;
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/hold-piece.m4a";
       break;
   }
 }

@@ -38,12 +38,12 @@
 
 //  this.scores = this.getScores();
 
-this.player1;
-this.player2;
+/* this.player1;
+this.player2; */
 
 this.scores = this.getScores();
 this.conexionDOM = new ConexionDOM();
-this.competitionMode = new CompetitionMode();
+
 
 
 // var audio = this.conexionDOM.$audio;
@@ -240,7 +240,7 @@ Game.prototype.setButtons = function() {
     //    this.showHighscore();
     //  }.bind(this));
 
-Game.prototype.reset = function() {
+Game.prototype.resetDOM = function() {
   
   this.conexionDOM.$name.val("");
   this.conexionDOM.$name1.val("");
@@ -291,8 +291,11 @@ Game.prototype.gameOverTwoPlayersMode = function() {
    /*  this.conexionDOM.$gameOver1.hide();
     this.conexionDOM.$gameOver2.hide();
     this.conexionDOM.$main.show(); */
-    this.conexionDOM.$soundBg[0].src = "./assets/sound/intro.m4a";
-    this.reset();
+   
+
+      this.conexionDOM.$soundBg[0].src = "./assets/sound/intro.m4a";
+      
+    this.resetDOM();
   }
 }
 
@@ -431,8 +434,10 @@ Game.prototype.play = function() {
     this.conexionDOM.$main.hide();
   } else { //numPlayers == 2... 
     if ((this.conexionDOM.$name1.val() != 0) && (this.conexionDOM.$name2.val() != 0) &&(this.conexionDOM.$nameTeam2.text())) {
+      this.competitionMode = new CompetitionMode();
       this.player1 = new Player(this.conexionDOM.$canvas1[0], CONTROLS1, 0, 0, 0, this.conexionDOM, true, this.conexionDOM.$name1.val(), this.competitionMode);
       this.player2 = new Player(this.conexionDOM.$canvas2[0], CONTROLS2, window.innerWidth/2 , 0, this.conexionDOM.$teamSelected.selectedIndex, this.conexionDOM, true, this.conexionDOM.$name2.val(), this.competitionMode);
+      
       this.player1.start();
       this.player2.start();
       this.conexionDOM.$canvas1.show();
