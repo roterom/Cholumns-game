@@ -35,7 +35,7 @@ html, body {
 #main {
   position: absolute;
   z-index: 1;
-  background-image: url("../images/fondo-principal2.png");
+  background-image: url("../images/fondo-definitivo.png");
  --background-repeat: no-repeat;
   --background-size: cover;
   height: 100%;
@@ -171,4 +171,22 @@ html, body {
 .game-over span {
   color: red;
   font-size: 2.5rem;
+}
+
+footer {
+  position:fixed;
+  bottom: 0;
+  --margin-bottom: -200px;
+  font-size: 1.4rem;
+  color: #fff;
+  --background-color: rgba(0, 0 , 0, 0.5);
+  width: 100%;
+  z-index: 2;
+}
+
+footer p {
+  margin: 0 1%;
+  text-align: right;
+  line-height: 100%
+  
 }

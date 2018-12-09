@@ -116,9 +116,11 @@ Piece.prototype.place = function() {
 
 Piece.prototype.switchColors = function() {
   
-   // this.matrix.unshift(this.matrix.pop());
-
-   this.matrix.push(this.matrix.shift());
+    this.matrix.unshift(this.matrix.pop());
+ 
+    //this.matrix.push(this.matrix.shift()); 
+   
+  
 }
 
 //PARA INTENTAR HACER LOS 2 PLAYERRSSSS

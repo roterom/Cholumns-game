@@ -59,8 +59,22 @@ Grid.prototype.isCollisionRight = function(piece) {
          (this.matrix[(piece.x + GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0))   */
 
 
+//VOY ACOMENTAR TAMBIEN LOS SIGUIENTE PARA PROBAR SI DESPUES DE LA PARADHIÑA PUEDO MOVER LATERALMENTE (QUE AHORA CON ESA PARADHIÑA NO PUEDO DE MOEMNTO)
+  // return ((piece.x + GEM_WIDTH === this.x + this.w) ||
+  //        (this.matrix[((piece.x + GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + (PIECE_SIZE*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0))  
+  /******HASTA AQUIIIIIIIIIIII */       
+ 
+
+  //probatura para la paradiña...
+  if (this.isCollisionDown(piece)) {
   return ((piece.x + GEM_WIDTH === this.x + this.w) ||
-         (this.matrix[((piece.x + GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + (PIECE_SIZE*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0))  
+         (this.matrix[((piece.x + GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + ((PIECE_SIZE-1)*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0))
+  } else {
+    return ((piece.x + GEM_WIDTH === this.x + this.w) ||
+         (this.matrix[((piece.x + GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + (PIECE_SIZE*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0))
+  }
+         //---------hasta aquí la prueba....
+
 }
 
 Grid.prototype.isCollisionLeft = function(piece) {
@@ -69,10 +83,20 @@ Grid.prototype.isCollisionLeft = function(piece) {
 /* return ((piece.x === this.x) ||
        (this.matrix[(piece.x - GEM_WIDTH)/GEM_WIDTH][Math.floor((piece.y + (PIECE_SIZE*GEM_HEIGTH))/GEM_HEIGTH)] !== 0))  */
 
+//COMENTAMOS PARA LA PARADIÑAAA
+// return ((piece.x === this.x) ||
+//       (this.matrix[((piece.x - GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + (PIECE_SIZE*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0)) 
+//HASTA AQUII....
 
-return ((piece.x === this.x) ||
-      (this.matrix[((piece.x - GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + (PIECE_SIZE*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0)) 
-
+//probatura para la paradiña...
+if (this.isCollisionDown(piece)) {
+  return ((piece.x === this.x) ||
+  (this.matrix[((piece.x - GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + ((PIECE_SIZE-1)*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0));
+} else {
+  return ((piece.x === this.x) ||
+  (this.matrix[((piece.x - GEM_WIDTH) - this.x)/GEM_WIDTH][Math.floor(((piece.y + (PIECE_SIZE*GEM_HEIGTH)) - this.y)/GEM_HEIGTH)] !== 0)) 
+}
+//____________---------hasta aquí la prueba
 
 }
 
@@ -395,10 +419,13 @@ Grid.prototype.handleMatches = function(piece) {
   this.removeChecks();
   
   if (this.hasMatches) {
-    this.conexionDOM.$soundEvents[0].src = "./assets/sound/success.m4a";
+   // this.setTimeout(function() {
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/success.m4a";  //COMENTO ESTO PARA VER SI PUDUEDO CONSEGUIR QUE SUENE EL RUIDO DE "COLISION BAJA" CUANDO BAJO RÄPIDO... 
+  //  }.bind(this), 500);
     this.hasMatches = false;
     
     setTimeout(function() {
+      //this.conexionDOM.$soundEvents[0].src = "./assets/sound/success.m4a";
       this.score.totalPoints += this.score.parcialPoints;
       this.score.parcialPoints = 0;
       this.removeMatches();

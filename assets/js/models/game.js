@@ -59,7 +59,7 @@ this.conexionDOM = new ConexionDOM();
 //this.sounds.play();
 //this.sounds.play(this.sounds.sounds[0]);
 
-this.conexionDOM.$soundBg[0].src = "./assets/sound/intro.m4a";
+this.conexionDOM.$soundBg[0].src = "./assets/sound/intr.m4a";
 //this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-clotho.m4a";
 
 
@@ -267,7 +267,7 @@ Game.prototype.resetDOM = function() {
 
 Game.prototype.gameOverTwoPlayersMode = function() {
 
-  this.addScore(this.conexionDOM.$name.val(), this.conexionDOM.$points.text());
+ // this.addScore(this.conexionDOM.$name.val(), this.conexionDOM.$points.text());
   //this.conexionDOM.$name.val("");
   
   if (this.player1.isFinished) {
@@ -293,8 +293,8 @@ Game.prototype.gameOverTwoPlayersMode = function() {
     this.conexionDOM.$main.show(); */
    
 
-      this.conexionDOM.$soundBg[0].src = "./assets/sound/intro.m4a";
-      
+      this.conexionDOM.$soundBg[0].src = "./assets/sound/intr.m4a";
+
     this.resetDOM();
   }
 }
@@ -352,27 +352,25 @@ Game.prototype.getScores = function() {
 }
 
 Game.prototype.addScore = function(name, points) {
-  //var scores = getScores();
+ 
 
-  
+  /***********PRUEBO A VDER SI GUARDA BIEN LA MÄXIMA PUNTUACION */
+  var scores = this.getScores();
 
-  // scores["S"+cont] = {
-  //   name: name,
-  //   team: team,
-  //   score:value
-  // }
+  if (scores.hasOwnProperty(name)) {
+    if (Number.parseInt(scores[name]) < Number.parseInt(points)) {
+      this.scores[name] = points;
+      localStorage.setItem("scores", JSON.stringify(this.scores));
+    } 
+  } else {
+    this.scores[name] = points;
+    localStorage.setItem("scores", JSON.stringify(this.scores));
+  }
+  ///*************** */
 
-  this.scores[name] = points;
-  /* scores["name"] = name;
-  scores["team"] = team;
-  scores["score"] = value */
-  // var newScore = {
-  // name: name,
-  // team: team,
-  // score:value
-  // }
-
-  localStorage.setItem("scores", JSON.stringify(this.scores));
+  //HASTA AHORA TENÏA FUNCIONANDO ESTAS DOS LINEAS....
+ /*  this.scores[name] = points;
+  localStorage.setItem("scores", JSON.stringify(this.scores)); */
 }
 
  Game.prototype.gameOverOnePlayerMode = function() {
@@ -381,7 +379,7 @@ Game.prototype.addScore = function(name, points) {
   // var team = $("#team").text();
   // var value = $("#points").text();
 
-  this.conexionDOM.$soundBg[0].src = "./assets/sound/intro.m4a";
+  this.conexionDOM.$soundBg[0].src = "./assets/sound/intr.m4a";
 
   if (this.conexionDOM.$name.val()) {
     this.addScore(this.conexionDOM.$name.val(), this.conexionDOM.$points.text());
@@ -423,7 +421,6 @@ Game.prototype.play = function() {
   this.conexionDOM.$main.hide(); */
   //this.conexionDOM.$soundBg[0].src = "";
 
-  this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-clotho.m4a";
 
   var numPlayers = this.conexionDOM.$inputPlayers.val();
   
@@ -432,6 +429,7 @@ Game.prototype.play = function() {
     this.player1.start();
     this.conexionDOM.$canvas1.show();
     this.conexionDOM.$main.hide();
+    this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-clotho.m4a";
   } else { //numPlayers == 2... 
     if ((this.conexionDOM.$name1.val() != 0) && (this.conexionDOM.$name2.val() != 0) &&(this.conexionDOM.$nameTeam2.text())) {
       this.competitionMode = new CompetitionMode();
@@ -443,6 +441,7 @@ Game.prototype.play = function() {
       this.conexionDOM.$canvas1.show();
       this.conexionDOM.$canvas2.show();
       this.conexionDOM.$main.hide();
+      this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-clotho.m4a";
     } else {
       alert("Asegúrese de introducir el nombre de ambos jugadores y la equipo rival")
     }

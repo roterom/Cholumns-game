@@ -47,6 +47,7 @@ function Player(canvasId, controls, x, y, team, conexionDOM, isModeTwoPlayers, n
   this.isFinished = false;
 
   this.multAux = 1; 
+ // this.isEnableEvents = true;
 }
 
 
@@ -98,7 +99,7 @@ Player.prototype.start = function() {
     this.timeLevel++;
     this.timeSpecialPiece++;
 
-    if ((this.piece.y >= this.grid.y) && (this.nextPiece.isEnabled)){
+    if ((this.piece.y >= (this.grid.y - POS_Y_GRID)) && (this.nextPiece.isEnabled)){
      
       this.nextPiece.getPiece();
       this.nextPiece.isEnabled = false;
@@ -125,13 +126,57 @@ Player.prototype.start = function() {
       
       if ((this.grid.isCollisionDown(this.piece)) && (!this.grid.isWorking)) {
         //if (this.grid.isCollisionDown(this.piece)) { //*/  //COMENTO PARA VER SI PUEDO HACER BIEN EL GAME OVER
+       
+         /********PEQUEÑO EXPERIMETNTO (9-12) ******/
+        
+        /* this.piece.place();
         this.conexionDOM.$soundEvents[0].src = "./assets/sound/collision.m4a";
-        this.piece.place();
         this.grid.mergePiece(this.piece);
         this.grid.handleMatches(this.piece);
         
         this.piece.reset(this.nextPiece, this.x, this.y);
-        this.nextPiece.isSpecial = false;
+        this.nextPiece.isSpecial = false; */ 
+        /**********************/
+        ///////////////PRUEBAAAAAAAAAAAAAAAAAAAAAAAAA//////////////////
+
+        this.grid.isWorking = true;
+        this.piece.place();
+        this.conexionDOM.$soundEvents[0].src = "./assets/sound/collision.m4a";
+        if (this.movements.down) {
+        //  this.isEnableEvents = false;
+          //document.removeEventListener("keydown");
+          //event.removeEventListener(event.type, "keydown");
+          this.piece.place();
+          this.grid.mergePiece(this.piece);
+          //event.preventDefault();
+          //document.removeEventListener("keydown", this.onKeyDown);
+          //setTimeout(function() {
+            
+            this.grid.handleMatches(this.piece);
+            this.piece.reset(this.nextPiece, this.x, this.y);
+            this.nextPiece.isSpecial = false;
+          //  this.isEnableEvents =true;
+           //document.addEventListener("keydown", this.onKeyDown.bind(this));
+         // }.bind(this), 500);
+        } else {
+          setTimeout(function() {
+            if (this.grid.isCollisionDown(this.piece)) {
+              this.piece.place();
+              this.grid.mergePiece(this.piece);
+              this.grid.handleMatches(this.piece);
+              this.piece.reset(this.nextPiece, this.x, this.y);
+              this.nextPiece.isSpecial = false;
+            } else {
+              this.grid.isWorking = false;
+            }
+
+          }.bind(this),500);
+        }
+
+
+
+///////////////////////HASTA AQUI/////////////////////////////////////
+
       }
       this.animate();
       this.drawAll();
@@ -146,11 +191,13 @@ Player.prototype.start = function() {
         this.handleChangeLevel();
         
 
-        if (!this.competitionMode.isCompetitionFinished) {
+        if (this.isModeTwoPlayers && (!this.competitionMode.isCompetitionFinished)) {
           this.checkPenalties();
           this.conexionDOM.$soundEvents[0].src = "./assets/sound/penalty.m4a";
           this.grid.handleMatches();
           //this.handleCompetitionMode();
+        } else {
+          this.conexionDOM.$soundEvents[0].src = "./assets/sound/level-up.m4a";
         }
       }
 
@@ -305,36 +352,37 @@ Player.prototype.clearAll = function() {
 
 Player.prototype.onKeyDown = function(e) {
   
-  switch (e.keyCode) {
-    case this.controls.right:
-      this.movements.right = true;
-      break;
+  //if (this.isEnableEvents) {
+    switch (e.keyCode) {
+      case this.controls.right:
+        this.movements.right = true;
+        break;
 
-    case this.controls.left:
-      this.movements.left = true;   
-      break;
+      case this.controls.left:
+        this.movements.left = true;   
+        break;
 
-    case this.controls.down:
-      this.movements.down = true;  
-      break;
+      case this.controls.down:
+        this.movements.down = true;  
+        break;
 
-    case this.controls.switchC:
-      this.movements.switchC = true;
-      this.piece.switchColors();
-      this.conexionDOM.$soundEvents[0].src = "./assets/sound/switch.m4a";
+      case this.controls.switchC:
+        this.movements.switchC = true;
+        //this.piece.switchColors();
 
-      break;
+        break;
 
-    case this.controls.specialKey:
-      this.movements.special = true;
-      this.conexionDOM.$soundEvents[0].src = "./assets/sound/special-piece.m4a";
-      break;
+      case this.controls.specialKey:
+        this.movements.special = true;
+        //this.conexionDOM.$soundEvents[0].src = "./assets/sound/special-piece.m4a";
+        break;
 
-    case this.controls.holdedKey:
-      this.movements.holded = true;
-      this.conexionDOM.$soundEvents[0].src = "./assets/sound/hold-piece.m4a";
-      break;
-  }
+      case this.controls.holdedKey:
+        this.movements.holded = true;
+        //this.conexionDOM.$soundEvents[0].src = "./assets/sound/hold-piece.m4a";
+        break;
+    }
+  //}
 }
 
 Player.prototype.animate = function() {
@@ -352,19 +400,23 @@ Player.prototype.animate = function() {
   }
 
   if (this.movements.down) {
-    if ((!this.grid.isWorking) && (this.animateCount % 3 === 0)) {
-        this.piece.y += GEM_HEIGTH / 2;
-        this.score.totalPoints += 0.25;
+    if ((!this.grid.isWorking) && (this.animateCount % 2 === 0)) {
+        this.piece.y += GEM_HEIGTH / 4;
+        this.score.totalPoints += 0.10;
     }
   } 
 
   if (this.movements.switchC) {
+    
       this.piece.switchColors();
       this.movements.switchC = false;
+      this.conexionDOM.$soundKeys[0].src = "./assets/sound/switch.m4a";
+    
   } 
 
   if (this.movements.special) {
     if (this.specialPieces.length > 1) {  
+        this.conexionDOM.$soundKeys[0].src = "./assets/sound/special-piece.m4a";
         this.nextPiece.takeOutSpecial(this.specialPieces[0]);  //voy a intentar combinar estas dos lineas en una sola...NO ME HA VALIDO DE MOMENTO
         this.specialPieces.pop();
         this.movements.special = false;
@@ -385,19 +437,21 @@ Player.prototype.animate = function() {
 
 Player.prototype.onKeyUp = function(e) {
  
-  switch (e.keyCode) {
-    case this.controls.right:
-      this.movements.right = false;
-      break;
+  //if(this.isEnableEvents) {
+    switch (e.keyCode) {
+      case this.controls.right:
+        this.movements.right = false;
+        break;
 
-    case this.controls.left:
-      this.movements.left = false;   
-      break;
+      case this.controls.left:
+        this.movements.left = false;   
+        break;
 
-    case this.controls.down:
-      this.movements.down = false;  
-      break;
-  }
+      case this.controls.down:
+        this.movements.down = false;  
+        break;
+    }
+  //}
 }
 
 Player.prototype.isGameOver = function() {
@@ -405,7 +459,7 @@ Player.prototype.isGameOver = function() {
   // return this.grid.matrix[0].some(function(e) {
   //         return !(e instanceof Gem);        
   // })
-  for(var i=0; i < NUM_COLUMNS_GRID; i++) {
+  for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
     if (this.grid.matrix[i][-1] instanceof Gem) {
       return true;
     }
@@ -423,11 +477,19 @@ Player.prototype.isGameOver = function() {
 Player.prototype.handleHoldedPiece = function() {
   
   if (!this.piece.isSpecial) {
+
+    this.conexionDOM.$soundKeys[0].src = "./assets/sound/hold-piece.m4a";
     
     if (!this.holdedPiece.matrix.length) { //si es la rimera ver que nos metemos...
-      this.holdedPiece.matrix = this.piece.matrix.slice();
-      this.piece.matrix = this.nextPiece.matrix.slice();
-      this.nextPiece.getPiece();
+      //if (!this.nextPiece.isSpecial) { //...y la siguiente pieza no es la especial...
+        this.holdedPiece.matrix = this.piece.matrix.slice();
+        this.piece.matrix = this.nextPiece.matrix.slice();
+
+        this.piece.isSpecial = this.nextPiece.isSpecial;
+        this.nextPiece.isSpecial = false;
+
+        this.nextPiece.getPiece();
+      //}
     } else { // si ya había una pieza "holded"
       var auxMatrix = this.piece.matrix.slice();
       this.piece.matrix = this.holdedPiece.matrix.slice();
