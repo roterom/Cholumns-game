@@ -7,26 +7,31 @@ var GEM_HEIGTH = 70;
 var NUM_COLORS = 6;
 var PIECE_SIZE = 3;
 
-var DRAW_INTERVAL_MS = 1000 / 60;
-
-/* var KEY_RIGHT = 39;
-var KEY_DOWN = 40;
-var KEY_LEFT = 37;
-var KEY_SPACE = 32;
-var KEY_ALT_GRAPH = 225;
-var KEY_CONTROL = 17;
- */
-var points = 0;
-var totalPoints = 0;
-var numLoop = 1;
-
 var NUM_INIT_SPECIAL_PIECES = 2;
 
 var POS_X_GRID = 100;
 var POS_Y_GRID = 35;
 
-var POS_X_SCORE = 550;
-var POS_Y_SCORE = 300;
+var POS_X_NEXT_PIECE= 500;
+
+var POS_X_HOLDED_PIECE = 500;
+var POS_Y_HOLDED_PIECE = 575;
+
+var POS_X_SCORE = 500;
+var POS_Y_SCORE = 350;
+
+var POS_X_SPECIAL_PIECE = 545;
+var POS_Y_SPECIAL_PIECE = 840;
+
+var POS_X_NUM_SPECIAL_PIECES = 105;
+var POS_Y_NUM_SPECIAL_PIECES = 920;
+
+var POS_Y_TOTAL_POINTS = 80;
+var POS_Y_LEVEL = 140;
+
+
+var INCREASE_POS_Y = 10;
+var INCREASE_POS_Y_MOVEMENT = GEM_HEIGTH / 4;
 
 var POINTS_STANDAR = 30;
 var POINTS_EXTRA = 10;
@@ -38,7 +43,7 @@ var CONTROLS1 = {
   switchC: 32,
   specialKey: 18,
   holdedKey: 225
-}
+};
 
 var CONTROLS2 = {
   right: 39,
@@ -47,7 +52,7 @@ var CONTROLS2 = {
   switchC: 96,
   specialKey: 110,
   holdedKey: 13
-}
+};
 
 var MAX_ANIMATE_COUNT = 10000;
 
@@ -56,10 +61,27 @@ var SPEED_MIN = 1;
 var SPEED_GAP = 3;
 var SPEED_FAST_MODE = 5;
 
-var LEVEL_DURATION = 1982; //OJOOOO; ESTO AL FINAL DE TODO DEBEMOS PONERLO, AL MENOS, A 2500. ESTÄ AHORA A 1000 para pruebas...
+var LEVEL_DURATION = 1906; //OJOOOO; ESTO AL FINAL DE TODO DEBEMOS PONERLO, AL MENOS, A 2500. ESTÄ AHORA A 1000 para pruebas...
 var PENALTY_FRECUENCY = 1000;
+var SPECIAL_FRECUENCY = 4000;
 
-//var cont = 0; //pequeña trampa para el registro de puntuaciones...
+var FRECUENCY_MOVEMENT_R_Y_L = 7;
+var FRECUENCY_MOVEMENT_DOWN = 2;
+
+var FRECUENCY_ANIMATION_GEM = 15;
+var FRECUENCY_ANIMATION_MATCH = 7;
+
+var POINTS_BY_MOVEMENT = 0.10;
+
+var MAX_SCORES = 9;
+
+/******delays of "setTimeout and setIntervals***** */
+var DRAW_INTERVAL_MS = 1000 / 60;
+var DELAY_AFTER_COLLISION = 500;
+var DELAY_VOICE = 1000;
+var DELAY_DRAW_AFTER_PENALTY = 2000;
+var DELAY_AFTER_MATCHES = 1000;
+
 
 
 

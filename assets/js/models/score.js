@@ -1,7 +1,7 @@
 function Score(ctx, x, y) {
 
+  /*******arguments*********** */
   this.ctx = ctx;
-
   this.x = x;
   this.y = y;
 
@@ -18,11 +18,10 @@ Score.prototype.draw =  function() {
 
   this.ctx.font = 'bold 35px Kalam';
   this.ctx.fillStyle = "blue";
-  this.ctx.fillText("Marcador: " + Math.floor(this.totalPoints), this.x, this.y+80);
+  this.ctx.fillText("Marcador: " + Math.floor(this.totalPoints), this.x, this.y + POS_Y_TOTAL_POINTS);
  
   this.ctx.fillStyle = "#fff";
-  this.ctx.fillText("Nivel: " + this.level, this.x, this.y+140);
+  this.ctx.fillText("Nivel: " + this.level, this.x, this.y + POS_Y_LEVEL);
 
-  this.ctx.font = '70px Calibri';
-  //this.ctx.fillText(Math.floor(this.totalPoints), this.x, this.y+150);
+  //this.ctx.font = '70px Calibri';
 }

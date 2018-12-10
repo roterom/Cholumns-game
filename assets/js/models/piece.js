@@ -1,11 +1,12 @@
 function Piece(ctx, x, y, team, special, holded) {
 
+  /*********arguments********** */
   this.ctx = ctx;
   this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2); //para que empiece en la mitad
   this.y = y || -(GEM_HEIGTH * (PIECE_SIZE));
   this.team = team;
-
- 
+  this.isSpecial = special || false;
+  this.isHolded = holded || false;
 
   this.w = GEM_WIDTH;
   this.h = GEM_HEIGTH * PIECE_SIZE;
@@ -13,11 +14,8 @@ function Piece(ctx, x, y, team, special, holded) {
 
   this.isEnabled = true;
 
-  this.isSpecial = special || false;
-  this.isHolded = holded || false;
 
   this.img = new Image();
-  //this.img.src = "./assets/images/simeone-special.png";
   this.img.src = "";
 
   this.imgBg = new Image();
@@ -25,6 +23,7 @@ function Piece(ctx, x, y, team, special, holded) {
 
   this.setImages(this.team);
 }
+
 
 Piece.prototype.setImages = function(team){
 
@@ -38,16 +37,15 @@ Piece.prototype.setImages = function(team){
     case 2:
       this.img.src = "./assets/images/barsa-special.png";
       break;
-      
   }
 }
+
 
 Piece.prototype.getPiece = function() {
 
   this.matrix = [];
   for (var i = 0; i < PIECE_SIZE; i++) {
-    //this.matrix.push(new Gem(this.ctx, this.x, (this.y + i*GEM_WIDTH))); comento para probar la eleccion de equipos
-    this.matrix.push(new Gem(this.ctx, this.team, this.x, (this.y + i*GEM_WIDTH)));
+    this.matrix.push(new Gem(this.ctx, this.team));
     if (this.isSpecial) {
       this.matrix[i].name = "#fff";
       this.matrix[i].img.row = 6;
@@ -71,16 +69,17 @@ Piece.prototype.draw = function() {
   this.ctx.fill
    
   for (var i = 0; i < this.matrix.length; i++) {
-
     this.matrix[i].drawFilling(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH);
     this.ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
     this.ctx.lineWidth = 1;
     this.matrix[i].drawBorder(this.x, this.y + i*GEM_HEIGTH, GEM_WIDTH, GEM_HEIGTH); //
   }
+
   this.ctx.lineWidth = 3;
   this.ctx.strokeStyle = "rgba(0, 0, 0, 1.0)";
   this.ctx.strokeRect(this.x, this.y, this.w, this.h);
 }
+
 
 Piece.prototype.drawSpecial = function(numSpecials) {
   
@@ -91,22 +90,15 @@ Piece.prototype.drawSpecial = function(numSpecials) {
     GEM_WIDTH,
     GEM_HEIGTH
   );
-
-  // this.matrix[0].drawFilling(this.x, this.y, GEM_WIDTH, GEM_HEIGTH);
   this.ctx.lineWidth = 3;
   this.ctx.strokeStyle = "rgba(0, 0, 0, 1.0)";
   this.ctx.strokeRect(this.x, this.y, GEM_WIDTH, GEM_HEIGTH);
 
   this.ctx.font = 'bold 40px Kalam';
   this.ctx.strokeStyle = "white";
-  this.ctx.strokeText( "X " + numSpecials,this.x+105, 920);
+  this.ctx.strokeText( "X " + numSpecials,this.x + POS_X_NUM_SPECIAL_PIECES, POS_Y_NUM_SPECIAL_PIECES);
 }
 
-//PROBANDO LOS 2 PLAYEERRSSS
-/* Piece.prototype.place = function() {
-  
-  this.y = (Math.floor((this.y + this.h)/GEM_HEIGTH) - PIECE_SIZE) * GEM_HEIGTH;
-} */
 
 Piece.prototype.place = function() {
   
@@ -116,26 +108,9 @@ Piece.prototype.place = function() {
 
 Piece.prototype.switchColors = function() {
   
-    this.matrix.unshift(this.matrix.pop());
- 
-    //this.matrix.push(this.matrix.shift()); 
-   
-  
+    this.matrix.unshift(this.matrix.pop());  
 }
 
-//PARA INTENTAR HACER LOS 2 PLAYERRSSSS
-/* Piece.prototype.reset = function(next) {
-
-  if (next) {
-    this.matrix = next.matrix;
-    next.isEnabled = true;
-    this.isSpecial = next.isSpecial;
-  } else {
-    this.getPiece();
-  }
-  this.x = (NUM_COLUMNS_GRID * GEM_WIDTH) / 2; //para que empiece en la mitad
-  this.y = -(GEM_HEIGTH * (PIECE_SIZE)); 
-} */
 
 Piece.prototype.reset = function(next, canvasX, canvasY) {
 
@@ -149,6 +124,7 @@ Piece.prototype.reset = function(next, canvasX, canvasY) {
   this.x = ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID + canvasX; //para que empiece en la mitad
   this.y = (-(GEM_HEIGTH * (PIECE_SIZE))) + POS_Y_GRID + canvasY; 
 }
+
 
 Piece.prototype.takeOutSpecial = function(special) {
   

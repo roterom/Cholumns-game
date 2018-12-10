@@ -47,18 +47,18 @@ function Sounds(){
   ];
 }
 
-/* Sounds.prototype.play = function(track){
-  new Audio("assets/sound/" + this.sounds[track]).play();
-}; */
 
 Sounds.prototype.getPathBattle = function(){
 
   var track = Number.parseInt(Math.random() * this.soundsBattle.length); 
+
   return ("./assets/sound/battle/" + this.soundsBattle[track]);
 };
+
 
 Sounds.prototype.getPathGameOver = function(track){
 
   var track = Number.parseInt(Math.random() * this.soundsBattle.length); 
+  
   return ("./assets/sound/game-over/" + this.soundsGameOver[track]);
 };
