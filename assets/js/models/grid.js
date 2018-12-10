@@ -420,7 +420,7 @@ Grid.prototype.handleMatches = function(piece) {
   
   if (this.hasMatches) {
    // this.setTimeout(function() {
-      this.conexionDOM.$soundEvents[0].src = "./assets/sound/success.m4a";  //COMENTO ESTO PARA VER SI PUDUEDO CONSEGUIR QUE SUENE EL RUIDO DE "COLISION BAJA" CUANDO BAJO RÄPIDO... 
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/success.m4a";  //COMENTO ESTO PARA VER SI PUDUEDO CONSEGUIR QUE SUENE EL RUIDO DE "COLISION BAJA" CUANDO BAJO RÄPIDO... 
   //  }.bind(this), 500);
     this.hasMatches = false;
     

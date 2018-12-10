@@ -24,6 +24,7 @@ function Player(canvasId, controls, x, y, team, conexionDOM, isModeTwoPlayers, n
 
   this.timeLevel = 0;
   this.timeSpecialPiece = 0;
+  this.timePenalty = 0;
 
   this.speed = SPEED_INIT;
 
@@ -47,6 +48,8 @@ function Player(canvasId, controls, x, y, team, conexionDOM, isModeTwoPlayers, n
   this.isFinished = false;
 
   this.multAux = 1; 
+
+  this.voices = new Sounds();
  // this.isEnableEvents = true;
 }
 
@@ -98,6 +101,7 @@ Player.prototype.start = function() {
     this.drawCount++;
     this.timeLevel++;
     this.timeSpecialPiece++;
+    this.timePenalty++;
 
     if ((this.piece.y >= (this.grid.y - POS_Y_GRID)) && (this.nextPiece.isEnabled)){
      
@@ -111,7 +115,7 @@ Player.prototype.start = function() {
     }  */
 
     if (this.isGameOver()) {
-      this.conexionDOM.$soundEvents[0].src = "./assets/sound/game-over.m4a"; //ESTO AQUÏ NO ESTA FUNCIONANDO DEL TODO...(el sonido digo)
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/game-over.m4a"; //ESTO AQUÏ NO ESTA FUNCIONANDO DEL TODO...(el sonido digo)
       this.stop();
       //if ((this.isModeTwoPlayers) && (this.competitionMode.isCompetitionFinished)) {
         
@@ -141,7 +145,7 @@ Player.prototype.start = function() {
 
         this.grid.isWorking = true;
         this.piece.place();
-        this.conexionDOM.$soundEvents[0].src = "./assets/sound/collision.m4a";
+        this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/collision.m4a";
         if (this.movements.down) {
         //  this.isEnableEvents = false;
           //document.removeEventListener("keydown");
@@ -186,25 +190,60 @@ Player.prototype.start = function() {
         this.drawCount = 0;
       }
 
-      if (((this.timeLevel % LEVEL_INTERVAL) === 0) && (this.speed > SPEED_MIN)) {
+      if (((this.timeLevel % LEVEL_DURATION) === 0) && (this.speed > SPEED_MIN)) {
         
         this.handleChangeLevel();
+
+        //PROBANDO LO DEL LOS MENSAJES
+        // $("#messages").fadeIn(3000);
+        // //this.conexionDOM.$messages[0].fadeIn();
+        // setTimeout(function() {
+        //   $("#messages").hide();
+        //   //this.conexionDOM.$messages[0].fadeOut();
+        // }.bint(this), 5000);
+        ////////////HASTA AQUI////////////
         
 
-        if (this.isModeTwoPlayers && (!this.competitionMode.isCompetitionFinished)) {
+
+        //VOY A AISLARLO PARA PONER LOS PENALTIS CON SU CONTADOR CORRESPONDIENE (HASTA HOY 10-12) FUNCIONA PERFECTO
+       /*  if (this.isModeTwoPlayers && (!this.competitionMode.isCompetitionFinished)) {
           this.checkPenalties();
-          this.conexionDOM.$soundEvents[0].src = "./assets/sound/penalty.m4a";
+          this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/penalty.m4a";
+
+          //probando lo de la VOCESSSSSSSSSSSSSSSSSSS
+          var trackPath = this.voices.getPathBattle();
+          this.conexionDOM.$soundVoices[0].src = trackPath;
+         //------------------------------------------------
+         
+
           this.grid.handleMatches();
           //this.handleCompetitionMode();
         } else {
-          this.conexionDOM.$soundEvents[0].src = "./assets/sound/level-up.m4a";
+          this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/level-up.m4a";
+        } */
+        //-----------------comento justo hasta aqui por si aca...
+
+        this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/level-up.m4a";
+      }
+
+      if ((this.timePenalty % PENALTY_FRECUENCY) === 0) {
+        this.timePenalty = 0;
+        if (this.isModeTwoPlayers && (!this.competitionMode.isCompetitionFinished)) {
+          this.checkPenalties();
+          this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/penalty.m4a";
+          var trackPath = this.voices.getPathBattle();
+          this.conexionDOM.$soundVoices[0].src = trackPath;
+          this.grid.handleMatches();
         }
       }
+
+
+
 
       if ((this.timeSpecialPiece % 4000) === 0) {
         //this.specialPieces.push(new Piece(this.ctx, this.x+500+POS_X_GRID, this.ctx.canvas.height-250+this.y+POS_Y_GRID, true));
           this.specialPieces.push(new Piece(this.ctx, this.x+545+POS_X_GRID, 840+POS_Y_GRID, true));
-          this.conexionDOM.$soundEvents[0].src = "./assets/sound/xtra-special.m4a";
+          this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/xtra-special.m4a";
           this.timeSpecialPiece = 0;
       }
 
@@ -275,6 +314,12 @@ Player.prototype.penalty = function() {
     this.grid.matrix[i].push(gem);
     this.grid.matrix[i].shift();
   }
+
+  //voy a intentar a la vez retrasar la ficha una fila para evitar comprotamientos estraños cuando sube todo el grid
+  this.piece.y -= GEM_HEIGTH;  
+  // for (var i = 0; i < PIECE_SIZE; i++) {
+
+  // }
 }
 
 
@@ -308,8 +353,13 @@ Player.prototype.stop = function() {
      
       this.conexionDOM.$soundBg[0].src = "";
       setTimeout(function() {
-        this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-atropos.m4a";
+        this.conexionDOM.$soundBg[0].src = "./assets/sound/background/columns-atropos.m4a";
       }.bind(this),1000);
+    } else {
+      setTimeout(function() {
+        var trackPath = this.voices.getPathGameOver();
+        this.conexionDOM.$soundVoices[0].src = trackPath;
+      }.bind(this),2000);
     }
 
   } else {
@@ -317,7 +367,7 @@ Player.prototype.stop = function() {
       
       this.conexionDOM.$soundBg[0].src = "";
       setTimeout(function() {
-        this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-atropos.m4a";
+        this.conexionDOM.$soundBg[0].src = "./assets/sound/background/columns-atropos.m4a";
       }.bind(this),1000);
 
 
@@ -410,13 +460,13 @@ Player.prototype.animate = function() {
     
       this.piece.switchColors();
       this.movements.switchC = false;
-      this.conexionDOM.$soundKeys[0].src = "./assets/sound/switch.m4a";
+      this.conexionDOM.$soundKeys[0].src = "./assets/sound/keys/switch.m4a";
     
   } 
 
   if (this.movements.special) {
     if (this.specialPieces.length > 1) {  
-        this.conexionDOM.$soundKeys[0].src = "./assets/sound/special-piece.m4a";
+        this.conexionDOM.$soundKeys[0].src = "./assets/sound/keys/special-piece.m4a";
         this.nextPiece.takeOutSpecial(this.specialPieces[0]);  //voy a intentar combinar estas dos lineas en una sola...NO ME HA VALIDO DE MOMENTO
         this.specialPieces.pop();
         this.movements.special = false;
@@ -478,7 +528,7 @@ Player.prototype.handleHoldedPiece = function() {
   
   if (!this.piece.isSpecial) {
 
-    this.conexionDOM.$soundKeys[0].src = "./assets/sound/hold-piece.m4a";
+    this.conexionDOM.$soundKeys[0].src = "./assets/sound/keys/hold-piece.m4a";
     
     if (!this.holdedPiece.matrix.length) { //si es la rimera ver que nos metemos...
       //if (!this.nextPiece.isSpecial) { //...y la siguiente pieza no es la especial...

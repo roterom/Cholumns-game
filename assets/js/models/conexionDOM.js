@@ -45,6 +45,11 @@ this.$btnOk = $(".my-btn-ok");
  this.$soundBg = $("#sound-bg");
  this.$soundEvents = $("#sound-events");
  this.$soundKeys = $("#sound-keys");
+ this.$soundVoices = $("#sound-voices");
+
+
+ ///PRUEBA PARA VISUALIZAR MENSAJES!
+ this.$messages = $("#messages p");
  
 //  this.$start = $("#btn-start").click(function() {
 //    this.play();

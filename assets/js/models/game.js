@@ -59,7 +59,7 @@ this.conexionDOM = new ConexionDOM();
 //this.sounds.play();
 //this.sounds.play(this.sounds.sounds[0]);
 
-this.conexionDOM.$soundBg[0].src = "./assets/sound/intr.m4a";
+this.conexionDOM.$soundBg[0].src = "./assets/sound/background/intro.m4a";
 //this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-clotho.m4a";
 
 
@@ -262,7 +262,7 @@ Game.prototype.resetDOM = function() {
   this.conexionDOM.$canvas1.hide();
   this.conexionDOM.$canvas2.hide();
 
-  this.conexionDOM.$main.show();
+  this.conexionDOM.$main.fadeIn();
 }
 
 Game.prototype.gameOverTwoPlayersMode = function() {
@@ -293,7 +293,7 @@ Game.prototype.gameOverTwoPlayersMode = function() {
     this.conexionDOM.$main.show(); */
    
 
-      this.conexionDOM.$soundBg[0].src = "./assets/sound/intr.m4a";
+      this.conexionDOM.$soundBg[0].src = "./assets/sound/background/intro.m4a";
 
     this.resetDOM();
   }
@@ -379,15 +379,22 @@ Game.prototype.addScore = function(name, points) {
   // var team = $("#team").text();
   // var value = $("#points").text();
 
-  this.conexionDOM.$soundBg[0].src = "./assets/sound/intr.m4a";
+  this.conexionDOM.$soundBg[0].src = "./assets/sound/background/intro.m4a";
 
   if (this.conexionDOM.$name.val()) {
     this.addScore(this.conexionDOM.$name.val(), this.conexionDOM.$points.text());
     this.conexionDOM.$name.val("");
   }
   //this.conexionDOM.$gameOver.css("margin-left", "-375px");
+
+
+
   this.conexionDOM.$gameOver.hide();
-  this.conexionDOM.$main.show();
+  this.conexionDOM.$main.fadeIn();
+
+
+
+
  // window.location.reload()
   /* $("#game-over").toggle();
   $("#main").toggle(); */ 
@@ -409,6 +416,14 @@ Game.prototype.setRival = function() {
   }
 }
 Game.prototype.play = function() {
+
+
+
+  //SOLO ES UNA PRUEBAAA
+  $("#messages").fadeOut(3000);
+/*************************************** */
+
+
 /* 
   this.player1 = new Player(this.conexionDOM.$canvas1, CONTROLS1, 0, 0, this.conexionDOM.$teamSelected.selectedIndex, this.conexionDOM);
   this.player1.start();
@@ -428,8 +443,8 @@ Game.prototype.play = function() {
     this.player1 = new Player(this.conexionDOM.$canvas1[0], CONTROLS1, 0, 0, this.conexionDOM.$teamSelected.selectedIndex, this.conexionDOM, false);
     this.player1.start();
     this.conexionDOM.$canvas1.show();
-    this.conexionDOM.$main.hide();
-    this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-clotho.m4a";
+    this.conexionDOM.$main.fadeOut(2000);
+    this.conexionDOM.$soundBg[0].src = "./assets/sound/background/columns-clotho.m4a";
   } else { //numPlayers == 2... 
     if ((this.conexionDOM.$name1.val() != 0) && (this.conexionDOM.$name2.val() != 0) &&(this.conexionDOM.$nameTeam2.text())) {
       this.competitionMode = new CompetitionMode();
@@ -438,10 +453,15 @@ Game.prototype.play = function() {
       
       this.player1.start();
       this.player2.start();
+
+
       this.conexionDOM.$canvas1.show();
       this.conexionDOM.$canvas2.show();
-      this.conexionDOM.$main.hide();
-      this.conexionDOM.$soundBg[0].src = "./assets/sound/columns-clotho.m4a";
+      this.conexionDOM.$main.fadeOut(2000);
+
+
+
+      this.conexionDOM.$soundBg[0].src = "./assets/sound/background/columns-clotho.m4a";
     } else {
       alert("Asegúrese de introducir el nombre de ambos jugadores y la equipo rival")
     }

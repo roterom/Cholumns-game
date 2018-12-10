@@ -56,7 +56,8 @@ var SPEED_MIN = 1;
 var SPEED_GAP = 3;
 var SPEED_FAST_MODE = 5;
 
-var LEVEL_INTERVAL = 1000; //OJOOOO; ESTO AL FINAL DE TODO DEBEMOS PONERLO, AL MENOS, A 2500. ESTÄ AHORA A 1000 para pruebas...
+var LEVEL_DURATION = 1982; //OJOOOO; ESTO AL FINAL DE TODO DEBEMOS PONERLO, AL MENOS, A 2500. ESTÄ AHORA A 1000 para pruebas...
+var PENALTY_FRECUENCY = 1000;
 
 //var cont = 0; //pequeña trampa para el registro de puntuaciones...
 
