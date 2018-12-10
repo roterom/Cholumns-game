@@ -46,10 +46,12 @@ this.$btnOk = $(".my-btn-ok");
  this.$soundEvents = $("#sound-events");
  this.$soundKeys = $("#sound-keys");
  this.$soundVoices = $("#sound-voices");
+/*  this.$soundMagic = $("#sound-magic"); */
 
 
- ///PRUEBA PARA VISUALIZAR MENSAJES!
- this.$messages = $("#messages p");
+ this.$imgCompetitionPlayer1 = $("#img-competition-player1");
+ this.$imgCompetitionPlayer2 = $("#img-competition-player2");
+
  
 //  this.$start = $("#btn-start").click(function() {
 //    this.play();

@@ -79,18 +79,19 @@ html, body {
 .card {
   background-color: rgba(255, 255, 255, 0.9);
   color: red;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 #instruccions,#controls, #highscore {
   position: absolute;
-  z-index: 4;  
+  z-index: 5;  
   width: 100%;
   padding: 0 5px;
 }
 
 #controls h3 {
   text-decoration: underline;
+  
 }
 
 /* #controls {
@@ -119,10 +120,11 @@ html, body {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px dashed;
+  font-size: 1.4rem;
 }
 
 .header-score {
-  font-size: 1.3rem;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #000;
 }
@@ -191,17 +193,22 @@ footer p {
   
 }
 
-#messages {
+#img-competition-player1 {
   position: fixed;
-  z-index: +3;
-  top: 50%;
-  left: 50%;
-  --display: none;
+  width: 525px;
+  height: 600px;
+  top: 15%;
+  left: 55px;
+  z-index: 2;
+  display: none;
 }
 
-#messages p {
-  font-size: 5rem;
-  color: #fff;
- --display: none;
+#img-competition-player2 {
+  position: fixed;
+  width: 525px;
+  height: 600px;
+  top: 15%;
+  right: 350px;
+  z-index: 2;
+  display: none;
 }
-

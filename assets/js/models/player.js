@@ -51,6 +51,8 @@ function Player(canvasId, controls, x, y, team, conexionDOM, isModeTwoPlayers, n
 
   this.voices = new Sounds();
  // this.isEnableEvents = true;
+
+ this.drawIntervalId = undefined;
 }
 
 
@@ -86,6 +88,9 @@ Player.prototype.setListeners = function() {
 Player.prototype.start = function() {
 
   console.log("comienza el juego!");
+  if (!this.isRunning()) {
+
+
   this.grid.reset();
   
   this.piece.getPiece();
@@ -159,6 +164,11 @@ Player.prototype.start = function() {
             this.grid.handleMatches(this.piece);
             this.piece.reset(this.nextPiece, this.x, this.y);
             this.nextPiece.isSpecial = false;
+            /* if (this.piece.isSpecial) {
+              this.conexionDOM.$soundMagic[0].src = "./assets/sound/events/magic.m4a";
+            } else {
+              this.conexionDOM.$soundMagic[0].src ="";
+            } */
           //  this.isEnableEvents =true;
            //document.addEventListener("keydown", this.onKeyDown.bind(this));
          // }.bind(this), 500);
@@ -170,6 +180,9 @@ Player.prototype.start = function() {
               this.grid.handleMatches(this.piece);
               this.piece.reset(this.nextPiece, this.x, this.y);
               this.nextPiece.isSpecial = false;
+              if (this.piece.isSpecial) {
+                this.conexionDOM.$soundMagic[0].src = "./assets/sound/events/magic.m4a";
+              }
             } else {
               this.grid.isWorking = false;
             }
@@ -177,7 +190,7 @@ Player.prototype.start = function() {
           }.bind(this),500);
         }
 
-
+       
 
 ///////////////////////HASTA AQUI/////////////////////////////////////
 
@@ -231,8 +244,10 @@ Player.prototype.start = function() {
         if (this.isModeTwoPlayers && (!this.competitionMode.isCompetitionFinished)) {
           this.checkPenalties();
           this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/penalty.m4a";
-          var trackPath = this.voices.getPathBattle();
-          this.conexionDOM.$soundVoices[0].src = trackPath;
+          setTimeout(function() {
+            var trackPath = this.voices.getPathBattle();
+            this.conexionDOM.$soundVoices[0].src = trackPath;
+          }.bind(this), 1000);
           this.grid.handleMatches();
         }
       }
@@ -253,6 +268,7 @@ Player.prototype.start = function() {
       
     }  //vuelvo a hablitar la parte else
   }.bind(this), DRAW_INTERVAL_MS);
+}
 }
 
 Player.prototype.handleChangeLevel = function() {
@@ -292,11 +308,31 @@ Player.prototype.checkPenalties = function() {
 
   if ((this.team === 0) && (this.competitionMode.pointsPlayer1 < this.competitionMode.pointsPlayer2)) {
     console.log("es penalty contra player 1");
+    this.conexionDOM.$imgCompetitionPlayer1[0].src = "./assets/images/red-crux.png";
+    this.conexionDOM.$imgCompetitionPlayer2[0].src = "./assets/images/green-tick.png";
+    this.conexionDOM.$imgCompetitionPlayer1.fadeIn();
+    this.conexionDOM.$imgCompetitionPlayer2.fadeIn();
+   // setTimeout(function() {
+      this.conexionDOM.$imgCompetitionPlayer1.fadeOut(2000);
+      this.conexionDOM.$imgCompetitionPlayer2.fadeOut(2000);
+   // }.bind(this), 1500)
+
+
+
     this.penalty();
   } 
   
   if ((this.team != 0) && (this.competitionMode.pointsPlayer2 < this.competitionMode.pointsPlayer1)) {
     console.log("es penalty contra player 2");
+
+    this.conexionDOM.$imgCompetitionPlayer1[0].src = "./assets/images/green-tick.png";
+    this.conexionDOM.$imgCompetitionPlayer2[0].src = "./assets/images/red-crux.png";
+    this.conexionDOM.$imgCompetitionPlayer1.fadeIn();
+    this.conexionDOM.$imgCompetitionPlayer2.fadeIn();
+    this.conexionDOM.$imgCompetitionPlayer1.fadeOut(2000);
+    this.conexionDOM.$imgCompetitionPlayer2.fadeOut(2000);
+
+
     this.penalty();
   }
 }
@@ -377,6 +413,7 @@ Player.prototype.stop = function() {
   }
 
   clearInterval(this.drawIntervalId);
+  this.drawIntervalId = undefined;
   this.isFinished = true;
   this.competitionMode.isCompetitionFinished = true;
   //alert("game over!"); 
@@ -398,6 +435,10 @@ Player.prototype.drawAll = function() {
 Player.prototype.clearAll = function() {
  
   this.ctx.clearRect(this.x, this.y, this.w, this.h);
+}
+
+Player.prototype.isRunning = function() {
+  return this.drawIntervalId !== undefined;
 }
 
 Player.prototype.onKeyDown = function(e) {

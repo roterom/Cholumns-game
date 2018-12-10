@@ -25,20 +25,20 @@
         <div class="col-sm-4"><button id="btn-goal-game" class="btn btn-primary btn-lg my-btn col-sm-7 py-2" type="button" data-toggle="collapse" data-target="#instruccions" aria-expanded="false" aria-controls="instruccions">OBJETIVO DEL JUEGO</button></div>
       </div>
       <div class="row mx-3">
-        <div class="col-sm-5">
+        <div class="col-sm-8">
           <div class="collapse multi-collapse" id="instruccions">
             <div class="card card-body text-left">
-              ¡Ayuda al Cholo y los suyos a permanecer el mayor tiempo posible en el terreno de juego!<br>
+              <p>¡Ayuda al Cholo y los suyos a permanecer el mayor tiempo posible en el terreno de juego!</p>
 
-              El juego tiene lugar en una especie de estrecho pozo rectangular análogo al del Tetris. Columnas compuestas por tres piezas diferentes aparecen, una a una, desde la cima del pozo y caen hasta su fondo, aterrizando bien en su base o sobre otras columnas caídas previamente.<br>
+              <p>El juego tiene lugar en una especie de estrecho pozo rectangular análogo al del Tetris. Columnas compuestas por tres piezas diferentes aparecen, una a una, desde la cima del pozo y caen hasta su fondo, aterrizando bien en su base o sobre otras columnas caídas previamente.</p>
               
-              Mientras cae, puedes mover la columna a izquierda y derecha, así como rotar las posiciones de las piezas que la componen.<br>
+              <p>Mientras cae, puedes mover la columna a izquierda y derecha, así como rotar las posiciones de las piezas que la componen.</p>
               
-              Si tras caer una columna hay en el pozo tres o más piezas iguales conectadas en línea recta tanto horizontal, como vertical o diagonalmente, dichas piezas desaparecen; reposicionándose el resto de piezas por efecto de la gravedad. Si dicho reposicionamiento vuelve a provocar que tres o más piezas iguales vuelvan a alinearse, estas también desaparecen y el montón restante vuelve a recolocarse. Este proceso se repite tantas veces como sea necesario.<br>
+            <p>Si tras caer una columna hay en el pozo tres o más piezas iguales conectadas en línea recta tanto horizontal, como vertical o diagonalmente, dichas piezas desaparecen; reposicionándose el resto de piezas por efecto de la gravedad. Si dicho reposicionamiento vuelve a provocar que tres o más piezas iguales vuelvan a alinearse, estas también desaparecen y el montón restante vuelve a recolocarse. Este proceso se repite tantas veces como sea necesario.</p>
               
-              Al inicio del juego, cuentas con una pieza especial (pieza mágica). Esta brilla en diferentes colores y, al aterrizar, destruye todas las piezas del mismo color que la que se encuentra bajo ella. Podrás ir consiguiendo más piezás mágicas a medida que vayas consiguiendo puntos.<br>
+              <p>Al inicio del juego, cuentas con una pieza especial (pieza mágica). Esta brilla en diferentes colores y, al aterrizar, destruye todas las piezas del mismo color que la que se encuentra bajo ella. Podrás ir consiguiendo más piezás mágicas a medida que vayas consiguiendo puntos.</p>
               
-              Como en el Tetris, las columnas caerán a un ritmo cada vez mayor a medida que vayas progresando en el juego. El objetivo del juego es jugar el mayor tiempo posible antes de que el pozo se llene de piezas.<br>
+              <p>Como en el Tetris, las columnas caerán a un ritmo cada vez mayor a medida que vayas progresando en el juego. El objetivo del juego es jugar el mayor tiempo posible antes de que el pozo se llene de piezas.</p>
             </div>
           </div>
         </div>
@@ -169,7 +169,6 @@ Como Tetris, las columnas caen a un ritmo cada vez mayor a medida que el jugador
               <option selected="" value="0">Elija un equipo...</option>
               <option value="1">ATLÉTICO DE MADRID</option>
               <option value="2">F.C. BARCELONA</option>
-              <option value="3">REAL MADRID</option>
           </select>
         </div>
 
@@ -245,9 +244,14 @@ Como Tetris, las columnas caen a un ritmo cada vez mayor a medida que el jugador
 
 
 
-        <div id="messages">
-          <p>PROBANNDOOOO</p>
-        </div>
+
+      <div>
+        <img id="img-competition-player1" src="./assets/images/green-tick.png" alt="">
+      </div>
+
+      <div>
+        <img id="img-competition-player2" src="./assets/images/red-crux.png" alt="">
+      </div>
 
 
 
@@ -266,6 +270,7 @@ Como Tetris, las columnas caen a un ritmo cada vez mayor a medida que el jugador
 <embed id="sound-events" width="200" height="100" type="audio/mpeg"/>
 <embed id="sound-keys" width="200" height="100" type="audio/mpeg"/>
 <embed id="sound-voices" width="200" height="100" volume ="100" type="audio/mpeg"/>
+<!-- <embed id="sound-magic" width="200" height="100" volume ="100" type="audio/mpeg"/> -->
 
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
