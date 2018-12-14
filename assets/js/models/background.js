@@ -18,7 +18,6 @@ function Background(ctx, x, y, team) {
 Background.prototype.setImages = function(team){
 
   switch (team) {
-
     case 0:
       this.img.src = "./assets/images/fondo-atleti-escalado.png";
       break;

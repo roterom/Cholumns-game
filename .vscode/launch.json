@@ -8,7 +8,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",
-      "url": "file:///home/rodrigo/IRONHACK/code/module-1/THE-GAME/index.html",
+      "url": "file:///home/rodrigo/IRONHACK/code/module-1/CHOLUMNS-game/index.html",
       "webRoot": "${workspaceFolder}"
     }
   ]

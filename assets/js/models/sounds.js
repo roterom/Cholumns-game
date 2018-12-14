@@ -1,5 +1,6 @@
 function Sounds(){
   
+  //array for the penaltys in ModeCompetition (2 players)
   this.soundsBattle = [
     "a_fregar.m4a",
     "a_pique_portaaviones.m4a",
@@ -30,6 +31,7 @@ function Sounds(){
     "yo_no_sido.m4a"
   ];
 
+  //array for the game over y ModeCompetiton (2 players)
   this.soundsGameOver = [
     "ah_la_muerte.m4a",
     "con_el_llevara_nada.m4a",

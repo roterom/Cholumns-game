@@ -22,6 +22,4 @@ Score.prototype.draw =  function() {
  
   this.ctx.fillStyle = "#fff";
   this.ctx.fillText("Nivel: " + this.level, this.x, this.y + POS_Y_LEVEL);
-
-  //this.ctx.font = '70px Calibri';
 }

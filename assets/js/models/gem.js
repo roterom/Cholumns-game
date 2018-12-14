@@ -4,7 +4,7 @@ function Gem(ctx, team) {
   this.ctx = ctx;
   this.name = "";
 
-  this.checks = {
+  this.checks = {           //will help us to know which check directions have already been made on the cell/gem
     vertical: false,
     horizontal: false,
     diagonal2: false,
@@ -19,7 +19,7 @@ function Gem(ctx, team) {
   this.drawCount = 0;
 
   this.imgMatched = new Image();
-  this.imgMatched.src = "./assets/images/matched2-sprite.png";
+  this.imgMatched.src = "./assets/images/matched-sprite.png";
   this.imgMatched.frames = 10 
   this.imgMatched.frameIndex = 0;
   this.drawMatchedCount = 0;
@@ -54,34 +54,33 @@ Gem.prototype.configColor = function() {
   var keyColor = Math.floor((Math.random() * NUM_COLORS));
 
   switch (keyColor) {
-
     case 0:
-      this.name = "#c84444";
+      this.name = "red";
       this.img.row = 0;
       break;
 
     case 1:
-      this.name = "#ad6cce";
+      this.name = "purple";
       this.img.row = 1;
       break;
 
     case 2:
-      this.name = "#3e3eae";
+      this.name = "blue";
       this.img.row = 2;
       break;
 
     case 3:
-      this.name = "#5bc3ce";
+      this.name = "turquoise";
       this.img.row = 3;
       break;
 
     case 4:
-      this.name = "#57be53";
+      this.name = "green";
       this.img.row = 4;
       break;
 
     case 5:
-      this.name = "#d7d788";
+      this.name = "yellow";
       this.img.row = 5;
       break;
   }
@@ -92,7 +91,7 @@ Gem.prototype.drawFilling = function(x, y, w, h) {
 
   this.drawCount++;
 
-  if (this.img.src !== "") {
+  if (this.img.src !== "") {  //if there is an image ...
     this.ctx.drawImage(
       this.img,
       this.img.frameIndex * Math.floor(this.img.width / this.img.frames),
@@ -103,8 +102,7 @@ Gem.prototype.drawFilling = function(x, y, w, h) {
       y,
       w,
       h);
-  } else {
-    this.ctx.fillStyle = this.name;
+  } else {  //if there was no image, we will paint with the color that has the name attribute ...
     this.ctx.fillRect(x, y, GEM_WIDTH, GEM_HEIGTH);
   }
 
@@ -128,6 +126,7 @@ Gem.prototype.animate = function() {
   } 
 }
 
+//function that paints the matched gem
 Gem.prototype.drawMatched = function(x, y, w, h) {
 
   this.drawMatchedCount++;
@@ -150,12 +149,6 @@ Gem.prototype.drawMatched = function(x, y, w, h) {
       } 
       this.drawMatchedCount = 0;
     }
-}
-
-
-Gem.prototype.RemoveChecks = function(direction) {
-
-  this.checks[direction] = false;
 }
 
 

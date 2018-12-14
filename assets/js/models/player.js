@@ -17,11 +17,12 @@ function Player(canvasId, controls, x, y, team, conexionDOM, isModeTwoPlayers, n
   this.drawCount = 0;
   this.drawIntervalId = undefined;
 
-  this.timeLevel = 0;
-  this.timeSpecialPiece = 0;
-  this.timePenalty = 0;
+  this.timeLevel = 0;                             //variable to be controlling when changing levels
+  this.timeSpecialPiece = 0;                      //variable to be controlling when to add an extra piece
+  this.timePenalty = 0;                           //variable to be controlled when adding a penalty
+ 
+  this.speed = SPEED_INIT;                        //variable that determines when the piece must be dropped
 
-  this.speed = SPEED_INIT;
   this.animateCount = 0;
 
   this.movements = {
@@ -36,115 +37,11 @@ function Player(canvasId, controls, x, y, team, conexionDOM, isModeTwoPlayers, n
   this.isFinished = false;
   this.drawIntervalId = undefined;
   
-  this.voices = new Sounds();
-
   this.createInstances();
   this.setListeners();
 }
 
-
-Player.prototype.start = function() {
-
-  if (!this.isRunning()) {
-    
-    this.grid.reset();
-    this.piece.getPiece();
-    this.nextPiece.matrix = this.piece.matrix.slice();
-
-    for (var i = 0; i < NUM_INIT_SPECIAL_PIECES; i++) {
-      this.specialPieces.push(new Piece(this.ctx, this.x + POS_X_SPECIAL_PIECE + POS_X_GRID, POS_Y_SPECIAL_PIECE + POS_Y_GRID, this.team, true));
-    }
-    this.specialPieces[0].getPiece();
-    
-    this.drawIntervalId = setInterval(function() {
-    
-      this.drawCount++;
-      this.timeLevel++;
-      this.timeSpecialPiece++;
-      this.timePenalty++;
-
-      if ((this.piece.y >= (this.grid.y - POS_Y_GRID)) && (this.nextPiece.isEnabled)){
-        this.nextPiece.getPiece();
-        this.nextPiece.isEnabled = false;
-      }
-
-      if (this.isGameOver()) {
-        this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/game-over.m4a";
-        this.stop();
-      } else {
-        this.clearAll();
-        
-        if ((this.grid.isCollisionDown(this.piece)) && (!this.grid.isWorking)) {
-          
-          this.grid.isWorking = true;
-          this.piece.place();
-          this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/collision.m4a";
-
-          if (this.movements.down) {
-            this.piece.place();
-            this.grid.mergePiece(this.piece);
-            this.grid.handleMatches(this.piece);
-            this.piece.reset(this.nextPiece, this.x, this.y);
-            this.nextPiece.isSpecial = false;
-          } else {
-            setTimeout(function() {
-
-              if (this.grid.isCollisionDown(this.piece)) {
-                this.piece.place();
-                this.grid.mergePiece(this.piece);
-                this.grid.handleMatches(this.piece);
-                this.piece.reset(this.nextPiece, this.x, this.y);
-                this.nextPiece.isSpecial = false;
-              } else {
-                this.grid.isWorking = false;
-              }
-            }.bind(this),DELAY_AFTER_COLLISION);
-          }
-        }
-        this.animate();
-        this.drawAll();
-    
-        if (((this.drawCount % this.speed) === 0) && (!this.grid.isWorking)) {
-          this.piece.y += 10;
-          this.drawCount = 0;
-        }
-
-        if (((this.timeLevel % LEVEL_DURATION) === 0) && (this.speed > SPEED_MIN)) {
-          this.handleChangeLevel();
-          this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/level-up.m4a";
-        }
-
-        if ((this.timePenalty % PENALTY_FRECUENCY) === 0) {
-          this.timePenalty = 0;
-
-          if (this.isModeTwoPlayers && (!this.competitionMode.isCompetitionFinished)) {
-            this.checkPenalties();
-            this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/penalty.m4a";
-
-            setTimeout(function() {
-              var trackPath = this.voices.getPathBattle();
-              this.conexionDOM.$soundVoices[0].src = trackPath;
-            }.bind(this), DELAY_VOICE);
-
-            this.grid.handleMatches();
-          }
-        }
-
-        if ((this.timeSpecialPiece % SPECIAL_FRECUENCY) === 0) {
-            this.specialPieces.push(new Piece(this.ctx, this.x + POS_X_SPECIAL_PIECE +POS_X_GRID, POS_Y_SPECIAL_PIECE + POS_Y_GRID, true));
-            this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/xtra-special.m4a";
-            this.timeSpecialPiece = 0;
-        }
-
-        if(this.isModeTwoPlayers) {
-          this.setCompetitionMode();
-        }     
-      }
-    }.bind(this), DRAW_INTERVAL_MS);
-  }
-}
-
-
+//function to create the different instances of the prototypes
 Player.prototype.createInstances = function() {
   
   this.bg = new Background(this.ctx, this.x, this.y, this.team);
@@ -154,6 +51,7 @@ Player.prototype.createInstances = function() {
   this.nextPiece = new Piece(this.ctx, this.x + POS_X_NEXT_PIECE + POS_X_GRID, this.y+POS_Y_GRID, this.team);
   this.holdedPiece = new Piece(this.ctx, this.x + POS_X_HOLDED_PIECE + POS_X_GRID, POS_Y_HOLDED_PIECE + POS_Y_GRID, this.team, false, true);
   this.specialPieces = [];
+  this.voices = new Sounds();
 }
 
 
@@ -161,6 +59,121 @@ Player.prototype.setListeners = function() {
  
   document.addEventListener("keydown", this.onKeyDown.bind(this));
   document.addEventListener("keyup", this.onKeyUp.bind(this));
+}
+
+
+Player.prototype.start = function() {
+  //function that increases the counters
+  function increaseCounters() {
+    this.drawCount++;
+    this.timeLevel++;
+    this.timeSpecialPiece++;
+    this.timePenalty++;
+  }
+  //function that manages the piece
+  function managePiece() {
+    this.piece.place();                                                                  //we place the piece exactly in a correct position on the grid
+    this.grid.mergePiece(this.piece);                                                    //we join the piece to the grid
+    if (this.isGameOver()) {  //if is game over ...
+      this.conexionDOM.$soundGameOver[0].src = "./assets/sound/events/game-over.m4a";    //we change to "gameOver" music
+      this.stop();                                                                       //we stopped the game
+    } else  { //if isn't game over ...
+    this.grid.handleMatches(this.piece);                                                 //we call the function that handles possible matches
+    this.piece.reset(this.nextPiece, this.x, this.y);                                    //we take the next piece to play with
+    this.nextPiece.isSpecial = false;
+    }
+  }
+  //function that makes the piece fall
+  function downPiece() {
+    if (((this.drawCount % this.speed) === 0) && (!this.grid.isWorking)) {  //if it is time for the piece to fall and the grid is not working ...
+      this.piece.y += INCREASE_POS_Y;
+      this.drawCount = 0;
+    }
+  }
+  //function that manages the levels
+  function manageLevel() {
+    if (((this.timeLevel % LEVEL_DURATION) === 0) && (this.speed > SPEED_MIN)) {
+      this.handleChangeLevel();
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/level-up.m4a";
+    }
+  }
+  //function that manages the special pieces  //function that manages the special pieces  
+  function manageSpecialPiece() {
+    if ((this.timeSpecialPiece % SPECIAL_FRECUENCY) === 0) {
+      this.specialPieces.push(new Piece(this.ctx, this.x + POS_X_SPECIAL_PIECE +POS_X_GRID, POS_Y_SPECIAL_PIECE + POS_Y_GRID, true));
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/xtra-special.m4a";
+      this.timeSpecialPiece = 0;
+    }
+  }
+  //function that manages the mode two players
+  function manageCompetitionMode() {
+    if ((this.timePenalty % PENALTY_FRECUENCY) === 0) {  //if it is time to generate a penalty ...
+      this.timePenalty = 0;
+
+      if (this.isModeTwoPlayers && (!this.competitionMode.isCompetitionFinished)) {  //if it is two players mode and the competition has not finished ...
+        this.checkPenalties();
+
+        setTimeout(function() {
+          var trackPath = this.voices.getPathBattle();
+          this.conexionDOM.$soundVoices[0].src = trackPath;                    //we throw a random sound of penalty
+        }.bind(this), DELAY_VOICE);
+
+        setTimeout(function(){
+          this.grid.handleMatches();                                            //check the possible matches generated
+        }.bind(this), DELAY_AFTER_MATCHES);
+      }
+    }
+    if(this.isModeTwoPlayers) {
+      this.setCompetitionMode();
+    }  
+  }
+  /*************************the "START" function begins ...********************************* */
+  this.grid.reset();
+  this.piece.getPiece();
+  this.nextPiece.matrix = this.piece.matrix.slice();
+
+  for (var i = 0; i < NUM_INIT_SPECIAL_PIECES; i++) {     //we generate the corresponding special pieces
+    this.specialPieces.push(new Piece(this.ctx, this.x + POS_X_SPECIAL_PIECE + POS_X_GRID, POS_Y_SPECIAL_PIECE + POS_Y_GRID, this.team, true));
+  }
+  this.specialPieces[0].getPiece();
+  
+  this.drawIntervalId = setInterval(function() {
+  
+    increaseCounters.call(this);                                                             //we increase counters
+
+    if ((this.piece.y >= (this.grid.y - POS_Y_GRID)) && (this.nextPiece.isEnabled)){  //if the current piece already appears on the screen ...
+      this.nextPiece.getPiece();                                                      //... we generate the next piece
+      this.nextPiece.isEnabled = false;
+    }
+
+    this.clearAll();                                                                   //we erase everything
+      
+    if ((this.grid.isCollisionDown(this.piece)) && (!this.grid.isWorking)) {  //if the piece has collided and the grid is not working ...
+
+      this.grid.isWorking = true;
+      this.piece.place();
+      this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/collision.m4a";
+
+      if (this.movements.down) {  //if we are pressing the down key ...
+        managePiece.call(this);     //we call the "managePiece" function (..place piece, join piece to grid, look for possibles matches...)
+      } else {  //if we are not pressing any key ...
+        setTimeout(function() {                     //... we take a few moments to make some last movement
+          if (this.grid.isCollisionDown(this.piece)) {  //if after that time, the piece continues to collide ...
+            managePiece.call(this);                      //we call the "managePiece" function (..place piece, join piece to grid, look for possibles matches...)
+          } else {  //if the piece is no longer colliding ...
+            this.grid.isWorking = false;
+          }
+        }.bind(this),DELAY_AFTER_COLLISION);
+      }
+    }
+    this.animate();
+    this.drawAll();  
+    downPiece.call(this);
+    manageLevel.call(this);
+    manageCompetitionMode.call(this);
+    manageSpecialPiece.call(this);
+  
+  }.bind(this), DRAW_INTERVAL_MS);
 }
 
 
@@ -189,48 +202,76 @@ Player.prototype.setCompetitionMode = function() {
 
 Player.prototype.checkPenalties = function() {
 
-  if ((this.team === 0) && (this.competitionMode.pointsPlayer1 < this.competitionMode.pointsPlayer2)) {
-    this.conexionDOM.$imgCompetitionPlayer1[0].src = "./assets/images/red-crux.png";
-    this.conexionDOM.$imgCompetitionPlayer2[0].src = "./assets/images/green-tick.png";
+  function changeDOMStates(path1, path2) {
+    this.conexionDOM.$imgCompetitionPlayer1[0].src = path1;
+    this.conexionDOM.$imgCompetitionPlayer2[0].src = path2;
     this.conexionDOM.$imgCompetitionPlayer1.fadeIn();
     this.conexionDOM.$imgCompetitionPlayer2.fadeIn();
     this.conexionDOM.$imgCompetitionPlayer1.fadeOut(DELAY_DRAW_AFTER_PENALTY);
     this.conexionDOM.$imgCompetitionPlayer2.fadeOut(DELAY_DRAW_AFTER_PENALTY);
+  }
 
+  var crossPath = "./assets/images/red-cross.png"; 
+  var tickPath = "./assets/images/green-tick.png";
+
+  if ((this.team === 0) && (this.competitionMode.pointsPlayer1 < this.competitionMode.pointsPlayer2)) {  //if player 1 has fewer points than player 2 ...
+    changeDOMStates.call(this, crossPath, tickPath);
     this.penalty();
+    this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/penalty.m4a";
   } 
   
-  if ((this.team != 0) && (this.competitionMode.pointsPlayer2 < this.competitionMode.pointsPlayer1)) {
-    this.conexionDOM.$imgCompetitionPlayer1[0].src = "./assets/images/green-tick.png";
-    this.conexionDOM.$imgCompetitionPlayer2[0].src = "./assets/images/red-crux.png";
-    this.conexionDOM.$imgCompetitionPlayer1.fadeIn();
-    this.conexionDOM.$imgCompetitionPlayer2.fadeIn();
-    this.conexionDOM.$imgCompetitionPlayer1.fadeOut(DELAY_DRAW_AFTER_PENALTY);
-    this.conexionDOM.$imgCompetitionPlayer2.fadeOut(DELAY_DRAW_AFTER_PENALTY);
-
+  if ((this.team != 0) && (this.competitionMode.pointsPlayer2 < this.competitionMode.pointsPlayer1)) {  //if player 2 has fewer points than player 1 ...
+    changeDOMStates.call(this, tickPath, crossPath);
     this.penalty();
+    this.conexionDOM.$soundEvents[0].src = "./assets/sound/events/penalty.m4a";
   }
 }
 
-
+//function that will insert an additional row of gems to the player who has the fewest points at that moment
 Player.prototype.penalty = function() {
 
-  for (var i = 0; i < NUM_COLUMNS_GRID; i++) {    
+  function setPenaltyGems() {
     var gem = new Gem(this.ctx, this.team);
     gem.configColor();
     gem.isSpecial = false;
     this.grid.matrix[i].push(gem);
-    this.grid.matrix[i].shift();
   }
-  //voy a intentar a la vez retrasar la ficha una fila para evitar comprotamientos estraños cuando sube todo el grid
-  this.piece.y -= GEM_HEIGTH;  
+
+  if (!this.grid.isWorking) {  //If the grid is not working ...
+
+    this.grid.isWorking = true;
+    
+    for (var i = 0; i < NUM_COLUMNS_GRID; i++) {    
+      setPenaltyGems.call(this);
+      if (this.isGameOverModeCompetition(this.grid.matrix[i])) {  //if when we insert the gem, there is a game over ...
+        setTimeout(function() {
+          this.conexionDOM.$soundGameOver[0].src = "./assets/sound/events/game-over.m4a";
+          this.stop();                                          //stop the game
+        }.bind(this), 1000);
+      }
+      this.grid.matrix[i].shift(); 
+    }
+    this.piece.y -= GEM_HEIGTH;                           //we delay the piece just the size of a gem
+
+    this.grid.isWorking = false;
+
+  } else {  //If the grid is working ... 
+    setTimeout(this.penalty.bind(this), 50);              //...I call the function again after a few moments
+  }
+}
+
+
+Player.prototype.isGameOverModeCompetition = function(array) {
+  
+    return array.every(function(e) {
+      return e instanceof Gem;
+    });
 }
 
 
 Player.prototype.stop = function() {
-  
-  if (this.isModeTwoPlayers) {
 
+  function setDOMStatesModeTwoPlayers() {
     if (this.team === 0) {
       this.conexionDOM.$points1.text(Math.floor(this.score.totalPoints));
       this.conexionDOM.$gameOver1.show();
@@ -238,27 +279,39 @@ Player.prototype.stop = function() {
       this.conexionDOM.$points2.text(Math.floor(this.score.totalPoints));
       this.conexionDOM.$gameOver2.show();
     }
-      
-    if (this.competitionMode.isCompetitionFinished) {
-      this.conexionDOM.$soundBg[0].src = "";
-      setTimeout(function() {
-        this.conexionDOM.$soundBg[0].src = "./assets/sound/background/columns-atropos.m4a";
-      }.bind(this),1000);
-    } else {
-      setTimeout(function() {
-        var trackPath = this.voices.getPathGameOver();
-        this.conexionDOM.$soundVoices[0].src = trackPath;
-      }.bind(this),2000);
-    }
-  } else {  
-      this.conexionDOM.$soundBg[0].src = "";
-      setTimeout(function() {
-        this.conexionDOM.$soundBg[0].src = "./assets/sound/background/columns-atropos.m4a";
-      }.bind(this),1000);
+  }
 
+  function setDOMStatesModeOnePlayer() {
     this.conexionDOM.$name.val(this.name)
     this.conexionDOM.$points.text(Math.floor(this.score.totalPoints));
     this.conexionDOM.$gameOver.show();
+  }
+
+  function setDOMSoundGameOver() {
+    this.conexionDOM.$soundBg[0].src = "";
+    setTimeout(function() {
+      this.conexionDOM.$soundBg[0].src = "./assets/sound/background/columns-atropos.m4a";
+    }.bind(this), DELAY_AFTER_GAME_OVER);
+  }
+
+  function setDOMSoundModeCompetition() {
+    setTimeout(function() {
+      var trackPath = this.voices.getPathGameOver();
+      this.conexionDOM.$soundVoices[0].src = trackPath;
+    }.bind(this), DELAY_AFTER_COMPETITION_FINISHED);
+  }
+  
+  if (this.isModeTwoPlayers) {  //if is mode two players ...
+
+    setDOMStatesModeTwoPlayers.call(this);
+    if (this.competitionMode.isCompetitionFinished) {  //if the competition had already finished (that is, there was only one player left) ....
+      setDOMSoundGameOver.call(this);
+    } else {  //if the two players were still alive ....
+      setDOMSoundModeCompetition.call(this);
+    }
+  } else {  //if is mode one player ...
+    setDOMSoundGameOver.call(this);
+    setDOMStatesModeOnePlayer.call(this);
   }
   clearInterval(this.drawIntervalId);
   this.drawIntervalId = undefined;
@@ -285,16 +338,10 @@ Player.prototype.clearAll = function() {
   this.ctx.clearRect(this.x, this.y, this.w, this.h);
 }
 
-Player.prototype.isRunning = function() {
- 
-  return this.drawIntervalId !== undefined;
-}
-
 
 Player.prototype.onKeyDown = function(e) {
   
   switch (e.keyCode) {
-
     case this.controls.right:
       this.movements.right = true;
       break;
@@ -370,6 +417,7 @@ Player.prototype.animate = function() {
   }
 }
 
+
 Player.prototype.onKeyUp = function(e) {
  
     switch (e.keyCode) {
@@ -387,6 +435,7 @@ Player.prototype.onKeyUp = function(e) {
     }
 }
 
+
 Player.prototype.isGameOver = function() {
   
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
@@ -403,13 +452,13 @@ Player.prototype.handleHoldedPiece = function() {
 
     this.conexionDOM.$soundKeys[0].src = "./assets/sound/keys/hold-piece.m4a";
     
-    if (!this.holdedPiece.matrix.length) { //si es la rimera ver que nos metemos...
+    if (!this.holdedPiece.matrix.length) { //if it is the first piece that we are going to retain
         this.holdedPiece.matrix = this.piece.matrix.slice();
         this.piece.matrix = this.nextPiece.matrix.slice();
         this.piece.isSpecial = this.nextPiece.isSpecial;
         this.nextPiece.isSpecial = false;
         this.nextPiece.getPiece();
-    } else { // si ya había una pieza "holded"
+    } else { //if we already had a pieza holded ...
       var auxMatrix = this.piece.matrix.slice();
       this.piece.matrix = this.holdedPiece.matrix.slice();
       this.holdedPiece.matrix = auxMatrix.slice();

@@ -35,6 +35,8 @@ function ConexionDOM() {
    this.$soundEvents = $("#sound-events");
    this.$soundKeys = $("#sound-keys");
    this.$soundVoices = $("#sound-voices");
+   this.$soundSuccess = $("#sound-success");
+   this.$soundGameOver = $("#sound-game-over");
 
    /********images*********    */
    this.$imgCompetitionPlayer1 = $("#img-competition-player1");

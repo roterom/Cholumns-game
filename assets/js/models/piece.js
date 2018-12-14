@@ -2,7 +2,7 @@ function Piece(ctx, x, y, team, special, holded) {
 
   /*********arguments********** */
   this.ctx = ctx;
-  this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2); //para que empiece en la mitad
+  this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2);               //so that the peiza falls through the middle of the grid //so that the peiza falls through the middle of the grid
   this.y = y || -(GEM_HEIGTH * (PIECE_SIZE));
   this.team = team;
   this.isSpecial = special || false;
@@ -12,14 +12,14 @@ function Piece(ctx, x, y, team, special, holded) {
   this.h = GEM_HEIGTH * PIECE_SIZE;
   this.matrix = [];
 
-  this.isEnabled = true;
+  this.isEnabled = true;                                //this variable allows you to control when you get the next piece
 
 
   this.img = new Image();
   this.img.src = "";
 
   this.imgBg = new Image();
-  this.imgBg.src = "./assets/images/recuadro-60.png"
+  this.imgBg.src = "./assets/images/recuadro-60.png"              //this image generates a shadow effect on the piece
 
   this.setImages(this.team);
 }
@@ -63,8 +63,8 @@ Piece.prototype.draw = function() {
     this.imgBg,
     this.x,
     this.y,
-    this.w + 5,
-    this.h + 5
+    this.w + 5, //for the shadow effect...
+    this.h + 5  //for the shadow effect...
   );
   this.ctx.fill
    
@@ -114,18 +114,18 @@ Piece.prototype.switchColors = function() {
 
 Piece.prototype.reset = function(next, canvasX, canvasY) {
 
-  if (next) {
+  if (next) {  //if there is a next piece ...
     this.matrix = next.matrix;
     next.isEnabled = true;
     this.isSpecial = next.isSpecial;
   } else {
     this.getPiece();
   }
-  this.x = ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID + canvasX; //para que empiece en la mitad
-  this.y = (-(GEM_HEIGTH * (PIECE_SIZE))) + POS_Y_GRID + canvasY; 
+  this.x = ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID + canvasX;          //so that the peiza falls through the middle of the grid ..
+  this.y = (-(GEM_HEIGTH * (PIECE_SIZE))) + POS_Y_GRID + canvasY;                //to start from the top of the grid ..
 }
 
-
+//function that pulls out a special piece
 Piece.prototype.takeOutSpecial = function(special) {
   
     this.matrix = special.matrix.slice();
