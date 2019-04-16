@@ -2,7 +2,7 @@ function Piece(ctx, x, y, team, special, holded) {
 
   /*********arguments********** */
   this.ctx = ctx;
-  this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2);               //so that the peiza falls through the middle of the grid //so that the peiza falls through the middle of the grid
+  this.x = x || ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2);               //so that the piece falls through the middle of the grid
   this.y = y || -(GEM_HEIGTH * (PIECE_SIZE));
   this.team = team;
   this.isSpecial = special || false;
@@ -121,7 +121,7 @@ Piece.prototype.reset = function(next, canvasX, canvasY) {
   } else {
     this.getPiece();
   }
-  this.x = ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID + canvasX;          //so that the peiza falls through the middle of the grid ..
+  this.x = ((NUM_COLUMNS_GRID * GEM_WIDTH) / 2) + POS_X_GRID + canvasX;          //so that the piece falls through the middle of the grid ..
   this.y = (-(GEM_HEIGTH * (PIECE_SIZE))) + POS_Y_GRID + canvasY;                //to start from the top of the grid ..
 }
 

@@ -130,7 +130,7 @@ Grid.prototype.removeChecks = function() {
   }
 }
 
-//function that eliminates the cells that contain zero and insert a new zero at the beginning of the colunm
+//function that eliminates the cells that contain zero and insert a new zero at the beginning of the column
 Grid.prototype.downGems = function() {
 
   for (var i = 0; i < NUM_COLUMNS_GRID; i++) {
@@ -156,7 +156,7 @@ Grid.prototype.removeColor = function(color) {
   }
 }
 
-//function that checks all direcions for matches
+//function that checks all directions for matches
 Grid.prototype.checkAllDirections = function(i, j) {
   
   this.checkVertically(i, j);                      //call the function "checkVertically" to review vertically

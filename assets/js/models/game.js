@@ -64,11 +64,11 @@ Game.prototype.resetDOM = function() {
 Game.prototype.gameOverTwoPlayersMode = function() {
   
   if (this.player1.isFinished) {  //if player1 has finished ...
-    this.addScore(this.conexionDOM.$name1.val(), this.conexionDOM.$points1.text());      //add his score in LocalStorage (calling to "addSocre" function)
+    this.addScore(this.conexionDOM.$name1.val(), this.conexionDOM.$points1.text());      //add his score in LocalStorage (calling to "addScore" function)
   } 
 
   if (this.player2.isFinished) {  //if player1 has finished ...
-    this.addScore(this.conexionDOM.$name2.val(), this.conexionDOM.$points2.text());      //add his score in LocalStorage (calling to "addSocre" function)
+    this.addScore(this.conexionDOM.$name2.val(), this.conexionDOM.$points2.text());      //add his score in LocalStorage (calling to "addScore" function)
   } 
 
   if (this.player1.isFinished && this.player2.isFinished) {  //in player1 and player2 have finished ...
@@ -122,7 +122,7 @@ Game.prototype.showHighscore = function() {
   }
 }
 
-//fuction that obtains the scores of the LocalStorage
+//function that obtains the scores of the LocalStorage
 Game.prototype.getScores = function() {
 
   var scores = localStorage.getItem("scores") || "{}";
@@ -134,13 +134,13 @@ Game.prototype.addScore = function(name, points) {
  
   var scores = this.getScores();
 
-  if (scores.hasOwnProperty(name)) { //if that name is already in the "socores" ...
+  if (scores.hasOwnProperty(name)) { //if that name is already in the "scores" ...
 
     if (Number.parseInt(scores[name]) < Number.parseInt(points)) {  //if the new score is greater than the one stored...
       this.scores[name] = points;
       localStorage.setItem("scores", JSON.stringify(this.scores));
     } 
-  } else {  //if that name isn't in the "socores" ...
+  } else {  //if that name isn't in the "scores" ...
     this.scores[name] = points;
     localStorage.setItem("scores", JSON.stringify(this.scores));
   }
@@ -153,7 +153,7 @@ Game.prototype.gameOverOnePlayerMode = function() {
   this.conexionDOM.$soundBg[0].src = "./assets/sound/background/intro.m4a";                //we started background music
 
   if (this.conexionDOM.$name.val()) {  //if we put a name to save the score ...
-    this.addScore(this.conexionDOM.$name.val(), this.conexionDOM.$points.text());          //add his score in LocalStorage (calling to "addSocre" function)
+    this.addScore(this.conexionDOM.$name.val(), this.conexionDOM.$points.text());          //add his score in LocalStorage (calling to "addScore" function)
     this.conexionDOM.$name.val("");
   }
   this.conexionDOM.$gameOver.hide();                                                       //we hide the gameOver window
@@ -180,7 +180,7 @@ Game.prototype.play = function() {
     var numPlayers = this.conexionDOM.$inputPlayers.val();
     
     if (numPlayers == 1) {
-      this.player1 = new Player(this.conexionDOM.$canvas1[0], CONTROLS1, 0, 0, this.conexionDOM.$teamSelected.selectedIndex, this.conexionDOM, false);     //intance of "Player" prototype
+      this.player1 = new Player(this.conexionDOM.$canvas1[0], CONTROLS1, 0, 0, this.conexionDOM.$teamSelected.selectedIndex, this.conexionDOM, false);     //instance of "Player" prototype
       this.player1.start();                                                                           //call to "start" function of "player1"
       this.conexionDOM.$canvas1.show();                                                               //show the canvas window
       this.conexionDOM.$main.fadeOut(DELAY_FADEOUT);                                                  //hide the main window
@@ -188,9 +188,9 @@ Game.prototype.play = function() {
     } else { //numPlayers == 2... 
 
       if ((this.conexionDOM.$name1.val() != 0) && (this.conexionDOM.$name2.val() != 0) &&(this.conexionDOM.$nameTeam2.text())) {  //if we have choose the names and the rival team ...
-        this.competitionMode = new CompetitionMode();                                                                                                                 //intance of "CompetitionMode" prototype
-        this.player1 = new Player(this.conexionDOM.$canvas1[0], CONTROLS1, 0, 0, 0, this.conexionDOM, true, this.conexionDOM.$name1.val(), this.competitionMode);     //intance of "Player" prototype
-        this.player2 = new Player(this.conexionDOM.$canvas2[0], CONTROLS2, window.innerWidth/2 , 0, this.conexionDOM.$teamSelected.selectedIndex, this.conexionDOM, true, this.conexionDOM.$name2.val(), this.competitionMode);      //intance of "Player" prototype
+        this.competitionMode = new CompetitionMode();                                                                                                                 //instance of "CompetitionMode" prototype
+        this.player1 = new Player(this.conexionDOM.$canvas1[0], CONTROLS1, 0, 0, 0, this.conexionDOM, true, this.conexionDOM.$name1.val(), this.competitionMode);     //instance of "Player" prototype
+        this.player2 = new Player(this.conexionDOM.$canvas2[0], CONTROLS2, window.innerWidth/2 , 0, this.conexionDOM.$teamSelected.selectedIndex, this.conexionDOM, true, this.conexionDOM.$name2.val(), this.competitionMode);      //instance of "Player" prototype
         
         this.player1.start();                                                                   //call to "start" function of "player1"                             
         this.player2.start();                                                                   //call to "start" function of "player2"

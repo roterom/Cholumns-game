@@ -458,7 +458,7 @@ Player.prototype.handleHoldedPiece = function() {
         this.piece.isSpecial = this.nextPiece.isSpecial;
         this.nextPiece.isSpecial = false;
         this.nextPiece.getPiece();
-    } else { //if we already had a pieza holded ...
+    } else { //if we already had a piece holded ...
       var auxMatrix = this.piece.matrix.slice();
       this.piece.matrix = this.holdedPiece.matrix.slice();
       this.holdedPiece.matrix = auxMatrix.slice();
